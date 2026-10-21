@@ -1,60 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Home</title>
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, Arial, sans-serif; background: #f3f4f6; color: #222; }
-    header { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #1f2937; color: #fff; }
-    header h1 { margin: 0; font-size: 1.5rem; }
-    .home-btn { color: #fff; text-decoration: none; padding: 8px 16px; border: 1px solid #fff; border-radius: 6px; }
-    .home-btn:hover { background: #fff; color: #1f2937; }
-    main { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
-    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
-    .card { display: block; background: #fff; border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; box-shadow: 0 2px 8px rgba(0,0,0,.1); transition: transform .2s, box-shadow .2s; }
-    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,.15); }
-    .card img { width: 100%; height: 180px; object-fit: cover; display: block; }
-    .card-body { padding: 16px; }
-    .card-body h2 { margin: 0 0 8px; font-size: 1.2rem; }
-    .card-body p { margin: 0; color: #555; }
-    @media (max-width: 600px) {
-      header { padding: 12px 16px; }
-      header h1 { font-size: 1.2rem; }
-      main { margin: 16px auto; }
-      .cards { grid-template-columns: 1fr; gap: 16px; }
-      .card img { height: 160px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BPSC TRE — Computer Science Notes</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0e1a;--bg2:#0f1424;--surface:#151b2e;--surface2:#1c2440;--surface3:#243052;
+  --glass:rgba(21,27,46,.85);--border:rgba(71,105,165,.25);--border2:rgba(100,140,200,.2);
+  --cyan:#22d3ee;--blue:#60a5fa;--indigo:#818cf8;--violet:#a78bfa;--emerald:#34d399;--amber:#fbbf24;--rose:#fb7185;--sky:#38bdf8;--orange:#fb923c;
+  --text:#e2e8f0;--text2:#8899b4;--text3:#556680;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --radius:10px;--radius-lg:16px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ===== BACKGROUND ===== */
+.canvas{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.canvas::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:conic-gradient(from 180deg at 50% 50%,
+    rgba(34,211,238,.04) 0deg,transparent 60deg,
+    rgba(129,140,248,.04) 120deg,transparent 180deg,
+    rgba(167,139,250,.04) 240deg,transparent 300deg,
+    rgba(34,211,238,.04) 360deg);
+  animation:cosmicSpin 90s linear infinite}
+@keyframes cosmicSpin{to{transform:rotate(360deg)}}
+.canvas::after{content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 15% 10%,rgba(34,211,238,.07),transparent 50%),
+    radial-gradient(ellipse at 85% 90%,rgba(129,140,248,.07),transparent 50%),
+    repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(71,105,165,.08) 59px,rgba(71,105,165,.08) 60px),
+    repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(71,105,165,.08) 59px,rgba(71,105,165,.08) 60px)}
+
+/* ===== TOP NAV ===== */
+.topnav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;padding:12px 28px;
+  background:var(--glass);backdrop-filter:blur(16px) saturate(180%);-webkit-backdrop-filter:blur(16px) saturate(180%);
+  border-bottom:1px solid var(--border)}
+.topnav .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.topnav .brand-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--amber),var(--orange));font-size:14px;font-weight:900;color:#fff;font-family:var(--mono);letter-spacing:-.5px}
+.topnav .brand-text{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.topnav .brand-text small{display:block;font-size:10px;font-weight:500;color:var(--text3);letter-spacing:.3px}
+.topnav .nav-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.nav-pill{padding:6px 14px;font:600 12px 'Inter',sans-serif;color:var(--text2);background:transparent;border:1px solid transparent;
+  border-radius:8px;cursor:pointer;text-decoration:none;transition:all .2s}
+.nav-pill:hover,.nav-pill.active{background:var(--surface2);color:var(--text);border-color:var(--border)}
+
+/* ===== HERO ===== */
+.hero{position:relative;z-index:1;padding:56px 32px 48px;text-align:center;
+  background:linear-gradient(180deg,rgba(251,191,36,.04) 0%,transparent 100%)}
+.exam-badge{display:inline-flex;align-items:center;gap:8px;padding:7px 18px;font-size:11px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;color:var(--amber);
+  background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:999px;margin-bottom:22px}
+.exam-badge .pulse{width:8px;height:8px;border-radius:50%;background:var(--emerald);
+  box-shadow:0 0 8px var(--emerald);animation:blink 2.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-size:clamp(34px,6vw,58px);font-weight:900;letter-spacing:-.04em;line-height:1.08;margin-bottom:6px}
+.hero h1 .grad{background:linear-gradient(135deg,#fff 0%,var(--amber) 45%,var(--orange) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .thin{font-weight:400;-webkit-text-fill-color:var(--text2);color:var(--text2);font-size:.55em}
+.hero .subtitle{font-size:clamp(14px,2vw,17px);color:var(--text2);max-width:660px;margin:12px auto 32px;line-height:1.75}
+.hero .subtitle strong{color:var(--text);font-weight:600}
+.hero .subtitle .hl{color:var(--amber);font-weight:700}
+
+/* Exam info strip */
+.exam-strip{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;max-width:800px;margin:0 auto}
+.exam-chip{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--surface);
+  border:1px solid var(--border);border-radius:10px;transition:border-color .2s}
+.exam-chip:hover{border-color:rgba(251,191,36,.35)}
+.exam-chip .ec-icon{font-size:16px}
+.exam-chip .ec-val{font-size:16px;font-weight:800;font-family:var(--mono);color:var(--amber)}
+.exam-chip .ec-lbl{font-size:10.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px}
+
+/* ===== MAIN ===== */
+.main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 24px 80px}
+
+/* Section headers */
+.sec-head{display:flex;align-items:center;gap:14px;margin:48px 0 24px}
+.sec-head .sec-num{font:800 11px var(--mono);color:var(--amber);background:rgba(251,191,36,.1);
+  border:1px solid rgba(251,191,36,.2);border-radius:6px;padding:4px 10px;letter-spacing:.5px}
+.sec-head h2{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.sec-head .sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent 80%)}
+
+/* ===== SYLLABUS CARDS ===== */
+.subjects{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.subj{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  overflow:hidden;text-decoration:none;color:inherit;transition:all .35s cubic-bezier(.23,1,.32,1)}
+.subj:hover{transform:translateY(-5px);border-color:var(--c1);
+  box-shadow:0 0 0 1px var(--c1),0 20px 40px rgba(0,0,0,.3),0 0 60px -20px var(--c1)}
+.subj .bar{height:3px;background:linear-gradient(90deg,var(--c1),var(--c2))}
+.subj .body{padding:22px 22px 20px}
+.subj .head{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.subj .icon-box{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;font-size:22px;flex-shrink:0;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--c1) 20%,transparent),color-mix(in srgb,var(--c2) 15%,transparent));
+  border:1px solid color-mix(in srgb,var(--c1) 25%,transparent)}
+.subj .paper-code{font:700 10px var(--mono);color:var(--c1);letter-spacing:.8px;text-transform:uppercase;margin-bottom:2px}
+.subj .title{font-size:17px;font-weight:800;letter-spacing:-.02em;margin-bottom:2px}
+.subj .marks{font-size:11px;font-weight:600;color:var(--text3)}
+.subj .desc{font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:16px}
+
+/* topic chips */
+.topics{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px}
+.topic{padding:3px 9px;font-size:10.5px;font-weight:600;border-radius:6px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);transition:all .25s}
+.subj:hover .topic{border-color:color-mix(in srgb,var(--c1) 30%,transparent);color:var(--text)}
+
+/* card footer */
+.subj .foot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--border)}
+.subj .meta{display:flex;gap:12px}
+.subj .mi{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);font-weight:500}
+.subj .mi svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.subj .go{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:700;color:var(--c1);transition:all .25s}
+.subj:hover .go{gap:9px;filter:brightness(1.15)}
+.subj .go svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* Status badges */
+.status{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:9.5px;font-weight:700;letter-spacing:.3px;text-transform:uppercase}
+.status.live{background:rgba(52,211,153,.12);color:var(--emerald);border:1px solid rgba(52,211,153,.25)}
+.status.soon{background:rgba(251,191,36,.1);color:var(--amber);border:1px solid rgba(251,191,36,.2)}
+.status .sdot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* ===== EXAM INFO SECTION ===== */
+.exam-info{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:48px}
+.ei-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:border-color .25s}
+.ei-card:hover{border-color:var(--amber)}
+.ei-card h3{font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.ei-card h3 .eic{font-size:17px}
+.ei-card ul{list-style:none;padding:0}
+.ei-card li{font-size:12.5px;color:var(--text2);line-height:1.65;padding:4px 0;padding-left:16px;position:relative}
+.ei-card li::before{content:'▸';position:absolute;left:0;color:var(--amber);font-size:11px}
+
+/* ===== FEATURES ===== */
+.features{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px;margin-bottom:48px}
+.feat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color .25s}
+.feat:hover{border-color:var(--cyan)}
+.feat .f-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.feat .f-icon{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:16px}
+.feat h3{font-size:13.5px;font-weight:700}
+.feat p{font-size:12px;color:var(--text2);line-height:1.65}
+
+/* ===== QUOTE ===== */
+.quote-banner{position:relative;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:28px 32px;margin-bottom:48px;overflow:hidden}
+.quote-banner::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;
+  background:linear-gradient(180deg,var(--amber),var(--orange))}
+.quote-banner blockquote{font-size:14px;font-style:italic;color:var(--text2);line-height:1.75;margin-bottom:6px;padding-left:8px}
+.quote-banner cite{font-size:11.5px;font-weight:600;color:var(--text3);font-style:normal;padding-left:8px}
+
+/* ===== FOOTER ===== */
+footer{position:relative;z-index:1;text-align:center;padding:32px 24px;border-top:1px solid var(--border)}
+footer p{font-size:11.5px;color:var(--text3);line-height:1.8}
+footer .f-brand{font-weight:700;color:var(--text2)}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+  .topnav{padding:10px 14px;gap:8px}
+  .topnav .nav-right{display:none}
+  .hero{padding:40px 16px 36px}
+  .exam-strip{gap:6px}
+  .exam-chip{padding:8px 12px}
+  .main{padding:0 14px 60px}
+  .subjects{grid-template-columns:1fr}
+  .exam-info{grid-template-columns:1fr}
+  .features{grid-template-columns:1fr}
+  .quote-banner{padding:20px 18px 20px 22px}
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1>My Cards</h1>
-    <a class="home-btn" href="index.html" title="Home" aria-label="Home">&#8962;</a>
-  </header>
-  <main>
-    <div class="cards" id="cards"></div>
-  </main>
+<div class="canvas"></div>
 
-  <script>
-    // To add a new card: add an object here and create its page (e.g. page4.html).
-    const cards = [
-      { title: "Digital Electronics", img: "https://picsum.photos/seed/digital/600/400", desc: "Digital electronics notes.", link: "digital-electronics.html" },
-      { title: "DS Complete",         img: "https://picsum.photos/seed/ds/600/400",      desc: "Complete data structures guide.", link: "ds_complete.html" }
-    ];
+<!-- ===== TOP NAV ===== -->
+<nav class="topnav">
+  <a href="index.html" class="brand">
+    <div class="brand-icon">CS</div>
+    <div class="brand-text">CS TRE Notes<small>BPSC Teacher Recruitment Exam</small></div>
+  </a>
+  <div class="nav-right">
+    <a href="#syllabus" class="nav-pill active">Syllabus</a>
+    <a href="#exam-info" class="nav-pill">Exam Info</a>
+    <a href="#features" class="nav-pill">Features</a>
+  </div>
+</nav>
 
-    const container = document.getElementById("cards");
-    cards.forEach(c => {
-      container.insertAdjacentHTML("beforeend", `
-        <a class="card" href="${c.link}">
-          <img src="${c.img}" alt="${c.title}">
-          <div class="card-body">
-            <h2>${c.title}</h2>
-            <p>${c.desc}</p>
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="exam-badge"><span class="pulse"></span> Bihar Public Service Commission · BPSC TRE CS (Class 11-12)</div>
+  <h1>
+    <span class="grad">BPSC TRE CS Hub</span><br>
+    <span class="thin">Computer Science Teacher Recruitment Examination Portal</span>
+  </h1>
+  <p class="subtitle">
+    Targeted interactive preparation for <strong class="hl">BPSC TRE (10+2 / PGT Computer Science)</strong> aspirants in Bihar.
+    Revise core scoring subjects, practice algorithm mechanics, test circuit logic, and clear concepts with <strong>zero distraction & 100% offline access</strong>.
+  </p>
+
+  <div class="exam-strip">
+    <div class="exam-chip">
+      <span class="ec-icon">📝</span>
+      <span class="ec-val">BPSC</span>
+      <span class="ec-lbl">Conducting Body</span>
+    </div>
+    <div class="exam-chip">
+      <span class="ec-icon">🏫</span>
+      <span class="ec-val">TRE</span>
+      <span class="ec-lbl">Exam Phase</span>
+    </div>
+    <div class="exam-chip">
+      <span class="ec-icon">💻</span>
+      <span class="ec-val">CS</span>
+      <span class="ec-lbl">Subject</span>
+    </div>
+    <div class="exam-chip">
+      <span class="ec-icon">📖</span>
+      <span class="ec-val" id="sChap">0</span>
+      <span class="ec-lbl">Chapters</span>
+    </div>
+    <div class="exam-chip">
+      <span class="ec-icon">🛠️</span>
+      <span class="ec-val" id="sTool">0</span>
+      <span class="ec-lbl">Tools</span>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main class="main">
+
+  <!-- SYLLABUS SUBJECTS -->
+  <div class="sec-head" id="syllabus">
+    <span class="sec-num">01</span>
+    <h2>Syllabus — Interactive Notes</h2>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="subjects" id="subjectGrid"></div>
+
+  <!-- EXAM INFO -->
+  <div class="sec-head" id="exam-info">
+    <span class="sec-num">02</span>
+    <h2>BPSC TRE Exam Overview</h2>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="exam-info">
+    <div class="ei-card">
+      <h3><span class="eic">📋</span> Exam Pattern (Class 11–12 PGT CS)</h3>
+      <ul>
+        <li><strong>Total Questions:</strong> 150 MCQs (150 Marks)</li>
+        <li><strong>Part I (Language Qualifying):</strong> 30 Questions (English & Hindi)</li>
+        <li><strong>Part II (General Studies):</strong> 40 Questions (Maths, Reasoning, GK, CA)</li>
+        <li><strong>Part III (Computer Science Core):</strong> 80 Questions (In-depth CS)</li>
+        <li><strong>Duration:</strong> 2 Hours 30 Minutes</li>
+        <li><strong>Negative Marking:</strong> No negative marking (as per latest BPSC notification)</li>
+      </ul>
+    </div>
+    <div class="ei-card">
+      <h3><span class="eic">📚</span> CS Syllabus Areas</h3>
+      <ul>
+        <li>Data Structures & Algorithms</li>
+        <li>Digital Electronics & Logic Design</li>
+        <li>Database Management Systems (DBMS)</li>
+        <li>Computer Networks & Internet</li>
+        <li>Operating Systems</li>
+        <li>Software Engineering</li>
+        <li>Computer Organization & Architecture</li>
+        <li>Programming (C, C++, Java basics)</li>
+      </ul>
+    </div>
+    <div class="ei-card">
+      <h3><span class="eic">🎯</span> Preparation Strategy</h3>
+      <ul>
+        <li>Focus on NCERT + standard CS textbooks</li>
+        <li>Practice MCQs from each topic daily</li>
+        <li>Use interactive tools to visualize concepts</li>
+        <li>Revise formulas, theorems, and algorithms regularly</li>
+        <li>Solve previous year BPSC TRE papers</li>
+        <li>Give timed mock tests weekly</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-banner">
+    <blockquote id="quoteText">"Education is the most powerful weapon which you can use to change the world."</blockquote>
+    <cite id="quoteAuthor">— Nelson Mandela</cite>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="sec-head" id="features">
+    <span class="sec-num">03</span>
+    <h2>Why These Notes?</h2>
+    <div class="sec-line"></div>
+  </div>
+
+  <div class="features">
+    <div class="feat">
+      <div class="f-head">
+        <div class="f-icon" style="background:rgba(251,191,36,.1);color:var(--amber)">🎯</div>
+        <h3>Exam-Oriented</h3>
+      </div>
+      <p>Content structured around the BPSC TRE Computer Science syllabus. Every topic maps to what you'll face in the exam.</p>
+    </div>
+    <div class="feat">
+      <div class="f-head">
+        <div class="f-icon" style="background:rgba(34,211,238,.1);color:var(--cyan)">🔬</div>
+        <h3>Interactive Tools</h3>
+      </div>
+      <p>Sort arrays, build K-maps, simulate flip-flops, trace graph traversals — learn by doing, not just reading.</p>
+    </div>
+    <div class="feat">
+      <div class="f-head">
+        <div class="f-icon" style="background:rgba(52,211,153,.1);color:var(--emerald)">🧠</div>
+        <h3>Visual Memory</h3>
+      </div>
+      <p>Color-coded diagrams, step-by-step animations, and truth tables make complex CS concepts stick permanently.</p>
+    </div>
+    <div class="feat">
+      <div class="f-head">
+        <div class="f-icon" style="background:rgba(129,140,248,.1);color:var(--indigo)">📱</div>
+        <h3>Study Anywhere</h3>
+      </div>
+      <p>Works offline on any device — phone, tablet, or laptop. No internet or app install needed. Just open and study.</p>
+    </div>
+    <div class="feat">
+      <div class="f-head">
+        <div class="f-icon" style="background:rgba(251,113,133,.1);color:var(--rose)">📊</div>
+        <h3>Complexity & Formulas</h3>
+      </div>
+      <p>Big-O analysis, Boolean theorems, normal forms, and conversion formulas — all in one place with quick reference.</p>
+    </div>
+    <div class="feat">
+      <div class="f-head">
+        <div class="f-icon" style="background:rgba(167,139,250,.1);color:var(--violet)">💯</div>
+        <h3>100% Free</h3>
+      </div>
+      <p>No subscriptions, no ads, no sign-ups. Made by an aspirant, for aspirants. Share freely with your study group.</p>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p><span class="f-brand">CS TRE Notes</span> — Interactive Study Material for BPSC TRE Computer Science Teacher Exam</p>
+  <p>Made with ❤️ for Bihar CS Teacher aspirants · Free & Offline · Share with fellow aspirants</p>
+</footer>
+
+<script>
+// ===== SUBJECT DATA =====
+const subjects = [
+  {
+    code: "Unit I",
+    title: "Data Structures & Algorithms",
+    marks: "Core Syllabus Topic",
+    desc: "Complete guide covering arrays, stacks, queues, linked lists, trees, graphs, sorting, searching, spanning trees, shortest paths, and expression evaluation with interactive visualizations.",
+    link: "ds_complete.html",
+    icon: "🏗️",
+    c1: "#60a5fa", c2: "#818cf8",
+    chapters: 22, tools: 15, status: "live",
+    topics: ["Stacks","Queues","Linked Lists","Trees","BST","Graphs","BFS","DFS","Bubble Sort","Quick Sort","Merge Sort","Prim's","Kruskal's","Dijkstra's"]
+  },
+  {
+    code: "Unit II",
+    title: "Digital Electronics",
+    marks: "Core Syllabus Topic",
+    desc: "Number systems, Boolean algebra, logic gates, combinational & sequential circuits, flip-flops, registers, counters, K-map simplification — with calculators and truth-table generators.",
+    link: "digital-electronics.html",
+    icon: "⚡",
+    c1: "#34d399", c2: "#22d3ee",
+    chapters: 14, tools: 12, status: "live",
+    topics: ["Number Systems","Binary Codes","Boolean Theorems","Logic Gates","Combinational Circuits","Flip-Flops","Registers","Counters","SOP/POS","K-Maps"]
+  },
+  {
+    code: "Unit III",
+    title: "Database Management Systems",
+    marks: "Core Syllabus Topic",
+    desc: "ER models, relational algebra, SQL, normalization, transactions, concurrency control, indexing, and file organization — essential DBMS concepts for the exam.",
+    link: null,
+    icon: "🗄️",
+    c1: "#fbbf24", c2: "#fb923c",
+    chapters: 0, tools: 0, status: "soon",
+    topics: ["ER Model","Relational Algebra","SQL","Normalization","Transactions","Concurrency","Indexing","File Organization"]
+  },
+  {
+    code: "Unit IV",
+    title: "Computer Networks",
+    marks: "Core Syllabus Topic",
+    desc: "OSI & TCP/IP models, data link protocols, routing algorithms, IP addressing, TCP/UDP, application layer protocols, and network security fundamentals.",
+    link: null,
+    icon: "🌐",
+    c1: "#818cf8", c2: "#a78bfa",
+    chapters: 0, tools: 0, status: "soon",
+    topics: ["OSI Model","TCP/IP","Routing","IP Addressing","Subnetting","TCP/UDP","HTTP/DNS","Network Security"]
+  },
+  {
+    code: "Unit V",
+    title: "Operating Systems",
+    marks: "Core Syllabus Topic",
+    desc: "Process management, CPU scheduling, deadlocks, memory management, paging, segmentation, file systems, and disk scheduling algorithms.",
+    link: null,
+    icon: "⚙️",
+    c1: "#fb7185", c2: "#f43f5e",
+    chapters: 0, tools: 0, status: "soon",
+    topics: ["Process Management","CPU Scheduling","Deadlocks","Memory Management","Paging","File Systems","Disk Scheduling"]
+  },
+  {
+    code: "Unit VI",
+    title: "Computer Organization",
+    marks: "Core Syllabus Topic",
+    desc: "CPU architecture, instruction formats, addressing modes, ALU design, control unit, pipelining, cache memory, and I/O organization.",
+    link: null,
+    icon: "🔧",
+    c1: "#22d3ee", c2: "#06b6d4",
+    chapters: 0, tools: 0, status: "soon",
+    topics: ["CPU Architecture","Instruction Set","Addressing Modes","ALU","Pipelining","Cache","I/O Organization"]
+  }
+];
+
+// ===== RENDER SUBJECT CARDS =====
+const grid = document.getElementById('subjectGrid');
+subjects.forEach(s => {
+  const pills = s.topics.map(t => `<span class="topic">${t}</span>`).join('');
+  const statusHTML = s.status === 'live'
+    ? `<span class="status live"><span class="sdot"></span>Ready</span>`
+    : `<span class="status soon"><span class="sdot"></span>Coming Soon</span>`;
+  const tag = s.link ? 'a' : 'div';
+  const href = s.link ? ` href="${s.link}"` : '';
+  const chapText = s.chapters > 0 ? `${s.chapters} chapters` : '—';
+  const toolText = s.tools > 0 ? `${s.tools} tools` : '—';
+  const goText = s.link
+    ? `<div class="go">Start studying <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></div>`
+    : `<div class="go" style="color:var(--text3)">Coming soon</div>`;
+
+  grid.insertAdjacentHTML('beforeend', `
+    <${tag} class="subj"${href} style="--c1:${s.c1};--c2:${s.c2};${s.link?'':'cursor:default;opacity:.75'}">
+      <div class="bar"></div>
+      <div class="body">
+        <div class="head">
+          <div class="icon-box">${s.icon}</div>
+          <div>
+            <div class="paper-code">${s.code} ${statusHTML}</div>
+            <div class="title">${s.title}</div>
+            <div class="marks">${s.marks}</div>
           </div>
-        </a>`);
-    });
-  </script>
+        </div>
+        <div class="desc">${s.desc}</div>
+        <div class="topics">${pills}</div>
+        <div class="foot">
+          <div class="meta">
+            <span class="mi">
+              <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+              ${chapText}
+            </span>
+            <span class="mi">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+              ${toolText}
+            </span>
+          </div>
+          ${goText}
+        </div>
+      </div>
+    </${tag}>
+  `);
+});
+
+// ===== ANIMATED STATS =====
+function animNum(el,target){
+  if(!target){el.textContent='0';return}
+  let cur=0;const step=Math.max(1,Math.ceil(target/20));
+  const t=setInterval(()=>{cur+=step;if(cur>=target){cur=target;clearInterval(t)}el.textContent=cur},40);
+}
+setTimeout(()=>{
+  const tc=subjects.reduce((a,s)=>a+s.chapters,0);
+  const tl=subjects.reduce((a,s)=>a+s.tools,0);
+  animNum(document.getElementById('sChap'),tc);
+  animNum(document.getElementById('sTool'),tl);
+},400);
+
+// ===== ROTATING QUOTES =====
+const quotes=[
+  {q:"Education is the most powerful weapon which you can use to change the world.",a:"Nelson Mandela"},
+  {q:"The beautiful thing about learning is that no one can take it away from you.",a:"B.B. King"},
+  {q:"An investment in knowledge pays the best interest.",a:"Benjamin Franklin"},
+  {q:"शिक्षा सबसे शक्तिशाली हथियार है जिसका उपयोग आप दुनिया बदलने के लिए कर सकते हैं।",a:"नेल्सन मंडेला"},
+  {q:"Success is not final, failure is not fatal: it is the courage to continue that counts.",a:"Winston Churchill"},
+  {q:"The expert in anything was once a beginner.",a:"Helen Hayes"},
+  {q:"Hard work beats talent when talent doesn't work hard.",a:"Tim Notke"},
+  {q:"जो विद्या सीख गये उसे कोई छीन नहीं सकता।",a:"चाणक्य"}
+];
+const rq=quotes[Math.floor(Math.random()*quotes.length)];
+document.getElementById('quoteText').textContent=`"${rq.q}"`;
+document.getElementById('quoteAuthor').textContent=`— ${rq.a}`;
+</script>
 </body>
 </html>

@@ -128,6 +128,8 @@ svg text{font-family:var(--ui)}
  .hero{padding-top:28px}
 }
 @media print{nav#nav{display:none}main{margin:0}.tool{break-inside:avoid}}
+.home-link{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;font:700 13px var(--ui);color:var(--teal);background:var(--teal2);border:1.5px solid var(--teal);border-radius:3px;text-decoration:none;transition:all .2s;margin-left:auto;}
+.home-link:hover{background:var(--teal);color:#fff;}
 </style>
 </head>
 <body>
@@ -925,7 +927,7 @@ section('fixes','Corrections to the handwritten notes',`
 /* ================= BOOT ================= */
 (function(){
   const nav=$('#nav'),main=$('#main');
-  nav.innerHTML=`<div class="brand"><div>Digital Electronics<small>Interactive notes</small></div><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  nav.innerHTML=`<div class="brand"><div>Digital Electronics<small>Interactive notes</small></div><a href="index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
   const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
   $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
   $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
