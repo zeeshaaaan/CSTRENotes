@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, Arial, sans-serif; background: #f3f4f6; color: #222; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; background: #1f2937; color: #fff; }
+    header h1 { margin: 0; font-size: 1.5rem; }
+    .home-btn { color: #fff; text-decoration: none; padding: 8px 16px; border: 1px solid #fff; border-radius: 6px; }
+    .home-btn:hover { background: #fff; color: #1f2937; }
+    main { max-width: 1100px; margin: 32px auto; padding: 0 16px; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+    .card { display: block; background: #fff; border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; box-shadow: 0 2px 8px rgba(0,0,0,.1); transition: transform .2s, box-shadow .2s; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,.15); }
+    .card img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .card-body { padding: 16px; }
+    .card-body h2 { margin: 0 0 8px; font-size: 1.2rem; }
+    .card-body p { margin: 0; color: #555; }
+    @media (max-width: 600px) {
+      header { padding: 12px 16px; }
+      header h1 { font-size: 1.2rem; }
+      main { margin: 16px auto; }
+      .cards { grid-template-columns: 1fr; gap: 16px; }
+      .card img { height: 160px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Cards</h1>
+    <a class="home-btn" href="index.html" title="Home" aria-label="Home">&#8962;</a>
+  </header>
+  <main>
+    <div class="cards" id="cards"></div>
+  </main>
+
+  <script>
+    // To add a new card: add an object here and create its page (e.g. page4.html).
+    const cards = [
+      { title: "Digital Electronics", img: "https://picsum.photos/seed/digital/600/400", desc: "Digital electronics notes.", link: "digital-electronics.html" },
+      { title: "DS Complete",         img: "https://picsum.photos/seed/ds/600/400",      desc: "Complete data structures guide.", link: "ds_complete.html" }
+    ];
+
+    const container = document.getElementById("cards");
+    cards.forEach(c => {
+      container.insertAdjacentHTML("beforeend", `
+        <a class="card" href="${c.link}">
+          <img src="${c.img}" alt="${c.title}">
+          <div class="card-body">
+            <h2>${c.title}</h2>
+            <p>${c.desc}</p>
+          </div>
+        </a>`);
+    });
+  </script>
+</body>
+</html>

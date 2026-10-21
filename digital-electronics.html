@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Digital Electronics — Interactive Notes</title>
+<style>
+:root{--ink:#15233b;--ink2:#51607a;--paper:#f3f6f2;--grid:#e3e9e4;--panel:#fff;--teal:#0a8f7b;--teal2:#d8f1ea;--amber:#d98e04;--amber2:#fff0c9;--red:#c43d2f;--red2:#fbe3df;--blue:#2c5fb3;--blue2:#e2ebf8;--line:#b8c3bc;
+--serif:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;--ui:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;--mono:ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--serif)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+nav#nav{position:fixed;inset:0 auto 0 0;width:262px;background:#fff;border-right:1.5px solid var(--ink);overflow:auto;padding:18px 0 30px;font-family:var(--ui);z-index:5}
+nav#nav .brand{padding:0 20px 14px;font-weight:800;font-size:17px;line-height:1.2;border-bottom:1.5px solid var(--ink);margin-bottom:8px}
+nav#nav .brand small{display:block;font-weight:500;color:var(--ink2);font-size:12.5px;margin-top:4px}
+nav#nav a{display:block;padding:7px 20px 7px 17px;color:var(--ink);text-decoration:none;font-size:14.5px;border-left:3px solid transparent}
+nav#nav a:hover{background:var(--teal2)}
+nav#nav a.act{border-left-color:var(--teal);background:var(--teal2);font-weight:700}
+nav#nav a span{display:inline-block;width:22px;color:var(--ink2);font-family:var(--mono);font-size:12.5px}
+main{margin-left:262px;padding:0 0 80px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px}
+.hero{background:var(--ink);color:#fff;padding:44px 0 36px;border-bottom:6px solid var(--teal)}
+.hero h1{font:800 clamp(30px,5vw,50px)/1.05 var(--ui);margin:0 0 10px;letter-spacing:-.02em}
+.hero p{margin:0 0 22px;color:#c9d5e6;max-width:60ch;font-family:var(--ui);font-size:16px}
+.bitrow{display:flex;gap:6px;flex-wrap:wrap}
+.hero .tg{background:#22355a;color:#fff;border-color:#5b7098}
+.hero .tg.on{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.readouts div{border-top:2px solid #5b7098;padding-top:6px;font-family:var(--ui);font-size:12.5px;color:#a9b9d3}
+.readouts b{display:block;font:600 22px var(--mono);color:#fff;letter-spacing:.02em;word-break:break-all}
+section.ch{padding:56px 0 8px;scroll-margin-top:0}
+section.ch>.wrap>h2{font:800 32px/1.15 var(--ui);margin:0 0 6px;letter-spacing:-.01em}
+section.ch>.wrap>h2 i{font:500 15px var(--mono);color:var(--teal);margin-right:12px;font-style:normal}
+h3{font:700 20px/1.3 var(--ui);margin:34px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+h4{font:700 16px var(--ui);margin:22px 0 4px;color:var(--teal)}
+p{margin:.55em 0}
+ul{padding-left:1.25em;margin:.5em 0}li{margin:.2em 0}
+.lead{font-size:18.5px;color:#26354f}
+code,.m{font-family:var(--mono);font-size:.9em}
+.n{text-decoration:overline;text-decoration-thickness:1.5px}
+.tool{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;box-shadow:5px 5px 0 var(--teal2);margin:18px 0;font-family:var(--ui);font-size:15px;line-height:1.5}
+.tool>.th{background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:6px 14px;border-radius:2px 2px 0 0}
+.tool>.tb{padding:14px 16px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.tabs button,.btn,select,input[type=text]{font:600 14px var(--ui);border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:6px 11px;border-radius:3px;cursor:pointer}
+input[type=text]{cursor:text;font-family:var(--mono);font-weight:500;font-size:15px;min-width:0}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.btn:hover,.tabs button:hover{background:var(--teal2)}.tabs button[aria-selected=true]:hover{background:var(--ink)}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.row label{font-weight:600;font-size:13.5px;color:var(--ink2)}
+.tg{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:58px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;font-family:var(--mono);padding:2px 4px}
+.tg small{font:600 10.5px var(--ui);opacity:.75}.tg b{font-size:21px;line-height:1.1}
+.tg.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.led{display:inline-block;width:16px;height:16px;border-radius:50%;background:#d4dcd7;border:1.5px solid #95a39b;vertical-align:-3px}
+.led.on{background:var(--teal);border-color:var(--teal);box-shadow:0 0 0 3px var(--teal2)}
+.out{display:inline-flex;align-items:center;gap:7px;font:600 15px var(--mono);margin-right:14px}
+table.t{border-collapse:collapse;font-family:var(--mono);font-size:14px;margin:8px 0}
+table.t th,table.t td{border:1.2px solid var(--line);padding:4px 10px;text-align:center}
+table.t th{background:#e8efe9;font-family:var(--ui);font-weight:700;font-size:13px}
+table.t td.l,table.t th.l{text-align:left}
+table.t tr.hi td{background:var(--amber2);font-weight:700}
+table.t td.ok{color:var(--teal);font-weight:700}
+.scroll{overflow-x:auto}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.res button{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:6px 10px;cursor:pointer;font-family:var(--ui)}
+.res button.sel{border-color:var(--teal);background:var(--teal2)}
+.res small{display:block;color:var(--ink2);font-size:12px}.res b{font:600 16px var(--mono);word-break:break-all}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1.2px solid var(--ink);border-radius:3px;padding:2px 8px;font:600 14px var(--mono);background:#fff;text-align:center}
+.chip small{display:block;font:500 11px var(--ui);color:var(--ink2)}
+.chip.o{background:var(--amber2);border-color:var(--amber)}
+.note,.fix,.key,.eg{padding:10px 14px;margin:14px 0;border-left:4px solid;font-size:15.5px;font-family:var(--ui);line-height:1.55}
+.note{background:var(--blue2);border-color:var(--blue)}.fix{background:var(--red2);border-color:var(--red)}
+.key{background:var(--teal2);border-color:var(--teal)}.eg{background:var(--amber2);border-color:var(--amber)}
+.note b:first-child,.fix b:first-child,.key b:first-child,.eg b:first-child{margin-right:4px}
+pre.w{font:500 14.5px/1.5 var(--mono);margin:8px 0;white-space:pre;overflow-x:auto}
+svg{max-width:100%;height:auto}
+svg text{font-family:var(--ui)}
+.w{fill:none;stroke:#9aa8a1;stroke-width:2.4;stroke-linejoin:round}.w.on{stroke:var(--teal)}
+.g{fill:#fff;stroke:var(--ink);stroke-width:2}
+.pin{font:700 12px var(--ui);fill:var(--ink)}
+.dot{fill:#9aa8a1}.dot.on{fill:var(--teal)}
+.kmap{border-collapse:separate;border-spacing:0;font-family:var(--mono)}
+.kmap td,.kmap th{width:62px;height:58px;border:1.5px solid var(--ink);text-align:center;padding:0;position:relative}
+.kmap th{background:#e8efe9;width:auto;height:auto;font:700 13px var(--mono);padding:4px 8px;border-width:1.5px}
+.kmap th.corner{background:#fff;border:none;font-size:12px;text-align:right}
+.kmap button{all:unset;display:block;width:100%;height:100%;cursor:pointer;font:700 22px var(--mono);position:relative}
+.kmap button small{position:absolute;right:4px;top:2px;font:500 10px var(--mono);color:#7b8a83}
+.kmap button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}
+.kmap td.hl{outline:4px solid var(--amber);outline-offset:-4px;z-index:2}
+.kmap .dots{position:absolute;left:3px;bottom:3px;display:flex;gap:2px}
+.kmap .dots i{width:9px;height:9px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.35)}
+.kmap .v0{color:#9aa8a1;font-weight:500}.kmap .v1{color:var(--ink)}.kmap .vx{color:var(--amber)}
+.leg{list-style:none;padding:0;margin:8px 0;font-family:var(--ui)}
+.leg li{display:flex;gap:10px;align-items:center;padding:4px 6px;border-radius:3px;cursor:default}
+.leg li:hover{background:var(--amber2)}
+.leg i{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.35)}
+.big{font:700 22px var(--mono);padding:8px 12px;background:var(--teal2);border-left:4px solid var(--teal);margin:8px 0;overflow-x:auto}
+.fam ul{list-style:none;padding-left:1.1em;border-left:2px solid var(--ink);margin:2px 0 2px .4em}
+.fam>ul{border:0;padding:0;margin:0}.fam li{margin:4px 0;font-family:var(--ui);font-size:15px}
+.fam li b{background:var(--ink);color:#fff;padding:1px 9px;border-radius:3px;font-size:14px}
+.fam li.leaf b{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.msg{font-weight:700;color:var(--red);min-height:1.4em}
+.mini{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.mini figure{margin:0;text-align:center;font:13px var(--ui);color:var(--ink2)}
+.ff{display:flex;gap:6px;margin:10px 0}
+.ffb{border:2px solid var(--ink);min-width:62px;text-align:center;padding:6px 4px;background:#fff;font-family:var(--mono);border-radius:3px;transition:background .15s}
+.ffb small{display:block;font:600 11px var(--ui);color:var(--ink2)}.ffb b{font-size:26px}
+.ffb.on{background:var(--teal);color:#fff;border-color:var(--teal)}.ffb.on small{color:#d8f1ea}
+.ffb.flash{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.menu-btn{display:none}
+.kmap.sm td{width:44px;height:42px}.kmap.sm button{font-size:16px}.kmap.sm th{font-size:11px;padding:2px 5px}.kmap.sm button small{font-size:8.5px}
+.menu-btn{display:none}
+@media (max-width:980px){
+ nav#nav{position:fixed;inset:0 0 auto 0;width:auto;height:auto;max-height:100vh;overflow:visible;padding:0;border-right:0;border-bottom:1.5px solid var(--ink);display:block}
+ nav#nav .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 6px 14px;margin:0;border-bottom:0;font-size:15px}
+ nav#nav .brand small{display:none}
+ .menu-btn{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--ui);background:var(--ink);color:#fff;border:0;border-radius:3px;padding:9px 13px;min-height:40px;cursor:pointer}
+ #navlist{display:none;max-height:calc(100vh - 58px);overflow-y:auto;border-top:1.5px solid var(--ink);background:#fff;-webkit-overflow-scrolling:touch}
+ nav#nav.open #navlist{display:block}
+ nav#nav a{padding:13px 18px;border-bottom:1px solid #e3e9e4;font-size:16px}
+ main{margin-left:0;padding-top:52px}.wrap{padding:0 16px}
+ section.ch{scroll-margin-top:56px}
+ .kmap td{width:50px;height:50px}
+ .hero{padding-top:28px}
+}
+@media print{nav#nav{display:none}main{margin:0}.tool{break-inside:avoid}}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Chapters"></nav>
+<main id="main"></main>
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const N=t=>`<span class="n">${t}</span>`;
+const DIG='0123456789ABCDEF';
+const SECTIONS=[];
+function section(id,title,html,init){SECTIONS.push({id,title,html,init});}
+const led=on=>`<span class="led ${on?'on':''}"></span>`;
+function Toggles(el,labels,init,cb){
+  let v=init.slice(),last=-1;
+  function draw(){el.innerHTML=labels.map((l,i)=>`<button class="tg ${v[i]?'on':''}" data-i="${i}" aria-pressed="${!!v[i]}" aria-label="${l.replace(/<[^>]*>/g,'')} is ${v[i]}"><small>${l}</small><b>${v[i]}</b></button>`).join('');
+    if(last>=0){const b=el.querySelector(`[data-i="${last}"]`);b&&b.focus();}}
+  el.classList.add('bitrow');
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;const i=+b.dataset.i;v[i]^=1;last=i;draw();cb(v);};
+  draw();cb(v);
+  return {get:()=>v,set:nv=>{v=nv.slice();draw();cb(v);}};
+}
+function Tabs(el,names,cb,start=0){
+  el.classList.add('tabs');el.setAttribute('role','tablist');
+  function draw(i){el.innerHTML=names.map((n,k)=>`<button role="tab" aria-selected="${k===i}" data-k="${k}">${n}</button>`).join('');}
+  el.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;draw(k);cb(k);});
+  draw(start);cb(start);
+}
+const rootOf=id=>document.getElementById(id);
+function goto(id){const e=document.getElementById(id);e&&e.scrollIntoView({behavior:'smooth'});}
+
+/* ---------- number helpers ---------- */
+function parseNum(s,b){
+  s=(s||'').trim().toUpperCase();if(!s)return null;
+  const parts=s.split('.');if(parts.length>2)return null;
+  const ip=parts[0]||'',fp=parts[1]||'';if(!ip&&!fp)return null;
+  for(const ch of ip+fp){const v=DIG.indexOf(ch);if(v<0||v>=b)return null;}
+  const B=BigInt(b);let I=0n,F=0n;
+  for(const ch of ip)I=I*B+BigInt(DIG.indexOf(ch));
+  for(const ch of fp)F=F*B+BigInt(DIG.indexOf(ch));
+  return {ip:ip||'0',fp,I,F,D:B**BigInt(fp.length)};
+}
+function fracTo(F,D,b,max=14){
+  let out='',B=BigInt(b),steps=[],f=F;
+  while(f>0n&&out.length<max){const p=f*B,d=p/D;steps.push({f,p,d:Number(d)});out+=DIG[Number(d)];f=p%D;}
+  return {s:out,exact:f===0n,steps,D};
+}
+function dec(n,d,max=10){let i=n/d,r=n%d,s='';while(r>0n&&s.length<max){r*=10n;s+=(r/d).toString();r%=d;}return i.toString()+(s?'.'+s:'');}
+function convStr(s,from,to){
+  const p=parseNum(s,from);if(!p)return null;
+  let r=p.I.toString(to).toUpperCase();const f=fracTo(p.F,p.D,to);
+  if(f.s)r+='.'+f.s+(f.exact?'':'…');return r;
+}
+const KB={2:1,8:3,16:4};
+const sub=(b)=>`<sub>${b}</sub>`;
+
+/* ---------- gate drawing ---------- */
+function gate(kind,x,y,o={}){
+  const w=o.w||44,h=o.h||34;let d='',extra='',ins=[],out;
+  const bub=['nand','nor','xnor','not'].includes(kind);
+  if(kind==='not'){const hh=h*.9;d=`M${x},${y-hh/2} L${x+w},${y} L${x},${y+hh/2} Z`;ins=[[x,y]];}
+  else if(kind==='and'||kind==='nand'){
+    d=`M${x},${y-h/2} L${x},${y+h/2} L${x+w*.5},${y+h/2} C${x+w*.78},${y+h/2} ${x+w},${y+h*.28} ${x+w},${y} C${x+w},${y-h*.28} ${x+w*.78},${y-h/2} ${x+w*.5},${y-h/2} Z`;
+    ins=[[x,y-h/4],[x,y+h/4]];
+  }else{
+    d=`M${x},${y-h/2} C${x+w*.5},${y-h/2} ${x+w*.85},${y-h*.2} ${x+w},${y} C${x+w*.85},${y+h*.2} ${x+w*.5},${y+h/2} ${x},${y+h/2} C${x+w*.3},${y+h*.22} ${x+w*.3},${y-h*.22} ${x},${y-h/2} Z`;
+    let ix=x+.13*w;
+    if(kind==='xor'||kind==='xnor'){extra=`<path class="g" style="fill:none" d="M${x-6},${y-h/2} C${x-6+w*.3},${y-h*.22} ${x-6+w*.3},${y+h*.22} ${x-6},${y+h/2}"/>`;ix-=6;}
+    ins=[[ix,y-h/4],[ix,y+h/4]];
+  }
+  let s=`<path class="g" d="${d}"/>${extra}`;
+  if(o.inbub&&kind!=='not'){ins=ins.map(([a,b])=>{s+=`<circle class="g" cx="${a-3.5}" cy="${b}" r="3.5"/>`;return [a-7,b];});}
+  if(bub){s+=`<circle class="g" cx="${x+w+3.5}" cy="${y}" r="3.5"/>`;out=[x+w+7,y];}else out=[x+w,y];
+  return {s,ins,out};
+}
+const wire=(pts,on)=>`<polyline class="w ${on?'on':''}" points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+const jdot=(x,y,on)=>`<circle class="dot ${on?'on':''}" cx="${x}" cy="${y}" r="3.2"/>`;
+const txtS=(x,y,t,a='middle',c='')=>`<text class="pin" x="${x}" y="${y}" text-anchor="${a}" ${c?`style="fill:${c}"`:''}>${t}</text>`;
+const barTxt=(x,y,t,a='middle')=>`<text class="pin" x="${x}" y="${y}" text-anchor="${a}">${t}</text><line x1="${a==='middle'?x-4*t.length:x}" x2="${a==='middle'?x+4*t.length:x+8*t.length}" y1="${y-12}" y2="${y-12}" stroke="#15233b" stroke-width="1.2"/>`;
+function gateFn(k,a,b){switch(k){case'not':return a^1;case'and':return a&b;case'or':return a|b;case'nand':return (a&b)^1;case'nor':return (a|b)^1;case'xor':return a^b;case'xnor':return (a^b)^1;}}
+
+/* ---------- Boolean parser ---------- */
+function parseExpr(src){
+  const t=[...src.toUpperCase().replace(/\s+/g,'')].map(ch=>'·.*∙'.includes(ch)?'*':ch==='⊕'?'^':'′’`'.includes(ch)?"'":ch);
+  let i=0;const vars=new Set();const peek=()=>t[i];
+  function or(){let a=xor();while(peek()==='+'){i++;const x=a,y=xor();a=e=>x(e)|y(e);}return a;}
+  function xor(){let a=and();while(peek()==='^'){i++;const x=a,y=and();a=e=>x(e)^y(e);}return a;}
+  function and(){let a=un();for(;;){const c=peek();if(c==='*'){i++;}else if(!(c&&/[A-Z01(!~]/.test(c)))break;const x=a,y=un();a=e=>x(e)&y(e);}return a;}
+  function un(){if(peek()==='!'||peek()==='~'){i++;const a=un();return e=>a(e)^1;}return post();}
+  function post(){let a=prim();while(peek()==="'"){i++;const x=a;a=e=>x(e)^1;}return a;}
+  function prim(){const c=t[i++];if(c==='('){const a=or();if(t[i++]!==')')throw Error('Missing closing bracket )');return a;}
+    if(c==='0')return()=>0;if(c==='1')return()=>1;
+    if(c&&/[A-Z]/.test(c)){vars.add(c);return e=>e[c];}
+    throw Error('Unexpected '+(c?`"${c}"`:'end of expression'));}
+  const f=or();if(i<t.length)throw Error(`Unexpected "${t[i]}"`);
+  return {f,vars:[...vars].sort()};
+}
+
+/* ================= HERO ================= */
+function heroInit(){
+  const el=$('#heroBits'),out=$('#heroOut');
+  Toggles(el,['128','64','32','16','8','4','2','1'],[0,1,0,0,1,0,1,1],v=>{
+    const n=parseInt(v.join(''),2);
+    const bcd=String(n).split('').map(d=>(+d).toString(2).padStart(4,'0')).join(' ');
+    const g=(n^(n>>1)).toString(2).padStart(8,'0');
+    out.innerHTML=[['Binary',v.join('')],['Octal',n.toString(8)],['Decimal',n],['Hexadecimal',n.toString(16).toUpperCase()],['BCD',bcd],['Gray code',g]].map(([a,b])=>`<div>${a}<b>${b}</b></div>`).join('');
+  });
+}
+
+/* ================= 1 NUMBER SYSTEM ================= */
+const EXAMPLES=[
+ [1,'25',10,2,'Decimal → Binary'],[2,'0.65625',10,2,'Decimal fraction → Binary'],[3,'11001',2,10,'Binary → Decimal'],[4,'0.10101',2,10,'Binary fraction → Decimal'],
+ [5,'642',8,2,'Octal → Binary'],[6,'1011001',2,8,'Binary → Octal'],[7,'267.15',8,2,'Octal fraction → Binary'],[8,'1001101.1001',2,8,'Binary fraction → Octal'],
+ [9,'7423',8,10,'Octal → Decimal'],[10,'3859',10,8,'Decimal → Octal'],[11,'247.54',8,10,'Octal fraction → Decimal'],[12,'167.6875',10,8,'Decimal fraction → Octal'],
+ [13,'7A2',16,2,'Hexadecimal → Binary'],[14,'110101111',2,16,'Binary → Hexadecimal'],[15,'172.5',16,2,'Hexadecimal fraction → Binary'],[16,'101110010.11',2,16,'Binary fraction → Hexadecimal'],
+ [17,'549',16,10,'Hexadecimal → Decimal'],[18,'2046',10,16,'Decimal → Hexadecimal'],[19,'7EA.A',16,10,'Hexadecimal fraction → Decimal'],[20,'2026.625',10,16,'Decimal fraction → Hexadecimal'],
+ [21,'8DA',16,8,'Hexa → Octal'],[22,'377',8,16,'Octal → Hexa'],[23,'1257.5',8,16,'Octal fraction → Hexadecimal']];
+section('numbers','Number systems',`
+<p class="lead">Every number system is defined by its <b>base</b> — how many different digits it uses. Computers work in binary; people read decimal; octal and hexadecimal are compact ways to write binary.</p>
+<h3>Base and base set</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Number system</th><th>Base</th><th class="l">Base set (digits)</th></tr>
+<tr><td class="l">Binary</td><td>2</td><td class="l">0, 1</td></tr><tr><td class="l">Octal</td><td>8</td><td class="l">0 – 7</td></tr>
+<tr><td class="l">Decimal</td><td>10</td><td class="l">0 – 9</td></tr><tr><td class="l">Hexadecimal</td><td>16</td><td class="l">0 – 9, then 10 = A, 11 = B, 12 = C, 13 = D, 14 = E, 15 = F</td></tr></table></div>
+<h3>Smallest and largest 4-digit number</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Number system</th><th class="l">Minimum</th><th class="l">Maximum</th></tr>
+<tr><td class="l">Binary</td><td>0000</td><td>1111</td></tr><tr><td class="l">Octal</td><td>0000</td><td>7777</td></tr><tr><td class="l">Decimal</td><td>0000</td><td>9999</td></tr><tr><td class="l">Hexadecimal</td><td>0000</td><td>FFFF</td></tr></table></div>
+<p class="m" style="margin:0">The minimum, 0000, is common to every system.</p>
+<h3>Converter</h3>
+<div class="tool"><div class="th">Convert any number, with working</div><div class="tb">
+<div class="row"><label for="cvIn">Number</label><input type="text" id="cvIn" value="25" size="18" autocomplete="off" spellcheck="false">
+<label for="cvFrom">in base</label><select id="cvFrom"><option value="2">2 (binary)</option><option value="8">8 (octal)</option><option value="10" selected>10 (decimal)</option><option value="16">16 (hex)</option></select></div>
+<div class="msg" id="cvMsg" role="alert"></div>
+<div class="res" id="cvRes"></div>
+<p style="margin:10px 0 0;font-size:13.5px;color:var(--ink2)">Click a result to see the steps for converting into that base.</p>
+<div id="cvSteps"></div></div></div>
+<h3>The 23 conversions from the notes</h3>
+<p>Each row is computed live. Press <b>Show</b> to load it into the converter above and see the working.</p>
+<div class="scroll"><table class="t" id="exTable"><tr><th>#</th><th class="l">Conversion</th><th class="l">Question</th><th class="l">Answer</th><th></th></tr></table></div>
+<h4>Method summary</h4>
+<ul><li><b>Decimal → other base:</b> divide the integer part repeatedly by the base and read remainders bottom → top; multiply the fraction repeatedly by the base and read integer parts top → bottom.</li>
+<li><b>Other base → decimal:</b> multiply each digit by its positional weight (base<sup>n</sup>, with negative powers after the point) and add.</li>
+<li><b>Binary ↔ octal:</b> 3 bits per octal digit. <b>Binary ↔ hex:</b> 4 bits per hex digit. For the integer part group from the right; for the fraction group from the left, padding with zeros.</li>
+<li><b>Octal ↔ hex:</b> go through binary and regroup (3 bits ↔ 4 bits).</li></ul>
+<div class="fix"><b>Corrections to the handwritten notes.</b> Example 6 is (131)${sub(8)}, not (31)${sub(8)}. Example 17 is 1353, not 1449 (4 × 16 is 64, not 160). Example 15 works on (172.5)${sub(16)}.</div>
+<h4>Lookup tables</h4>
+<div class="mini"><div class="scroll"><table class="t"><tr><th>Octal</th><th>Binary</th></tr>${[0,1,2,3,4,5,6,7].map(i=>`<tr><td>${i}</td><td>${i.toString(2).padStart(3,'0')}</td></tr>`).join('')}</table></div>
+<div class="scroll"><table class="t"><tr><th>Hex</th><th>Binary</th></tr>${[...Array(8).keys()].map(i=>`<tr><td>${DIG[i]}</td><td>${i.toString(2).padStart(4,'0')}</td></tr>`).join('')}</table></div>
+<div class="scroll"><table class="t"><tr><th>Hex</th><th>Binary</th></tr>${[...Array(8).keys()].map(i=>`<tr><td>${DIG[i+8]}</td><td>${(i+8).toString(2).padStart(4,'0')}</td></tr>`).join('')}</table></div>
+<div class="scroll"><table class="t"><tr><th>Power</th><th>Value</th></tr>${[1,2,3,4,5].map(k=>`<tr><td>2<sup>−${k}</sup></td><td>${2**-k}</td></tr>`).join('')}</table></div>
+<div class="scroll"><table class="t"><tr><th>Power</th><th>Value</th></tr><tr><td>8<sup>−1</sup></td><td>0.125</td></tr><tr><td>8<sup>−2</sup></td><td>0.015625</td></tr><tr><td>8<sup>−3</sup></td><td>0.001953125</td></tr></table></div></div>
+`,root=>{
+  const inp=$('#cvIn'),from=$('#cvFrom'),res=$('#cvRes'),steps=$('#cvSteps'),msg=$('#cvMsg');let target=2;
+  function stepsHTML(p,f,t){
+    let h='';
+    if(KB[f]&&KB[t]&&f!==t){
+      const bits=(str,k)=>[...str].map(ch=>DIG.indexOf(ch).toString(2).padStart(k,'0'));
+      const kf=KB[f],kt=KB[t];
+      let ib=bits(p.ip,kf).join(''),fb=bits(p.fp,kf).join('');
+      ib=ib.padStart(Math.ceil(ib.length/kt)*kt,'0');fb=fb.padEnd(Math.ceil(fb.length/kt)*kt,'0');
+      const grp=s=>s?s.match(new RegExp('.{'+kt+'}','g')):[];
+      h+=`<h4>Step 1 — write each ${f===2?'bit':'digit'} of base ${f} as ${kf} bit${kf>1?'s':''}</h4><div class="chips">`;
+      [...p.ip].forEach(c=>h+=`<div class="chip">${c}<small>${DIG.indexOf(c).toString(2).padStart(kf,'0')}</small></div>`);
+      if(p.fp){h+=`<div class="chip">.</div>`;[...p.fp].forEach(c=>h+=`<div class="chip">${c}<small>${DIG.indexOf(c).toString(2).padStart(kf,'0')}</small></div>`);}
+      h+=`</div><h4>Step 2 — regroup in ${kt} bit${kt>1?'s':''}: integer part from the right, fraction part from the left (pad with zeros)</h4><div class="chips">`;
+      grp(ib).forEach(g=>h+=`<div class="chip o">${g}<small>${parseInt(g,2).toString(t).toUpperCase()}</small></div>`);
+      if(fb){h+=`<div class="chip">.</div>`;grp(fb).forEach(g=>h+=`<div class="chip o">${g}<small>${parseInt(g,2).toString(t).toUpperCase()}</small></div>`);}
+      h+='</div>';return h;
+    }
+    if(f!==10){
+      h+=`<h4>Step 1 — add up digit × weight (base ${f})</h4><div class="scroll"><table class="t"><tr><th class="l">Digit</th>`;
+      const ni=p.ip.length;let rows=['','',''];const cells=[];
+      [...p.ip].forEach((c,k)=>{const e=ni-1-k,v=DIG.indexOf(c);cells.push([c,`${f}<sup>${e}</sup>`,(BigInt(v)*BigInt(f)**BigInt(e)).toString()]);});
+      [...p.fp].forEach((c,k)=>{const v=DIG.indexOf(c);cells.push([c,`${f}<sup>−${k+1}</sup>`,dec(BigInt(v),BigInt(f)**BigInt(k+1),10)]);});
+      h+=cells.map(c=>`<th>${c[0]}</th>`).join('')+`<th>Total</th></tr><tr><td class="l">Weight</td>${cells.map(c=>`<td>${c[1]}</td>`).join('')}<td></td></tr><tr><td class="l">Value</td>${cells.map(c=>`<td>${c[2]}</td>`).join('')}<td><b>${dec(p.I*p.D+p.F,p.D)}</b></td></tr></table></div>`;
+    }
+    if(t!==10){
+      if(p.I>0n){
+        h+=`<h4>${f!==10?'Step 2':'Step 1'} — divide the integer part by ${t}, read remainders bottom → top</h4><table class="t"><tr><th>Divide</th><th>Quotient</th><th>Remainder</th></tr>`;
+        let n=p.I;const B=BigInt(t);while(n>0n){h+=`<tr><td>${n} ÷ ${t}</td><td>${n/B}</td><td>${DIG[Number(n%B)]}</td></tr>`;n/=B;}h+='</table>';
+      }
+      const fr=fracTo(p.F,p.D,t,12);
+      if(fr.steps.length){
+        h+=`<h4>Fraction — multiply by ${t}, read integer parts top → bottom</h4><table class="t"><tr><th>Multiply</th><th>Product</th><th>Digit</th></tr>`;
+        fr.steps.forEach(s=>h+=`<tr><td>${dec(s.f,p.D)} × ${t}</td><td>${dec(s.p,p.D)}</td><td>${DIG[s.d]}</td></tr>`);
+        h+='</table>'+(fr.exact?'':'<p class="m">The fraction does not terminate; it is cut after 12 digits.</p>');
+      }
+    }
+    return h||'<p>Same base — nothing to convert.</p>';
+  }
+  function update(){
+    const f=+from.value,p=parseNum(inp.value,f);
+    if(!p){msg.textContent=`Enter digits valid in base ${f}${f===16?' (0–9, A–F)':''}.`;res.innerHTML='';steps.innerHTML='';return;}
+    msg.textContent='';
+    if(target===f)target=f===2?10:2;
+    res.innerHTML=[[2,'Binary'],[8,'Octal'],[10,'Decimal'],[16,'Hexadecimal']].map(([b,n])=>`<button data-b="${b}" class="${b===target?'sel':''}"><small>${n}</small><b>${convStr(inp.value,f,b)}</b></button>`).join('');
+    steps.innerHTML=stepsHTML(p,f,target);
+  }
+  res.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;target=+b.dataset.b;update();});
+  inp.addEventListener('input',update);from.addEventListener('change',update);update();
+  const tb=$('#exTable');
+  EXAMPLES.forEach(([n,s,f,t,name])=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td>${n}</td><td class="l">${name}</td><td class="l">(${s})${sub(f)} = (?)${sub(t)}</td><td class="l"><b>(${convStr(s,f,t)})${sub(t)}</b></td><td><button class="btn" data-n="${n}">Show</button></td>`;
+    tb.appendChild(tr);
+  });
+  tb.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const ex=EXAMPLES[b.dataset.n-1];inp.value=ex[1];from.value=ex[2];target=ex[3];update();inp.scrollIntoView({behavior:'smooth',block:'center'});});
+});
+
+/* ================= 2 BINARY OPERATIONS ================= */
+section('binops','Binary operations',`
+<h3>Addition and subtraction</h3>
+<div class="scroll"><table class="t"><tr><th>Add</th><th>Result</th><th>Subtract</th><th>Result</th></tr>
+<tr><td>0 + 0</td><td>0</td><td>0 − 0</td><td>0</td></tr><tr><td>0 + 1</td><td>1</td><td>1 − 1</td><td>0</td></tr><tr><td>1 + 0</td><td>1</td><td>1 − 0</td><td>1</td></tr><tr><td>1 + 1</td><td>0, carry 1</td><td>0 − 1</td><td>1, borrow from the next digit</td></tr></table></div>
+<div class="tool"><div class="th">Binary calculator</div><div class="tb">
+<div class="row"><input type="text" id="bcA" value="1011.01" size="12" aria-label="First binary number"><select id="bcOp" aria-label="Operation"><option>+</option><option>−</option></select><input type="text" id="bcB" value="1100.11" size="12" aria-label="Second binary number"></div>
+<div class="msg" id="bcMsg" role="alert"></div><pre class="w" id="bcOut"></pre></div></div>
+<p>The notes' example, 1011.01 + 1100.11, gives 11000.00 (11.25 + 12.75 = 24).</p>
+<h3>Sign-magnitude representation</h3>
+<p>The most significant bit (B5 here) is the sign bit: <b>0 = positive</b>, <b>1 = negative</b>. The remaining bits are the magnitude.</p>
+<div class="tool"><div class="th">Sign-magnitude</div><div class="tb"><div id="smBits"></div><p id="smOut" class="big"></p></div></div>
+<h3>1's, 2's and 8's complement</h3>
+<ul><li><b>1's complement:</b> invert every bit (or subtract from all-ones).</li><li><b>2's complement:</b> add 1 to the 1's complement.</li>
+<li><b>8's complement (octal only):</b> subtract each digit from 7, then add 1.</li></ul>
+<div class="tool"><div class="th">Complement calculator</div><div class="tb">
+<div class="row"><label for="cmB">Binary</label><input type="text" id="cmB" value="1001101" size="14"></div><pre class="w" id="cmBOut"></pre>
+<div class="row"><label for="cmO">Octal</label><input type="text" id="cmO" value="2107" size="10"></div><pre class="w" id="cmOOut"></pre></div></div>
+<p>Examples from the notes: 1001101 → 1's = 0110010, 2's = 0110011. Octal 2107 → 7777 − 2107 = 5670, + 1 = 5671. Adding 1 in octal wraps after 7, so 2107 + 1 = 2110.</p>
+<div class="note"><b>Note.</b> The heading of the octal item is hard to read in the handwritten page; the method written under it ("minus 7 and then add 1") is the 8's complement.</div>
+`,root=>{
+  function run(){
+    const a=parseNum($('#bcA').value,2),b=parseNum($('#bcB').value,2),op=$('#bcOp').value,out=$('#bcOut'),msg=$('#bcMsg');
+    if(!a||!b){msg.textContent='Use only 0, 1 and an optional point.';out.textContent='';return;}msg.textContent='';
+    const L=Math.max(a.fp.length,b.fp.length),il=Math.max(a.ip.length,b.ip.length);
+    const sa=a.ip.padStart(il,'0')+a.fp.padEnd(L,'0'),sb=b.ip.padStart(il,'0')+b.fp.padEnd(L,'0');
+    const A=BigInt('0b'+sa),B=BigInt('0b'+sb);let R=op==='+'?A+B:A-B;const neg=R<0n;if(neg)R=-R;
+    const pt=s=>L?s.slice(0,s.length-L)+'.'+s.slice(-L):s;
+    let rs=R.toString(2).padStart(il+1,'0');if(L&&rs.length<L+1)rs=rs.padStart(L+1,'0');
+    let carry='';
+    if(op==='+'){let c=0;const cs=new Array(sa.length+1).fill(0);for(let i=sa.length-1;i>=0;i--){const t=+sa[i]+ +sb[i]+c;c=t>>1;cs[i]=c;}
+      carry='carry '+pt(cs.map(x=>x?'1':' ').join(''))+'\n';}
+    const w=pt(rs).length+(neg?1:0)+1;const pad=s=>s.padStart(w,' ');
+    const rr=(neg?'−':'')+pt(rs);
+    out.textContent=(carry?'       '+pad(carry.slice(6).replace('\n','')).trimEnd()+'   (carries)\n':'')+`       ${pad(pt(sa))}\n    ${op==='+'?'+':'−'}  ${pad(pt(sb))}\n       ${'─'.repeat(w)}\n       ${pad(rr)}\n\nDecimal check: ${dec(A,1n<<BigInt(L))} ${op==='+'?'+':'−'} ${dec(B,1n<<BigInt(L))} = ${neg?'−':''}${dec(R,1n<<BigInt(L))}`;
+  }
+  ['#bcA','#bcB'].forEach(s=>$(s).addEventListener('input',run));$('#bcOp').addEventListener('change',run);run();
+  Toggles($('#smBits'),['B5 sign','B4','B3','B2','B1'],[1,0,1,0,1],v=>{const mag=parseInt(v.slice(1).join(''),2);$('#smOut').textContent=`${v[0]?'−':'+'}${mag}   (${v[0]?'negative':'positive'}, magnitude ${v.slice(1).join('')})`;});
+  function comp(){
+    const b=$('#cmB').value.trim(),o=$('#cmO').value.trim();
+    if(/^[01]+$/.test(b)){const one=[...b].map(c=>c^1).join('');const two=(BigInt('0b'+one)+1n).toString(2).padStart(b.length,'0').slice(-b.length);
+      $('#cmBOut').textContent=`Number          ${b}\n1's complement  ${one}\n+ 1\n2's complement  ${two}`;}else $('#cmBOut').textContent='Enter 0s and 1s.';
+    if(/^[0-7]+$/.test(o)){const s7=[...o].map(c=>7-c).join('');const e8=(BigInt('0o'+s7)+1n).toString(8).padStart(o.length,'0').slice(-o.length);
+      $('#cmOOut').textContent=`Number          ${o}\n7777… − number ${s7}\n+ 1\n8's complement  ${e8}`;}else $('#cmOOut').textContent='Enter octal digits 0–7.';
+  }
+  $('#cmB').addEventListener('input',comp);$('#cmO').addEventListener('input',comp);comp();
+});
+
+/* ================= 3 BINARY CODES ================= */
+section('codes','Binary codes',`
+<h3>Classification</h3>
+<div class="scroll"><table class="t"><tr><th>Type</th><th class="l">Examples</th></tr><tr><td class="l">Binary codes</td><td class="l">BCD, Excess-3, Gray code</td></tr><tr><td class="l">Non-binary codes</td><td class="l">Morse code</td></tr><tr><td class="l">Alphanumeric codes</td><td class="l">ASCII (7-bit + 1 parity bit = 8-bit), EBCDIC (8-bit), Internal code (8-bit)</td></tr></table></div>
+<h3>BCD code (Binary Coded Decimal)</h3>
+<ul><li>Also called the <b>8421 code</b>; a <b>4-bit</b> code in which each decimal digit 0–9 is written in binary.</li><li><b>Weighted</b> code (weights 8, 4, 2, 1). It is <b>not</b> self-complementary.</li>
+<li><b>BCD addition:</b> if the sum of two digits is ≤ 9 the result is already correct; if it is greater than 9, add 6 (0110).</li></ul>
+<div class="mini"><div class="scroll"><table class="t"><tr><th>Decimal</th><th>BCD</th><th>Excess-3</th></tr>${[...Array(10).keys()].map(i=>`<tr><td>${i}</td><td>${i.toString(2).padStart(4,'0')}</td><td>${(i+3).toString(2).padStart(4,'0')}</td></tr>`).join('')}</table></div></div>
+<div class="tool"><div class="th">Decimal → BCD and Excess-3</div><div class="tb">
+<div class="row"><label for="bcdIn">Decimal number</label><input type="text" id="bcdIn" value="943" size="10" inputmode="numeric"></div><pre class="w" id="bcdOut"></pre></div></div>
+<p>Notes' examples: (943)${sub(10)} = 1001 0100 0011 in BCD; (732)${sub(10)} = 0111 0011 0010 in BCD and 1010 0110 0101 in Excess-3.</p>
+<div class="tool"><div class="th">BCD addition with the +6 correction</div><div class="tb">
+<div class="row"><input type="text" id="baA" value="57" size="8" aria-label="First number"><span>+</span><input type="text" id="baB" value="45" size="8" aria-label="Second number"></div><pre class="w" id="baOut"></pre></div></div>
+<h3>Weighted and non-weighted codes</h3>
+<div class="scroll"><table class="t"><tr><th>Weighted</th><th>Non-weighted</th></tr><tr><td class="l">Each digit position has a fixed weight</td><td class="l">Digits have no fixed weight</td></tr><tr><td class="l">e.g. BCD, 2421 code</td><td class="l">e.g. Excess-3, Gray code</td></tr></table></div>
+<h3>Excess-3 code</h3>
+<ul><li>4-bit, <b>non-weighted</b>; add <b>+3 (0011)</b> to the binary code of each digit.</li><li><b>Self-complementary:</b> inverting every bit of a code gives the code of the 9's complement digit (0↔9, 1↔8, 2↔7, 3↔6, 4↔5).</li></ul>
+<div class="tool"><div class="th">Self-complement check</div><div class="tb"><div class="row"><label for="exSel">Digit</label><select id="exSel">${[...Array(10).keys()].map(i=>`<option>${i}</option>`).join('')}</select></div><pre class="w" id="exOut"></pre></div></div>
+<h3>Gray code</h3>
+<ul><li>Non-weighted; only <b>one bit changes</b> between successive numbers (minimum-change, reflected, unit-distance, minimum-error code). It uses EX-OR.</li>
+<li><b>Binary → Gray:</b> copy the MSB; every other Gray bit = EX-OR of two adjacent binary bits.</li><li><b>Gray → Binary:</b> copy the MSB; every other binary bit = previous binary bit EX-OR this Gray bit.</li></ul>
+<div class="tool"><div class="th">Gray code converter</div><div class="tb">
+<div class="row"><label for="gbIn">Binary</label><input type="text" id="gbIn" value="11010" size="12"><label for="ggIn">Gray</label><input type="text" id="ggIn" value="11011" size="12"></div>
+<pre class="w" id="gbOut"></pre><pre class="w" id="ggOut"></pre></div></div>
+<p>Notes' examples: (11010)${sub(2)} → 10111 Gray; (11011) Gray → 10010${sub(2)}.</p>
+<h3>Alphanumeric codes</h3>
+<ul><li>Codes that represent alphabets, numbers and punctuation marks, e.g. <b>ASCII</b> and <b>EBCDIC</b>.</li><li>Normal ASCII is <b>7-bit</b> (American Standard Code for Information Interchange); extended ASCII is an 8-bit code. A parity bit makes it 8 bits.</li><li><b>EBCDIC</b> (Extended Binary Coded Decimal Interchange Code) is an <b>8-bit</b> code.</li></ul>
+<div class="tool"><div class="th">ASCII lookup</div><div class="tb"><div class="row"><label for="asIn">Character</label><input type="text" id="asIn" value="A" size="3" maxlength="1"></div><pre class="w" id="asOut"></pre></div></div>
+`,root=>{
+  const bcd=d=>(+d).toString(2).padStart(4,'0');
+  function a(){const s=$('#bcdIn').value.replace(/\s/g,'');if(!/^\d+$/.test(s)){$('#bcdOut').textContent='Enter decimal digits.';return;}
+    $('#bcdOut').textContent=`Digit      ${[...s].map(c=>c.padEnd(4)).join(' ')}\nBCD        ${[...s].map(bcd).join(' ')}\n+ 0011     ${[...s].map(()=>'0011').join(' ')}\nExcess-3   ${[...s].map(c=>bcd(+c+3)).join(' ')}`;}
+  $('#bcdIn').addEventListener('input',a);a();
+  function b(){
+    const A=$('#baA').value.trim(),B=$('#baB').value.trim();if(!/^\d{1,4}$/.test(A)||!/^\d{1,4}$/.test(B)){$('#baOut').textContent='Enter whole numbers up to 4 digits.';return;}
+    const L=Math.max(A.length,B.length),x=A.padStart(L,'0'),y=B.padStart(L,'0');let c=0,lines=[],res=[];
+    for(let i=L-1;i>=0;i--){const s=+x[i]+ +y[i]+c;let line=`digit ${L-i}: ${bcd(x[i])} + ${bcd(y[i])}${c?' + 0001 (carry)':''} = ${s.toString(2).padStart(5,'0')} (${s})`;
+      if(s>9){const k=s+6;line+=`  > 9 → add 0110 → ${k.toString(2).padStart(5,'0')} → digit ${bcd(k&15)}, carry 1`;res.unshift(bcd(k&15));c=1;}else{line+=`  ≤ 9, correct`;res.unshift(bcd(s));c=0;}lines.push(line);}
+    if(c)res.unshift('0001');
+    $('#baOut').textContent=lines.join('\n')+`\n\nBCD result: ${res.join(' ')}   = ${+A+ +B}`;}
+  $('#baA').addEventListener('input',b);$('#baB').addEventListener('input',b);b();
+  $('#exSel').addEventListener('change',()=>{const d=+$('#exSel').value,e=bcd(d+3),inv=[...e].map(c=>c^1).join('');$('#exOut').textContent=`Excess-3 of ${d}      = ${e}\nInvert every bit    = ${inv}\nExcess-3 of ${9-d}      = ${bcd(9-d+3)}  → inverted code is the code of ${9-d}, the 9's complement`;});
+  $('#exSel').dispatchEvent(new Event('change'));
+  function g(){const s=$('#gbIn').value.trim();if(!/^[01]+$/.test(s)){$('#gbOut').textContent='Enter binary digits.';}else{let o=s[0],ln=[`Binary ${s}`,`Gray   ${s[0]} (copy MSB)`];for(let i=1;i<s.length;i++){const x=s[i-1]^s[i];o+=x;ln.push(`       ${s[i-1]} ⊕ ${s[i]} = ${x}`);}$('#gbOut').textContent=ln.join('\n')+`\n=> Gray code ${o}`;}
+    const t=$('#ggIn').value.trim();if(!/^[01]+$/.test(t)){$('#ggOut').textContent='Enter binary digits.';}else{let o=t[0],ln=[`Gray   ${t}`,`Binary ${t[0]} (copy MSB)`];for(let i=1;i<t.length;i++){const x=o[i-1]^t[i];o+=x;ln.push(`       ${o[i-1]} ⊕ ${t[i]} = ${x}`);}$('#ggOut').textContent=ln.join('\n')+`\n=> Binary ${o}`;}}
+  $('#gbIn').addEventListener('input',g);$('#ggIn').addEventListener('input',g);g();
+  function as(){const c=$('#asIn').value[0];if(!c){$('#asOut').textContent='';return;}const n=c.charCodeAt(0);if(n>127){$('#asOut').textContent='Outside 7-bit ASCII.';return;}
+    const b7=n.toString(2).padStart(7,'0'),p=[...b7].filter(x=>x==='1').length%2;$('#asOut').textContent=`Character ${c}\nDecimal   ${n}\nHex       ${n.toString(16).toUpperCase()}\n7-bit     ${b7}\n8-bit with even parity bit: ${p}${b7}`;}
+  $('#asIn').addEventListener('input',as);as();
+});
+
+/* ================= 4 THEOREMS ================= */
+const TH=[
+ ['Identity',`1 · A = A`,`0 + A = A`,[(A)=>[1&A,A],(A)=>[0|A,A]]],
+ ['Null',`0 · A = 0`,`1 + A = 1`,[(A)=>[0&A,0],(A)=>[1|A,1]]],
+ ['Idempotent',`A · A = A`,`A + A = A`,[(A)=>[A&A,A],(A)=>[A|A,A]]],
+ ['Inverse',`A · ${N('A')} = 0`,`A + ${N('A')} = 1`,[(A)=>[A&(A^1),0],(A)=>[A|(A^1),1]]],
+ ['Commutative',`A · B = B · A`,`A + B = B + A`,[(A,B)=>[A&B,B&A],(A,B)=>[A|B,B|A]]],
+ ['Associative',`(A · B) · C = A · (B · C)`,`(A + B) + C = A + (B + C)`,[(A,B,C)=>[(A&B)&C,A&(B&C)],(A,B,C)=>[(A|B)|C,A|(B|C)]]],
+ ['Distributive',`A + B·C = (A + B)(A + C)`,`A(B + C) = A·B + A·C`,[(A,B,C)=>[A|(B&C),(A|B)&(A|C)],(A,B,C)=>[A&(B|C),(A&B)|(A&C)]]],
+ ['Absorption',`A(A + B) = A`,`A + A·B = A`,[(A,B)=>[A&(A|B),A],(A,B)=>[A|(A&B),A]]],
+ ['De Morgan',`${N('A·B')} = ${N('A')} + ${N('B')}`,`${N('A+B')} = ${N('A')} · ${N('B')}`,[(A,B)=>[(A&B)^1,(A^1)|(B^1)],(A,B)=>[(A|B)^1,(A^1)&(B^1)]]]];
+function holds(fn){for(let m=0;m<8;m++){const [l,r]=fn((m>>2)&1,(m>>1)&1,m&1);if(l!==r)return false;}return true;}
+section('theorems','Boolean theorems',`
+<h3>Duality</h3>
+<p>The dual of a Boolean statement is obtained by interchanging <b>AND ↔ OR</b> and <b>0 ↔ 1</b>.</p>
+<div class="tool"><div class="th">Dual maker</div><div class="tb"><div class="row"><input type="text" id="duIn" value="1 + A = 1" size="26" aria-label="Boolean statement using + and ·"><span>→</span><b class="m" id="duOut"></b></div><p style="margin:4px 0 0;font-size:13px;color:var(--ink2)">Write AND explicitly with · or *.</p></div></div>
+<h3>De Morgan's theorem and the Boolean algebraic theorems</h3>
+<p>Each law is checked on all eight input combinations of A, B, C when the page loads.</p>
+<div class="scroll"><table class="t" id="thTable"><tr><th class="l">Name</th><th class="l">AND form</th><th></th><th class="l">OR form</th><th></th></tr></table></div>
+<div class="tool"><div class="th">Boolean expression → truth table</div><div class="tb">
+<div class="row"><label for="exIn">f =</label><input type="text" id="exIn" value="A' + B'" size="26" autocomplete="off" spellcheck="false"></div>
+<p style="margin:0 0 6px;font-size:13px;color:var(--ink2)">Variables are capital letters. Use ' after a letter for NOT, + for OR, · or nothing for AND, ^ for EX-OR, and brackets.</p>
+<div class="msg" id="exMsg" role="alert"></div><div id="exRes"></div></div></div>
+`,root=>{
+  const du=()=>{$('#duOut').textContent=$('#duIn').value.replace(/[+·*.01]/g,c=>({'+':'·','·':'+','*':'+','.':'+','0':'1','1':'0'}[c]));};
+  $('#duIn').addEventListener('input',du);du();
+  const tb=$('#thTable');
+  TH.forEach(([n,a,o,fns])=>{const tr=document.createElement('tr');tr.innerHTML=`<td class="l">${n}</td><td class="l">${a}</td><td class="ok">${holds(fns[0])?'✓':'✗'}</td><td class="l">${o}</td><td class="ok">${holds(fns[1])?'✓':'✗'}</td>`;tb.appendChild(tr);});
+  function ex(){
+    const msg=$('#exMsg'),res=$('#exRes');
+    try{const {f,vars}=parseExpr($('#exIn').value);if(!vars.length)throw Error('Use at least one variable (A–E).');if(vars.length>5)throw Error('Use at most 5 variables.');
+      msg.textContent='';const n=vars.length;let rows='',ones=[];
+      for(let m=0;m<2**n;m++){const e={};vars.forEach((v,i)=>e[v]=(m>>(n-1-i))&1);const r=f(e);if(r)ones.push(m);rows+=`<tr class="${r?'hi':''}"><td>m${m}</td>${vars.map(v=>`<td>${e[v]}</td>`).join('')}<td>${r}</td></tr>`;}
+      const letters='ABCD',okK=vars.every((v,i)=>v===letters[i])&&n>=2&&n<=4;
+      res.innerHTML=`<div class="scroll"><table class="t"><tr><th></th>${vars.map(v=>`<th>${v}</th>`).join('')}<th>f</th></tr>${rows}</table></div><p class="m">f = Σm(${ones.join(', ')||'none'})</p>`+
+        (okK?`<button class="btn pri" id="toK">Open in the K-map</button> <button class="btn" id="toS">Open in SOP / POS</button>`:'<p style="font-size:13px;color:var(--ink2)">To send f to the K-map use variables A, B (, C, D) in order.</p>');
+      if(okK){$('#toK').onclick=()=>{window.loadKmap(n,ones,[]);goto('kmap');};$('#toS').onclick=()=>{window.loadSop(n,ones);goto('sop');};}
+    }catch(err){msg.textContent=err.message;res.innerHTML='';}
+  }
+  $('#exIn').addEventListener('input',ex);ex();
+});
+/* ================= 5 LOGIC GATES ================= */
+const GK=[['not','NOT'],['and','AND'],['or','OR'],['nand','NAND'],['nor','NOR'],['xor','EX-OR'],['xnor','EX-NOR']];
+const GEXPR={not:`Y = ${N('A')}`,and:'Y = A · B',or:'Y = A + B',nand:`Y = ${N('A · B')}`,nor:`Y = ${N('A + B')}`,xor:`Y = A ⊕ B = ${N('A')}B + A${N('B')}`,xnor:`Y = ${N('A ⊕ B')} = AB + ${N('A')}${N('B')}`};
+const GNOTE={not:'Output is the inverse of the input.',and:'Output is 1 only when both inputs are 1. AND = series (all switches must be on).',or:'Output is 1 when any input is 1. OR = parallel.',
+ nand:'AND followed by NOT. A bubble OR gate is a NAND gate. Universal gate.',nor:'OR followed by NOT. A bubble AND gate is a NOR gate. Universal gate.',
+ xor:'Output is 1 when the inputs differ. Used in the staircase switch (one lamp, two switches).',xnor:'Output is 1 when the inputs are the same.'};
+function equivSVG(kind){
+  const base=kind==='nand'?'or':'and';let s='';
+  const g1=gate(base,80,45,{inbub:true}),g2=gate(kind,300,45);
+  g1.ins.forEach((p,i)=>{s+=wire([[30,p[1]],p],1)+txtS(22,p[1]+4,'AB'[i],'end');});
+  s+=wire([g1.out,[g1.out[0]+25,45]],1)+txtS(g1.out[0]+32,49,'Y','start');
+  g2.ins.forEach((p,i)=>{s+=wire([[250,p[1]],p],1)+txtS(242,p[1]+4,'AB'[i],'end');});
+  s+=wire([g2.out,[g2.out[0]+25,45]],1)+txtS(g2.out[0]+32,49,'Y','start');
+  s+=`<text x="205" y="53" font-size="26" font-weight="700" text-anchor="middle">=</text>`;
+  return `<svg viewBox="0 0 440 95" width="440" role="img" aria-label="${kind==='nand'?'Bubble OR gate equals NAND gate':'Bubble AND gate equals NOR gate'}">${s}${g1.s}${g2.s}</svg>`;
+}
+section('gates','Logic gates',`
+<p class="lead">Logic gates are the base of digital electronics. There are three groups: <b>basic gates</b> (AND, OR, NOT), <b>universal gates</b> (NAND, NOR) and <b>special-purpose gates</b> (EX-OR, EX-NOR).</p>
+<div class="tool"><div class="th">Gate lab — flip the inputs</div><div class="tb">
+<div id="gTabs"></div><div class="row"><div id="gIn"></div><span class="out"><span id="gLed"></span>Y = <b id="gY"></b></span></div>
+<svg id="gSvg" viewBox="0 0 330 120" width="330" role="img" aria-label="Logic gate diagram"></svg>
+<p class="big" id="gExpr"></p><p id="gNote" style="margin:4px 0 8px"></p><div id="gTT"></div></div></div>
+<h3>Bubble gates</h3>
+<p>Moving the bubble from the output to the inputs swaps AND ↔ OR (De Morgan):</p>
+<div class="mini"><figure>${equivSVG('nand')}<figcaption>Bubble OR gate = NAND gate</figcaption></figure><figure>${equivSVG('nor')}<figcaption>Bubble AND gate = NOR gate</figcaption></figure></div>
+<h3>Bistable multivibrator</h3>
+<p>Two NOT gates with the output of the second fed back to the input of the first hold either state — the seed of memory.</p>
+<div class="tool"><div class="th">Two NOTs in a loop</div><div class="tb"><div class="row" id="biIn"></div><svg id="biSvg" viewBox="0 0 400 110" width="400" role="img" aria-label="Bistable multivibrator"></svg></div></div>
+<h3>Gates needed to build each gate</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Logic gate</th><th>No. of NAND</th><th>No. of NOR</th></tr><tr><td class="l">NOT</td><td>1</td><td>1</td></tr><tr><td class="l">AND</td><td>2</td><td>3</td></tr><tr><td class="l">OR</td><td>3</td><td>2</td></tr><tr><td class="l">EX-OR</td><td>4</td><td>5</td></tr><tr><td class="l">EX-NOR</td><td>5</td><td>4</td></tr></table></div>
+<p>AND ↔ OR and EX-OR ↔ EX-NOR swap their NAND and NOR counts.</p>
+`,root=>{
+  let kind='and',v=[0,0],tg;
+  function draw(){
+    const A=v[0],B=v[1],Y=gateFn(kind,A,B),g=gate(kind,110,60);let s='';
+    if(kind==='not'){s+=wire([[20,60],g.ins[0]],A)+txtS(12,64,'A','end');}
+    else g.ins.forEach((p,i)=>{s+=wire([[20,p[1]],p],v[i])+txtS(12,p[1]+4,'AB'[i],'end');});
+    s+=wire([g.out,[270,60]],Y)+txtS(278,64,'Y','start')+g.s;
+    $('#gSvg').innerHTML=s;$('#gY').textContent=Y;$('#gLed').innerHTML=led(Y);
+    $('#gExpr').innerHTML=GEXPR[kind];$('#gNote').textContent=GNOTE[kind];
+    const rows=kind==='not'?[[0],[1]]:[[0,0],[0,1],[1,0],[1,1]];
+    $('#gTT').innerHTML=`<table class="t"><tr><th>A</th>${kind==='not'?'':'<th>B</th>'}<th>Y</th></tr>${rows.map(r=>`<tr class="${(kind==='not'?r[0]===A:r[0]===A&&r[1]===B)?'hi':''}">${r.map(x=>`<td>${x}</td>`).join('')}<td>${gateFn(kind,r[0],r[1]||0)}</td></tr>`).join('')}</table>`;
+  }
+  Tabs($('#gTabs'),GK.map(g=>g[1]),k=>{kind=GK[k][0];tg=Toggles($('#gIn'),kind==='not'?['A']:['A','B'],kind==='not'?[v[0]]:v.slice(),x=>{v=x.length===1?[x[0],0]:x.slice();draw();});},1);
+  let I=0;Toggles($('#biIn'),['Input'],[0],x=>{
+    const a=x[0],m=a^1,o=m^1;let s='';const n1=gate('not',110,55,{w:40,h:34}),n2=gate('not',230,55,{w:40,h:34});
+    s+=wire([[40,55],n1.ins[0]],a)+wire([n1.out,n2.ins[0]],m)+wire([n2.out,[330,55]],o)+wire([[300,55],[300,98],[75,98],[75,55]],o)+jdot(300,55,o)+jdot(75,55,a);
+    s+=n1.s+n2.s+txtS(30,59,'In','end')+txtS(190,45,m,'middle')+txtS(340,59,o,'start');
+    $('#biSvg').innerHTML=s;});
+});
+
+/* ================= 6 COMBINATIONAL ================= */
+function haSVG(A,B){
+  const C=A&B,S=A^B,an=gate('and',130,40),xo=gate('xor',130,112);let s='';
+  s+=wire([[10,an.ins[0][1]],an.ins[0]],A)+wire([[40,an.ins[0][1]],[40,xo.ins[0][1]],xo.ins[0]],A)+jdot(40,an.ins[0][1],A);
+  s+=wire([[10,xo.ins[1][1]],xo.ins[1]],B)+wire([[62,xo.ins[1][1]],[62,an.ins[1][1]],an.ins[1]],B)+jdot(62,xo.ins[1][1],B);
+  s+=wire([an.out,[300,40]],C)+wire([xo.out,[300,112]],S)+an.s+xo.s;
+  s+=txtS(6,an.ins[0][1]-4,'A','start')+txtS(6,xo.ins[1][1]+16,'B','start')+txtS(308,44,`Carry = A·B = ${C}`,'start')+txtS(308,116,`Sum = A⊕B = ${S}`,'start');
+  return `<svg viewBox="0 0 480 160" width="480" role="img" aria-label="Half adder circuit">${s}</svg>`;
+}
+function hsSVG(A,B){
+  const D=A^B,Bo=(A^1)&B,x=gate('xor',140,40),n=gate('not',70,112,{w:26,h:22}),a=gate('and',140,112);let s='';
+  s+=wire([[10,x.ins[0][1]],x.ins[0]],A)+wire([[36,x.ins[0][1]],[36,n.ins[0][1]],n.ins[0]],A)+jdot(36,x.ins[0][1],A);
+  s+=wire([n.out,[n.out[0]+8,n.out[1]],[n.out[0]+8,a.ins[0][1]],a.ins[0]],A^1);
+  s+=wire([[10,a.ins[1][1]],a.ins[1]],B)+wire([[22,a.ins[1][1]],[22,x.ins[1][1]],x.ins[1]],B)+jdot(22,a.ins[1][1],B);
+  s+=wire([x.out,[310,40]],D)+wire([a.out,[310,112]],Bo)+x.s+n.s+a.s;
+  s+=txtS(6,x.ins[0][1]-4,'A','start')+txtS(6,a.ins[1][1]+16,'B','start')+txtS(318,44,`Difference = A⊕B = ${D}`,'start')+txtS(318,116,`Borrow = A′·B = ${Bo}`,'start');
+  return `<svg viewBox="0 0 520 160" width="520" role="img" aria-label="Half subtractor circuit">${s}</svg>`;
+}
+function fullSVG(kind,A,B,C){
+  const add=kind==='add',s1=A^B,c1=add?A&B:(A^1)&B,s2=s1^C,c2=add?s1&C:(s1^1)&C,F=c1|c2;
+  const L=add?'H.A':'H.S',o=add?['S','C']:['D','Bo'],orG=gate('or',350,112);let s='';
+  s+=wire([[10,110],[90,110]],A)+wire([[10,128],[90,128]],B)+wire([[10,40],[230,40]],C);
+  s+=wire([[154,110],[190,110],[190,58],[230,58]],s1)+wire([[154,128],[332,128],[332,orG.ins[1][1]],orG.ins[1]],c1);
+  s+=wire([[294,58],[325,58],[325,orG.ins[0][1]],orG.ins[0]],c2)+wire([[294,40],[420,40]],s2)+wire([orG.out,[420,112]],F);
+  const bx=(x,y,i)=>`<rect class="g" x="${x}" y="${y}" width="64" height="56"/><text class="pin" x="${x+32}" y="${y+33}" text-anchor="middle" font-size="14">${L}</text><text class="pin" x="${x+4}" y="${y+16}">${i[0]}</text><text class="pin" x="${x+4}" y="${y+48}">${i[1]}</text><text class="pin" x="${x+60}" y="${y+16}" text-anchor="end">${o[0]}</text><text class="pin" x="${x+60}" y="${y+48}" text-anchor="end">${o[1]}</text>`;
+  s+=bx(90,90,['A','B'])+bx(230,20,['',''])+orG.s;
+  s+=txtS(6,106,'A','start')+txtS(6,124,'B','start')+txtS(6,36,'C (carry/borrow in)','start')+txtS(428,44,`${add?'Sum':'Difference'} = ${s2}`,'start')+txtS(428,116,`${add?'Carry':'Borrow'} = ${F}`,'start');
+  return `<svg viewBox="0 0 560 170" width="560" role="img" aria-label="Full ${add?'adder':'subtractor'} built from two half units and an OR gate">${s}</svg>`;
+}
+function muxSVG(n,sel,d,demux){
+  const H=n*26+30,sb=Math.log2(n);let s='';
+  const yAt=x=>H-10-0.2*H*(x-150)/120;
+  s+=`<polygon class="g" points="${demux?'150,'+(10+0.2*H)+' 150,'+(H-10-0.2*H)+' 270,'+(H-10)+' 270,10':'150,10 270,'+(10+0.2*H)+' 270,'+(H-10-0.2*H)+' 150,'+(H-10)}"/>`;
+  s+=txtS(210,H/2+4,demux?'DEMUX':'MUX','middle');
+  const ys=[...Array(n).keys()].map(i=>26+i*26);
+  if(!demux){ys.forEach((y,i)=>{s+=wire([[70,y],[150,y]],d[i]&&1)+txtS(62,y+4,'I'+i,'end');if(i===sel)s+=`<polyline class="w on" points="150,${y} 150,${y}"/>`;});
+    s+=wire([[270,H/2],[350,H/2]],d[sel])+txtS(358,H/2+4,`Y = ${d[sel]}`,'start');}
+  else{s+=wire([[70,H/2],[150,H/2]],d)+txtS(62,H/2+4,'Input','end');
+    ys.forEach((y,i)=>{s+=wire([[270,y],[350,y]],i===sel?d:0)+txtS(358,y+4,`Y${i} = ${i===sel?d:0}`,'start');});}
+  const selX=sb===1?[210]:sb===2?[185,235]:[170,210,250];
+  selX.forEach((x,k)=>{const bit=sb-1-k;const on=(sel>>bit)&1;s+=wire([[x,H+26],[x,demux?H-10-0.2*H*(1-(x-150)/120):yAt(x)]],on)+txtS(x,H+40,'S'+bit,'middle');});
+  return `<svg viewBox="0 0 440 ${H+48}" width="440" role="img" aria-label="${demux?'De-multiplexer':'Multiplexer'}">${s}</svg>`;
+}
+const CB=['Half adder','Full adder','Half subtractor','Full subtractor','Comparator','Multiplexer','De-multiplexer','Encoder','Decoder'];
+section('comb','Combinational circuits',`
+<p class="lead">In a combinational circuit the output depends only on the <b>present input</b>. There is no feedback, memory or timing, and the circuit is built from logic gates alone.</p>
+<div class="fam"><ul><li><b>Combinational circuits</b><ul><li><b>Based on arithmetic and logical function</b><ul><li class="leaf"><b>Adder</b></li><li class="leaf"><b>Subtractor</b></li><li class="leaf"><b>Comparator</b></li></ul></li>
+<li><b>Based on data transmission</b><ul><li class="leaf"><b>Multiplexer</b></li><li class="leaf"><b>De-multiplexer</b></li><li class="leaf"><b>Encoder</b></li><li class="leaf"><b>Decoder</b></li></ul></li></ul></li></ul></div>
+<div class="tool"><div class="th">Circuit lab — choose a circuit, flip its inputs</div><div class="tb"><div id="cbTabs"></div><div id="cbBody"></div></div></div>
+`,root=>{
+  const body=$('#cbBody');
+  const NOTES={
+   'Half adder':`<ul><li>Adds two bits: 2 inputs, 2 outputs.</li><li>1 AND gate and 1 EX-OR gate. AND output = <b>Carry</b>, EX-OR output = <b>Sum</b>.</li><li>Needs 5 NAND gates or 5 NOR gates.</li></ul>`,
+   'Full adder':`<ul><li>3 inputs (two bits + carry-in), 2 outputs: Sum and Carry.</li><li>Built from <b>2 half adders and 1 OR gate</b>; 9 NAND or 9 NOR gates.</li></ul>`,
+   'Half subtractor':`<ul><li>2 inputs, 2 outputs: Difference and Borrow.</li><li>1 EX-OR, 1 AND and 1 NOT gate.</li></ul>`,
+   'Full subtractor':`<ul><li>3 inputs, 2 outputs.</li><li>Built from <b>2 half subtractors and 1 OR gate</b>: total 7 gates = 2 EX-OR, 2 AND, 1 OR (plus the 2 NOT gates inside the half subtractors).</li></ul>`,
+   'Comparator':`<ul><li>Compares two inputs and reports whether they are the same (A = B), the first is greater (A &gt; B) or smaller (A &lt; B).</li></ul>`,
+   'Multiplexer':`<ul><li>Many-to-one: multiple inputs, one output. With <b>n select lines there are 2<sup>n</sup> inputs</b>.</li><li>Also called a <b>data selector</b>. A <b>universal circuit</b> (can implement many kinds of circuit): data selector, parallel-to-serial converter, universal logic converter, waveform generator.</li><li>Types: 2×1, 4×1, 8×1.</li></ul>`,
+   'De-multiplexer':`<ul><li>One-to-many: the reverse of a MUX. Also a <b>data distributor</b> and serial-to-parallel converter. n = log<sub>2</sub> m (n select lines, m outputs).</li><li>Cannot be used as a universal gate. Types: 1×2, 1×4 …</li></ul><div class="fix"><b>Correction.</b> The handwritten page says "many to one principle" for the DEMUX; it is one-to-many.</div>`,
+   'Encoder':`<ul><li>Multiple inputs and multiple outputs, with <b>more inputs than outputs</b>. Size 2<sup>n</sup> × n.</li><li>Converts codes into binary form; also used as decimal-to-BCD encoder.</li><li>Octal → binary: <b>8 × 3</b>. Decimal → binary: <b>10 × 4</b> (2<sup>4</sup> = 16 ≥ 10). Hexa → binary: <b>16 × 4</b>.</li></ul>`,
+   'Decoder':`<ul><li>The reverse of an encoder: <b>more outputs than inputs</b>. Size n × 2<sup>n</sup>.</li><li>Example: BCD decoder — converting a binary number to decimal form. Types: 3×8, 4×16.</li></ul>`};
+  function show(k){
+    const name=CB[k];body.innerHTML=`<div id="cbIn" class="row"></div><div id="cbFig"></div><div id="cbOut"></div>${NOTES[name]}`;
+    const fig=$('#cbFig'),out=$('#cbOut'),inE=$('#cbIn');
+    if(name==='Half adder')Toggles(inE,['A','B'],[1,1],v=>{fig.innerHTML=haSVG(...v);out.innerHTML=`<p class="m">${v[0]} + ${v[1]} = ${v[0]+v[1]} in binary = carry ${v[0]&v[1]}, sum ${v[0]^v[1]}</p>`;});
+    if(name==='Half subtractor')Toggles(inE,['A','B'],[0,1],v=>{fig.innerHTML=hsSVG(...v);out.innerHTML=`<p class="m">${v[0]} − ${v[1]} = difference ${v[0]^v[1]}, borrow ${(v[0]^1)&v[1]}</p>`;});
+    if(name==='Full adder')Toggles(inE,['A','B','C in'],[1,1,1],v=>{fig.innerHTML=fullSVG('add',...v);out.innerHTML=`<p class="m">${v[0]} + ${v[1]} + ${v[2]} = ${v[0]+v[1]+v[2]} = carry ${(v[0]+v[1]+v[2])>>1}, sum ${(v[0]+v[1]+v[2])&1}</p>`;});
+    if(name==='Full subtractor')Toggles(inE,['A','B','C in'],[0,1,1],v=>{fig.innerHTML=fullSVG('sub',...v);const r=v[0]-v[1]-v[2];out.innerHTML=`<p class="m">${v[0]} − ${v[1]} − ${v[2]} = ${r} → difference ${r&1}, borrow ${r<0?1:0}</p>`;});
+    if(name==='Comparator')Toggles(inE,['A3','A2','A1','A0','B3','B2','B1','B0'],[1,0,1,1,1,0,0,1],v=>{const a=parseInt(v.slice(0,4).join(''),2),b=parseInt(v.slice(4).join(''),2);
+      out.innerHTML=`<p class="m">A = ${a}, B = ${b}</p><span class="out">${led(a<b)}A &lt; B</span><span class="out">${led(a===b)}A = B</span><span class="out">${led(a>b)}A &gt; B</span>`;});
+    if(name==='Multiplexer'||name==='De-multiplexer'){
+      const dm=name==='De-multiplexer';let n=4;
+      inE.innerHTML=`<label>Size</label><select id="mxN"><option value="2">${dm?'1×2':'2×1'}</option><option value="4" selected>${dm?'1×4':'4×1'}</option><option value="8">${dm?'1×8':'8×1'}</option></select><div id="mxD"></div><div id="mxS"></div>`;
+      const build=()=>{n=+$('#mxN').value;const sb=Math.log2(n);
+        let dv=dm?[1]:[...Array(n)].map((_,i)=>i%2),sv=Array(sb).fill(0).map((_,i)=>i===sb-1?1:0);
+        const upd=()=>{const sel=parseInt(sv.join(''),2);fig.innerHTML=muxSVG(n,sel,dm?dv[0]:dv,dm);out.innerHTML=dm?`<p class="m">Select ${sv.join('')} routes the input (${dv[0]}) to output Y${sel}; all other outputs stay 0.</p>`:`<p class="m">Select ${sv.join('')} = ${sel} passes I${sel} to the output → Y = ${dv[sel]}.</p>`;};
+        Toggles($('#mxD'),dm?['Input']:[...Array(n).keys()].map(i=>'I'+i),dv,v=>{dv=v.slice();upd();});
+        Toggles($('#mxS'),[...Array(sb).keys()].map(i=>'S'+(sb-1-i)),sv,v=>{sv=v.slice();upd();});};
+      $('#mxN').onchange=build;build();
+    }
+    if(name==='Encoder'){
+      let act=5;inE.innerHTML=`<div id="enIn"></div>`;
+      const d=()=>{ $('#enIn').innerHTML=[...Array(8).keys()].map(i=>`<button class="tg ${i===act?'on':''}" data-i="${i}" aria-pressed="${i===act}"><small>I${i}</small><b>${i===act?1:0}</b></button>`).join('');
+        const b=act<0?'000':act.toString(2).padStart(3,'0');fig.innerHTML='';out.innerHTML=`<p class="m">${act<0?'No input active':'Input I'+act+' active'} → outputs Y2 Y1 Y0 = <b>${b}</b></p><span class="out">${led(b[0]==1)}Y2</span><span class="out">${led(b[1]==1)}Y1</span><span class="out">${led(b[2]==1)}Y0</span>`;};
+      $('#enIn').classList.add('bitrow');$('#enIn').onclick=e=>{const b=e.target.closest('.tg');if(!b)return;act=+b.dataset.i===act?-1:+b.dataset.i;d();};d();
+    }
+    if(name==='Decoder')Toggles(inE,['A2','A1','A0'],[1,0,1],v=>{const n=parseInt(v.join(''),2);fig.innerHTML='';out.innerHTML=`<p class="m">Input ${v.join('')} = ${n}: only output Y${n} is high.</p>`+[...Array(8).keys()].map(i=>`<span class="out">${led(i===n)}Y${i}</span>`).join('');});
+  }
+  Tabs($('#cbTabs'),CB,show);
+});
+
+/* ================= 7 SEQUENTIAL ================= */
+function clockSVG(kind){
+  const p=60,x0=14,yl=64,yh=24;let d=`M${x0},${yl} L${x0+10},${yl}`,x=x0+10,r=[],f=[];
+  for(let k=0;k<3;k++){r.push(x);d+=` L${x},${yh} L${x+p/2},${yh}`;f.push(x+p/2);d+=` L${x+p/2},${yl} L${x+p},${yl}`;x+=p;}
+  let m='';const tri=(x,up)=>`<polygon fill="#c43d2f" points="${up?`${x},30 ${x-6},46 ${x+6},46`:`${x},58 ${x-6},42 ${x+6},42`}"/>`;
+  const ar=(a,b,y)=>`<line x1="${a+4}" x2="${b-4}" y1="${y}" y2="${y}" stroke="#c43d2f" stroke-width="2.2"/><polygon fill="#c43d2f" points="${b-3},${y} ${b-11},${y-4} ${b-11},${y+4}"/>`;
+  if(kind==='pos')r.forEach(a=>m+=tri(a,true));
+  if(kind==='neg')f.forEach(a=>m+=tri(a,false));
+  if(kind==='plev')r.forEach((a,i)=>m+=ar(a,f[i],14));
+  if(kind==='nlev')f.forEach((a,i)=>m+=ar(a,i<2?r[i+1]:a+p/2,76));
+  return `<svg viewBox="0 0 215 92" width="215" role="img" aria-label="${kind} trigger waveform"><path d="${d}" fill="none" stroke="#15233b" stroke-width="2.2"/>${m}</svg>`;
+}
+section('sequential','Sequential logic circuits',`
+<ul><li>Output depends on the <b>current input and the previous output / state</b>.</li><li>Needs <b>memory</b> to store the previous state, and uses <b>feedback</b>.</li><li><b>Slower</b> than a combinational circuit.</li><li>Two types: synchronous and asynchronous.</li></ul>
+<h3>Synchronous sequential circuit</h3>
+<ul><li>Memory elements are <b>clocked flip-flops</b>; they are <b>edge triggered</b> — the state changes only when a clock edge occurs.</li>
+<li><b>Positive edge trigger:</b> the flip-flop responds on the rising edge (low → high). <b>Negative edge trigger:</b> on the falling edge (high → low).</li><li>Slower than asynchronous circuits.</li></ul>
+<div class="mini"><figure>${clockSVG('pos')}<figcaption>Positive edge trigger</figcaption></figure><figure>${clockSVG('neg')}<figcaption>Negative edge trigger</figcaption></figure></div>
+<h3>Asynchronous sequential circuit</h3>
+<ul><li>Memory elements are <b>unclocked flip-flops or time delays</b>; <b>level triggered</b>.</li><li>Because there is no clock pulse to wait for, they are <b>faster</b> than synchronous circuits.</li></ul>
+<div class="mini"><figure>${clockSVG('plev')}<figcaption>Positive level trigger</figcaption></figure><figure>${clockSVG('nlev')}<figcaption>Negative level trigger</figcaption></figure></div>
+<div class="scroll"><table class="t"><tr><th></th><th class="l">Synchronous</th><th class="l">Asynchronous</th></tr><tr><td class="l">Memory element</td><td class="l">Clocked flip-flops</td><td class="l">Unclocked flip-flops / time delay</td></tr><tr><td class="l">Triggering</td><td class="l">Edge</td><td class="l">Level</td></tr><tr><td class="l">Speed</td><td class="l">Slower</td><td class="l">Faster</td></tr></table></div>
+`,null);
+
+/* ================= 8 FLIP-FLOPS ================= */
+const FFT={
+ SR:{labels:['S','R'],rows:[['0','0','Last Q','No change'],['0','1','0','Reset'],['1','0','1','Set'],['1','1','Invalid','Not permitted']],head:['S','R','Q (next)','Action'],idx:v=>v[0]*2+v[1],
+  notes:`<ul><li>Called the <b>latch flip-flop</b>; can be built from NAND or NOR gates (NOR → active-high SR, NAND → active-low SR).</li><li>Inputs: S (Set), R (Reset), plus the clock pulse for a clocked SR flip-flop.</li><li>S = R = 1 is <b>not permitted / invalid</b> (the J-K flip-flop removes it). S = R = 0 holds the previous state.</li></ul>`},
+ D:{labels:['D'],rows:[['0','X','Last state'],['1','0','0'],['1','1','1']],head:['CLK','D','Next state'],idx:v=>1+v[0],
+  notes:`<ul><li><b>D = Delay.</b> A modified SR flip-flop with only one input terminal D (D goes to S, and its inverse to R).</li><li>Mainly used to build <b>registers</b>. Also called the <b>data transmission FF</b> or <b>transparent latch FF</b>.</li></ul>`},
+ JK:{labels:['J','K'],rows:[['X','0','0','Qn (previous state)'],['↑','0','0','Qn (previous state)'],['↑','0','1','0 (Reset)'],['↑','1','0','1 (Set)'],['↑','1','1','Q̅n (toggle)']],head:['CLK','J','K','Qn+1'],idx:v=>1+v[0]*2+v[1],
+  notes:`<ul><li>Removes the <b>invalid state</b> of the SR flip-flop; same set, reset and no-change conditions.</li><li>When J = K = 1 the output keeps toggling — the <b>race / race-around</b> condition; a master-slave flip-flop cures it.</li><li>JK → Jack Kilby (or "Jump Key" FF).</li></ul>`},
+ T:{labels:['T'],rows:[['0','0','Qn (no change)'],['↑','0','Qn (hold)'],['↑','1','Q̅n (toggle)']],head:['CLK','T','Qn+1'],idx:v=>1+v[0],
+  notes:`<ul><li>Also called the <b>toggle flip-flop</b>: a JK flip-flop with J and K tied together into one input T.</li></ul>`}};
+section('flipflops','Latches and flip-flops',`
+<div class="scroll"><table class="t"><tr><th class="l">Latch</th><th class="l">Flip-flop</th></tr><tr><td class="l">Asynchronous input</td><td class="l">Synchronous input</td></tr><tr><td class="l">Clock pulse not used</td><td class="l">Clock pulse used</td></tr><tr><td class="l">Temporary storage</td><td class="l">Permanent storage</td></tr><tr><td class="l">Level trigger needed</td><td class="l">Edge trigger needed</td></tr><tr><td class="l">Low power consumption</td><td class="l">More power consumption</td></tr></table></div>
+<p>A flip-flop is built from logic gates plus combinational circuits. It stores <b>1 bit</b>, has 2 inputs (data + clock) and two outputs <b>Q</b> and ${N('Q')}, and is used for data transfer, data storage and frequency division.</p>
+<div class="tool"><div class="th">Flip-flop lab</div><div class="tb"><div id="ffTabs"></div>
+<div class="row"><div id="ffIn"></div><button class="btn pri" id="ffClk">Clock ↑</button><button class="btn" id="ffRst">Reset Q to 0</button></div>
+<div class="row"><span class="out">${'Q'} = <b id="ffQ"></b></span><span class="out">${N('Q')} = <b id="ffQn"></b></span></div><div class="msg" id="ffMsg" role="alert"></div>
+<div id="ffTT"></div><div id="ffNotes"></div><svg id="ffWave" viewBox="0 0 520 100" width="520" role="img" aria-label="Timing diagram of the last clock pulses"></svg></div></div>
+<div class="tool"><div class="th">Latch vs flip-flop (D type)</div><div class="tb"><p style="margin:0 0 8px">A latch follows D the whole time Enable is 1. A flip-flop looks at D only at the clock edge.</p>
+<div class="row"><div id="lfIn"></div><button class="btn pri" id="lfClk">Clock ↑</button></div>
+<div id="lfOut"></div></div></div>
+<h3>Race-around condition</h3>
+<ul><li>Occurs in toggle mode (J = K = 1), and only in <b>level-triggered</b> JK flip-flops.</li><li>If the clock pulse width T<sub>pw</sub> is greater than the propagation delay T<sub>pd</sub>, Q toggles many times in one pulse.</li>
+<li>Avoid it by making T<sub>pw</sub> &lt; T<sub>pd</sub>, or by using an edge-triggered / <b>master-slave</b> flip-flop.</li></ul>
+<div class="tool"><div class="th">Race-around demo (J = K = 1, Q starts at 0)</div><div class="tb">
+<div class="row"><label for="raR">T<sub>pw</sub> ÷ T<sub>pd</sub></label><input type="range" id="raR" min="1" max="8" value="4" style="width:200px"><b class="m" id="raV"></b><button class="btn pri" id="raGo">Apply clock pulse</button></div><div id="raOut"></div></div></div>
+<h3>J-K master-slave flip-flop</h3>
+<ul><li>Contains <b>two JK flip-flops: master and slave</b>. The master is triggered on the <b>positive</b> edge of the clock and the slave on the <b>negative</b> edge (the clock reaches the slave through a NOT gate).</li>
+<li>The slave follows the master only on the next edge, so multiple toggling in one clock pulse cannot happen; Q changes only when the slave changes, so the circuit is <b>stable</b>.</li></ul>
+<svg id="msSvg" viewBox="0 0 560 190" width="560" role="img" aria-label="JK master-slave flip-flop diagram"></svg>
+`,root=>{
+  let type='JK',Q=0,hist=[0],inp=[0,0],tg;
+  function nxt(){const [a,b]=inp;if(type==='SR')return a&&b?null:a?1:b?0:Q;if(type==='D')return a;if(type==='JK')return a&&b?1-Q:a?1:b?0:Q;return a?1-Q:Q;}
+  function draw(){
+    $('#ffQ').textContent=Q;$('#ffQn').textContent=Q^1;
+    const T=FFT[type],hi=T.idx(inp);
+    $('#ffTT').innerHTML=`<table class="t"><tr>${T.head.map(h=>`<th>${h}</th>`).join('')}</tr>${T.rows.map((r,i)=>`<tr class="${i===hi?'hi':''}">${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`;
+    $('#ffNotes').innerHTML=T.notes;
+    const h=hist.slice(-11);let cl=`M0,80`,q=`M0,${h[0]?30:46}`;const W=48;
+    for(let i=1;i<h.length;i++){const x=i*W-28;cl+=` L${x-20},80 L${x-20},62 L${x+4},62 L${x+4},80`;q+=` L${x},${h[i-1]?30:46} L${x},${h[i]?30:46}`;}
+    cl+=` L520,80`;q+=` L520,${h[h.length-1]?30:46}`;
+    $('#ffWave').innerHTML=`<text x="2" y="14" class="pin">Q</text><path d="${q}" fill="none" stroke="#0a8f7b" stroke-width="2.6"/><text x="2" y="96" class="pin">Clock</text><path d="${cl}" fill="none" stroke="#15233b" stroke-width="2" transform="translate(0,2)"/>`;
+  }
+  Tabs($('#ffTabs'),['S-R','D','J-K','T'],k=>{type=['SR','D','JK','T'][k];inp=[0,0];$('#ffMsg').textContent='';tg=Toggles($('#ffIn'),FFT[type].labels,Array(FFT[type].labels.length).fill(0),v=>{inp=[v[0],v[1]||0];draw();});},2);
+  $('#ffClk').onclick=()=>{const n=nxt();if(n===null){$('#ffMsg').textContent='S = R = 1 is not permitted — the next state is undefined, so Q is left unchanged here.';return;}$('#ffMsg').textContent='';Q=n;hist.push(Q);draw();};
+  $('#ffRst').onclick=()=>{Q=0;hist=[0];$('#ffMsg').textContent='';draw();};
+  /* latch vs ff */
+  let E=0,Dd=0,Qf=0;
+  const lf=()=>{const Ql=E?Dd:lf.Ql||0;lf.Ql=Ql;$('#lfOut').innerHTML=`<span class="out">${led(lf.Ql)}Latch Q = ${lf.Ql}</span><span class="out">${led(Qf)}Flip-flop Q = ${Qf}</span>`;};
+  Toggles($('#lfIn'),['Enable','D'],[0,0],v=>{E=v[0];Dd=v[1];lf();});$('#lfClk').onclick=()=>{Qf=Dd;lf();};
+  /* race around */
+  const rr=()=>{$('#raV').textContent=$('#raR').value;};$('#raR').oninput=rr;rr();
+  $('#raGo').onclick=()=>{const n=+$('#raR').value;let q=0,seq=[0];for(let i=0;i<n;i++){q^=1;seq.push(q);}
+    $('#raOut').innerHTML=`<p><b>Level-triggered JK</b> (T<sub>pw</sub> = ${n} × T<sub>pd</sub>): Q toggles ${n} time${n>1?'s':''} during one pulse: <span class="m">${seq.join(' → ')}</span>. ${n>1?`<b style="color:var(--red)">Final value depends on pulse timing — race-around.</b>`:'With T<sub>pw</sub> = T<sub>pd</sub> it toggles once.'}</p><p><b>Master-slave / edge-triggered JK:</b> Q toggles exactly once: <span class="m">0 → 1</span>. Stable.</p>`;};
+  /* master slave svg */
+  const bx=(x,y,t)=>`<rect class="g" x="${x}" y="${y}" width="80" height="90"/><text class="pin" x="${x+40}" y="${y+50}" text-anchor="middle" font-size="18">${t}</text>`;
+  const n=gate('not',250,160,{w:24,h:20});
+  $('#msSvg').innerHTML=wire([[30,70],[130,70]],1)+wire([[30,120],[130,120]],1)+wire([[210,70],[320,70]],1)+wire([[210,120],[320,120]],1)+wire([[400,70],[470,70]],1)+wire([[400,120],[470,120]],1)
+   +wire([[440,70],[440,26],[70,26],[70,120],[130,120]],1)+wire([[455,120],[455,14],[58,14],[58,70],[130,70]],1)
+   +wire([[30,160],[170,160],[170,140]],1)+wire([n.out,[360,160],[360,140]],1)+wire([[170,160],n.ins[0]],1)+jdot(200,160,1)+jdot(440,70,1)+jdot(455,120,1)
+   +bx(130,50,'M')+bx(320,50,'S')+n.s+`<polygon class="g" points="163,140 170,130 177,140"/><polygon class="g" points="353,140 360,130 367,140"/>`
+   +txtS(24,74,'J','end')+txtS(24,124,'K','end')+txtS(24,164,'CP','end')+txtS(480,74,'Q','start')+txtS(480,124,'Q̅','start')+txtS(250,64,'Y','middle')+txtS(250,114,'Y̅','middle')+txtS(170,44,'Master','middle')+txtS(360,44,'Slave','middle');
+  draw();lf();
+});
+
+/* ================= 9 REGISTERS ================= */
+section('registers','Registers',`
+<ul><li>A logical circuit used to <b>store binary information</b> and control its movement; built from several logically connected flip-flops.</li><li>To store <b>N bits</b> you need <b>N flip-flops</b>.</li><li>Data can be stored and retrieved in <b>serial</b> or <b>parallel</b> form; serial data is temporary, parallel data is called positional data.</li></ul>
+<h3>Types</h3>
+<ul><li><b>Buffer register</b> — temporarily stores binary data; implemented with D flip-flops.</li><li><b>Shift register</b> — implemented with JK flip-flops (as per the notes). On each clock pulse the stored data shifts by one bit; all flip-flops get the same clock.</li></ul>
+<div class="tool"><div class="th">Shift register lab (5 flip-flops)</div><div class="tb"><div id="rgTabs"></div>
+<div class="row" id="rgCtl"></div><div class="ff" id="rgFF"></div><div id="rgOut"></div><div id="rgInfo"></div></div></div>
+`,root=>{
+  const MODES=[['SISO','Serial in, serial out'],['SIPO','Serial in, parallel out'],['PISO','Parallel in, serial out'],['PIPO','Parallel in, parallel out'],['Bi-directional','Bi-directional']];
+  const INFO={SISO:'Data enters one bit at a time and leaves one bit at a time. Because bits go in and come out one by one, it is the slow type.',SIPO:'Entered serially, taken out in parallel — read all five outputs at once.',PISO:'Load all bits in parallel, then clock them out serially.',PIPO:'All bits enter and leave together on one clock pulse.','Bi-directional':'A control signal selects the direction: Control = 0 shifts right, Control = 1 shifts left.'};
+  let mode='SISO',bits=[0,0,0,0,0],si=1,ctl=0,par=[1,0,1,1,0],outH='',fl=-1;
+  const draw=()=>{$('#rgFF').innerHTML=bits.map((b,i)=>`<div class="ffb ${b?'on':''}"><small>FF${i+1}</small><b>${b}</b></div>`).join('');
+    const w=bits.join('');
+    $('#rgOut').innerHTML=(mode==='SISO'||mode==='PISO'?`<p class="m">Serial output so far: <b>${outH||'—'}</b></p>`:`<p class="m">Parallel output: <b>${w}</b></p>`)+(mode==='SISO'||mode==='PISO'?`<p class="m" style="margin:0">Next bit out of FF5: ${bits[4]}</p>`:'');
+    $('#rgInfo').innerHTML=`<p>${INFO[mode]}</p>`;};
+  const shift=right=>{let o;if(right){o=bits[4];bits=[si,...bits.slice(0,4)];}else{o=bits[0];bits=[...bits.slice(1),si];}outH+=o;};
+  function ctls(){const c=$('#rgCtl');c.innerHTML=`<span id="rgSI"></span><span id="rgP"></span><span id="rgC"></span><button class="btn pri" id="rgClk">Clock pulse</button><button class="btn" id="rgLoad" hidden>Load parallel inputs</button><button class="btn" id="rgClr">Clear</button>`;
+    if(['SISO','SIPO','Bi-directional'].includes(mode))Toggles($('#rgSI'),['Serial in'],[si],v=>{si=v[0];});
+    if(mode==='PISO'||mode==='PIPO')Toggles($('#rgP'),['P1','P2','P3','P4','P5'],par,v=>{par=v.slice();});
+    if(mode==='Bi-directional')Toggles($('#rgC'),['Control'],[ctl],v=>{ctl=v[0];$('#rgInfo').innerHTML=`<p>${INFO[mode]} Now: <b>shift ${ctl?'left':'right'}</b>.</p>`;});
+    if(mode==='PISO')$('#rgLoad').hidden=false;
+    $('#rgClk').onclick=()=>{if(mode==='PIPO')bits=par.slice();else if(mode==='PISO'){const s=si;si=0;shift(true);si=s;}else shift(mode==='Bi-directional'?!ctl:true);draw();};
+    $('#rgLoad').onclick=()=>{bits=par.slice();outH='';draw();};$('#rgClr').onclick=()=>{bits=[0,0,0,0,0];outH='';draw();};}
+  Tabs($('#rgTabs'),MODES.map(m=>m[0]),k=>{mode=MODES[k][0];bits=[0,0,0,0,0];outH='';ctls();draw();});
+});
+
+/* ================= 10 COUNTERS ================= */
+section('counters','Counters',`
+<p>A counter is a circuit used to <b>count clock pulses</b>. There are two types.</p>
+<div class="scroll"><table class="t"><tr><th></th><th class="l">Asynchronous / ripple</th><th class="l">Synchronous / parallel</th></tr><tr><td class="l">Clock</td><td class="l">Only the LSB flip-flop receives the clock; each other FF is triggered by the output of the previous one</td><td class="l">All flip-flops get the same clock pulse</td></tr><tr><td class="l">Connection</td><td class="l">Serial (also called a serial counter)</td><td class="l">Parallel</td></tr><tr><td class="l">Speed</td><td class="l">Slower — triggering progresses like a water ripple</td><td class="l">High speed</td></tr><tr><td class="l">Circuit</td><td class="l">Simple</td><td class="l">More complex</td></tr></table></div>
+<div class="tool"><div class="th">Counter lab</div><div class="tb"><div id="ctTabs"></div>
+<div class="row"><label for="ctN">Bits</label><select id="ctN"><option>3</option><option selected>4</option></select><button class="btn pri" id="ctClk">Clock pulse</button><button class="btn" id="ctAuto">Auto-run</button><button class="btn" id="ctRst">Reset</button></div>
+<div class="ff" id="ctFF"></div><p class="m" id="ctDec"></p><p id="ctSeq"></p><p id="ctNote"></p></div></div>
+`,root=>{
+  let mode=0,v=0,timer=null,busy=false;
+  const n=()=>+$('#ctN').value;
+  const draw=(flash=-1)=>{const N_=n();$('#ctFF').innerHTML=[...Array(N_).keys()].reverse().map(i=>`<div class="ffb ${(v>>i)&1?'on':''} ${i===flash?'flash':''}"><small>Q${i}</small><b>${(v>>i)&1}</b></div>`).join('');$('#ctDec').textContent=`Count = ${v}  (binary ${v.toString(2).padStart(N_,'0')})`;};
+  function ripple(a,N_){const seq=[a];let cur=a^1,i=0;seq.push(cur);while(i<N_-1&&((a>>i)&1)===1){cur^=1<<(i+1);seq.push(cur);i++;}return seq;}
+  function pulse(){if(busy)return;const N_=n(),next=(v+1)%(1<<N_);
+    if(mode===1){v=next;draw();$('#ctSeq').innerHTML=`All flip-flops change together: ${(next-1+(1<<N_))%(1<<N_)} → ${next}.`;return;}
+    const seq=ripple(v,N_).map(x=>x%(1<<N_));busy=true;let k=0;
+    const step=()=>{v=seq[k];draw(k>0?Math.round(Math.log2(seq[k]^seq[k-1])):-1);k++;if(k<seq.length)setTimeout(step,260);else{busy=false;$('#ctSeq').innerHTML=seq.length>2?`Ripple: FFs changed one after another, so the counter briefly showed <b class="m">${seq.slice(1,-1).map(x=>x.toString(2).padStart(N_,'0')).join(' → ')}</b> before settling at <b class="m">${seq[seq.length-1].toString(2).padStart(N_,'0')}</b>. This is why ripple counters are slower.`:'Only the LSB flip-flop and at most one more changed.';}};step();}
+  Tabs($('#ctTabs'),['Asynchronous (ripple)','Synchronous (parallel)'],k=>{mode=k;v=0;$('#ctSeq').textContent='';$('#ctNote').innerHTML=k?'All flip-flops share one clock, so every bit that must change does so at the same instant.':'Q0 gets the clock; each next flip-flop is clocked by the falling edge of the previous output.';draw();});
+  $('#ctClk').onclick=pulse;$('#ctN').onchange=()=>{v=0;draw();};$('#ctRst').onclick=()=>{v=0;$('#ctSeq').textContent='';draw();};
+  $('#ctAuto').onclick=e=>{if(timer){clearInterval(timer);timer=null;e.target.textContent='Auto-run';}else{timer=setInterval(pulse,1000);e.target.textContent='Stop';}};
+});
+/* ================= 11 LOGIC FAMILY ================= */
+section('family','Logic families',`
+<div class="fam"><ul><li><b>Logic family</b><ul>
+<li><b>Bipolar</b><ul><li><b>Saturated</b><ul><li class="leaf"><b>RTL</b> Resistor Transistor Logic</li><li class="leaf"><b>DTL</b> Diode Transistor Logic</li><li class="leaf"><b>DCTL</b> Direct Coupled Transistor Logic</li><li class="leaf"><b>IIL</b> Integrated Injection Logic</li><li class="leaf"><b>HTL</b> High Threshold Logic</li><li class="leaf"><b>TTL</b> Transistor Transistor Logic</li></ul></li>
+<li><b>Unsaturated</b><ul><li class="leaf"><b>Schottky-TTL</b></li><li class="leaf"><b>ECL</b> Emitter Coupled Logic</li></ul></li></ul></li>
+<li><b>Unipolar</b><ul><li class="leaf"><b>PMOS</b> P-channel metal oxide semiconductor (turns on at low voltage)</li><li class="leaf"><b>NMOS</b> N-channel (turns on at high voltage)</li><li class="leaf"><b>CMOS</b> Complementary: P-MOS + N-MOS</li></ul></li></ul></li></ul></div>
+<h3>Characteristics</h3>
+<div class="scroll"><table class="t"><tr><th>#</th><th class="l">Characteristic</th><th class="l">Meaning</th></tr>
+<tr><td>1</td><td class="l"><b>Speed</b></td><td class="l">Time between a change at the input and the corresponding change at the output (propagation delay)</td></tr>
+<tr><td>2</td><td class="l"><b>Fan-out</b></td><td class="l">Number of loads (inputs of other gates) the output of a gate can drive</td></tr>
+<tr><td>3</td><td class="l"><b>Fan-in</b></td><td class="l">Maximum number of inputs a logic gate can have</td></tr>
+<tr><td>4</td><td class="l"><b>Power dissipation</b></td><td class="l">Energy used by each gate (mW)</td></tr>
+<tr><td>5</td><td class="l"><b>Propagation delay</b></td><td class="l">Time for a signal to travel from input to output (ns)</td></tr>
+<tr><td>6</td><td class="l"><b>Noise margin</b></td><td class="l">Maximum noise voltage that can be tolerated without upsetting correct operation</td></tr>
+<tr><td>7</td><td class="l"><b>Figure of merit</b></td><td class="l">Power dissipation × propagation delay</td></tr>
+<tr><td>8</td><td class="l"><b>Logic swing</b></td><td class="l">Difference of output voltages, V<sub>H</sub> − V<sub>L</sub></td></tr>
+<tr><td>9</td><td class="l"><b>Noise immunity</b></td><td class="l">Maximum noise that can be present without causing a change in the logic level</td></tr></table></div>
+<div class="tool"><div class="th">Figure of merit and logic swing</div><div class="tb">
+<div class="row"><label for="fmP">Power (mW)</label><input type="text" id="fmP" value="10" size="6"><label for="fmT">Delay (ns)</label><input type="text" id="fmT" value="10" size="6"><label for="fmH">V<sub>H</sub> (V)</label><input type="text" id="fmH" value="3.5" size="6"><label for="fmL">V<sub>L</sub> (V)</label><input type="text" id="fmL" value="0.2" size="6"></div>
+<p class="big" id="fmOut"></p><p style="margin:0;font-size:13.5px;color:var(--ink2)">A smaller figure of merit is better: low power <i>and</i> low delay. mW × ns = pJ.</p></div></div>
+<h3>Important points</h3>
+<ul><li>The main problem of <b>DCTL</b> is <b>current hogging</b>; <b>IIL</b> is used to remove it. Current hogging is when, among several parallel lines, one line draws more current than the others.</li>
+<li><b>CMOS</b> has the best (highest) noise immunity and the <b>lowest power dissipation</b>.</li><li><b>IIL</b> uses a multiple-collector transistor, which gives a <b>high packing density</b>.</li></ul>
+`,root=>{
+  const f=()=>{const P=parseFloat($('#fmP').value),T=parseFloat($('#fmT').value),H=parseFloat($('#fmH').value),L=parseFloat($('#fmL').value);
+    $('#fmOut').textContent=[isNaN(P*T)?'Figure of merit: enter numbers':`Figure of merit = ${P} × ${T} = ${+(P*T).toFixed(4)} pJ`,isNaN(H-L)?'':`Logic swing = ${H} − ${L} = ${+(H-L).toFixed(4)} V`].filter(Boolean).join('\n');$('#fmOut').style.whiteSpace='pre-line';};
+  ['#fmP','#fmT','#fmH','#fmL'].forEach(s=>$(s).addEventListener('input',f));f();
+});
+
+/* ================= 12 SOP & POS ================= */
+const LET='ABCD';
+const lit=(i,neg)=>neg?N(LET[i]):LET[i];
+function minTerm(m,n){let s='';for(let i=0;i<n;i++)s+=lit(i,!((m>>(n-1-i))&1));return s;}
+function maxTerm(m,n){return '('+[...Array(n).keys()].map(i=>lit(i,((m>>(n-1-i))&1)===1)).join(' + ')+')';}
+section('sop','SOP and POS',`
+<div class="scroll"><table class="t"><tr><th class="l">SOP — sum of products</th><th class="l">POS — product of sums</th></tr>
+<tr><td class="l">(AB) + (BC) + (AC)</td><td class="l">(A+B)·(B+C)·(A+C)</td></tr>
+<tr><td class="l">Written from rows where <b>f = 1</b></td><td class="l">Written from rows where <b>f = 0</b></td></tr>
+<tr><td class="l">A → 1, ${N('A')} → 0</td><td class="l">A → 0, ${N('A')} → 1</td></tr>
+<tr><td class="l">Each term is a <b>minterm</b>; Σm = SOP</td><td class="l">Each term is a <b>maxterm</b>; ΠM = POS</td></tr></table></div>
+<p>When every term contains all the variables, the form is <b>standard / canonical</b>.</p>
+<div class="tool"><div class="th">Truth table → SOP and POS</div><div class="tb">
+<div class="row"><label for="spN">Variables</label><select id="spN"><option>2</option><option>3</option><option>4</option></select>
+<button class="btn" data-ex="sop">Notes: f = Σm(1, 2, 3)</button><button class="btn" data-ex="pos">Notes: f = ΠM(0, 2)</button><button class="btn" data-ex="exp">Notes: expand A′ + B′</button></div>
+<p style="margin:0 0 6px;font-size:13.5px;color:var(--ink2)">Click a value in the f column to flip it.</p>
+<div class="scroll" id="spTT"></div><div id="spOut"></div></div></div>
+<h3>Worked question from the notes</h3>
+<div class="eg"><b>Expand f(A,B) = ${N('A')} + ${N('B')} in SOP and POS; find the minterms and maxterms.</b><br>
+A is missing from the second term and B from the first, so multiply each term by (variable + its complement):<br>
+f = ${N('A')}(B + ${N('B')}) + ${N('B')}(A + ${N('A')}) = ${N('A')}B + ${N('A')}${N('B')} + A${N('B')} + ${N('A')}${N('B')}<br>
+Dropping the repeated term: f = ${N('A')}B + ${N('A')}${N('B')} + A${N('B')} = 01 + 00 + 10 = m<sub>1</sub> + m<sub>0</sub> + m<sub>2</sub> → <b>SOP: Σm(0, 1, 2)</b>.<br>
+Minterm m<sub>3</sub> is missing, so m<sub>3</sub> is the maxterm → <b>POS: ΠM(3) = ${N('A')} + ${N('B')}</b>.</div>
+`,root=>{
+  let n=2,f=[0,1,1,1];
+  function render(){
+    const rows=1<<n;let h=`<table class="t"><tr><th></th>${[...Array(n).keys()].map(i=>`<th>${LET[i]}</th>`).join('')}<th>f</th></tr>`;
+    for(let m=0;m<rows;m++){h+=`<tr class="${f[m]?'hi':''}"><td>m${m}</td>${[...Array(n).keys()].map(i=>`<td>${(m>>(n-1-i))&1}</td>`).join('')}<td><button class="tg" style="min-width:40px;height:30px;flex-direction:row" data-m="${m}" aria-label="f for m${m} is ${f[m]}"><b style="font-size:16px">${f[m]}</b></button></td></tr>`;}
+    $('#spTT').innerHTML=h+'</table>';
+    const ones=[...Array(rows).keys()].filter(m=>f[m]),zeros=[...Array(rows).keys()].filter(m=>!f[m]);
+    $('#spOut').innerHTML=`<p><b>SOP</b> (rows where f = 1, minterms): <span class="m">f = Σm(${ones.join(', ')||'—'})</span></p><div class="big">${ones.length?ones.map(m=>minTerm(m,n)).join(' + '):'0'}</div>
+    <p><b>POS</b> (rows where f = 0, maxterms): <span class="m">f = ΠM(${zeros.join(', ')||'—'})</span></p><div class="big">${zeros.length?zeros.map(m=>maxTerm(m,n)).join(''):'1'}</div>
+    <p style="font-size:14px;color:var(--ink2)">In a maxterm, a 0 in the row is written as the plain variable and a 1 as the complemented variable — the opposite of SOP.</p>`;
+    $$('#spTT .tg').forEach(b=>b.onclick=()=>{f[+b.dataset.m]^=1;render();$(`#spTT [data-m="${b.dataset.m}"]`).focus();});
+  }
+  $('#spN').onchange=()=>{n=+$('#spN').value;f=Array(1<<n).fill(0);render();};
+  window.loadSop=(nn,ones)=>{n=nn;f=Array(1<<n).fill(0);ones.forEach(m=>f[m]=1);$('#spN').value=n;render();};
+  root.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>{const e=b.dataset.ex;window.loadSop(2,e==='sop'?[1,2,3]:e==='pos'?[1,3]:[0,1,2]);});
+  render();
+});
+
+/* ================= 13 K-MAP ================= */
+const KL={2:{rv:[0,1],cv:[0,1],rl:'A',cl:'B',rb:1,cb:1},3:{rv:[0,1],cv:[0,1,3,2],rl:'A',cl:'BC',rb:1,cb:2},4:{rv:[0,1,3,2],cv:[0,1,3,2],rl:'AB',cl:'CD',rb:2,cb:2}};
+const KC=['#d6336c','#1c7ed6','#2f9e44','#e8590c','#7048e8','#0c8599','#a38700','#6b7280'];
+const pop=x=>{let c=0;while(x){c+=x&1;x>>=1;}return c;};
+function qm(n,ones,dcs){
+  if(!ones.length)return [];
+  let list=[...new Set([...ones,...dcs])].map(m=>({v:m,m:0})),primes=[];
+  while(list.length){
+    const used=list.map(()=>false),nx=new Map();
+    for(let i=0;i<list.length;i++)for(let j=i+1;j<list.length;j++){const a=list[i],b=list[j];if(a.m!==b.m)continue;const d=a.v^b.v;if(d&&!(d&(d-1))){used[i]=used[j]=true;const p={v:a.v&~d,m:a.m|d};nx.set(p.v+','+p.m,p);}}
+    list.forEach((x,i)=>{if(!used[i]&&!primes.some(p=>p.v===x.v&&p.m===x.m))primes.push(x);});
+    list=[...nx.values()];
+  }
+  const cov=(p,m)=>(m&~p.m)===p.v,lits=p=>n-pop(p.m);let best=null;
+  (function search(unc,ch){
+    if(!unc.length){const sc=[ch.length,ch.reduce((s,p)=>s+lits(p),0)];if(!best||sc[0]<best.sc[0]||(sc[0]===best.sc[0]&&sc[1]<best.sc[1]))best={sc,ch:ch.slice()};return;}
+    if(best&&ch.length>=best.sc[0])return;
+    for(const p of primes.filter(p=>cov(p,unc[0])))search(unc.filter(x=>!cov(p,x)),[...ch,p]);
+  })(ones.slice(),[]);
+  return best.ch.map(p=>({imp:p,cells:[...Array(1<<n).keys()].filter(m=>cov(p,m))}));
+}
+function termHTML(imp,n,pos){
+  const parts=[];for(let i=0;i<n;i++){const b=n-1-i;if((imp.m>>b)&1)continue;const one=(imp.v>>b)&1;parts.push(pos?lit(i,!!one):lit(i,!one));}
+  return {parts,html:pos?(parts.length?'('+parts.join(' + ')+')':'0'):(parts.length?parts.join(''):'1')};
+}
+function solveK(n,st,pos){
+  const all=[...Array(1<<n).keys()],dcs=all.filter(m=>st[m]===2);
+  const target=all.filter(m=>st[m]===(pos?0:1));
+  const groups=qm(n,target,dcs);
+  let expr;
+  if(!target.length)expr=pos?'1':'0';
+  else{const ts=groups.map(g=>termHTML(g.imp,n,pos));expr=pos?(ts.some(t=>t.html==='0')?'0':ts.map(t=>t.html).join('')):(ts.some(t=>t.html==='1')?'1':ts.map(t=>t.html).join(' + '));}
+  return {groups,expr};
+}
+function kmapHTML(n,st,groups,o={}){
+  const L=KL[n],rows=L.rv.length,cols=L.cv.length;
+  let h=`<table class="kmap ${o.sm?'sm':''}" role="grid"><tr><th class="corner">${L.rl} \\ ${L.cl}</th>${L.cv.map(c=>`<th>${c.toString(2).padStart(L.cb,'0')}</th>`).join('')}</tr>`;
+  for(let r=0;r<rows;r++){h+=`<tr><th>${L.rv[r].toString(2).padStart(L.rb,'0')}</th>`;
+    for(let c=0;c<cols;c++){const m=(L.rv[r]<<L.cb)|L.cv[c],v=st[m],gi=groups.map((g,i)=>g.cells.includes(m)?i:-1).filter(i=>i>=0);
+      const bg=gi.length?`background:${KC[gi[0]%8]}22`:'';
+      h+=`<td data-m="${m}" style="${bg}">${o.ro?`<div style="line-height:${o.sm?40:58}px;font-weight:700;font-size:${o.sm?16:22}px" class="v${v}">${v===2?'X':v}<small style="position:absolute;right:3px;top:0;font:500 9px var(--mono);color:#7b8a83;line-height:12px">${m}</small></div>`:`<button data-m="${m}" aria-label="Cell m${m} is ${v===2?'X':v}"><span class="v${v}">${v===2?'X':v}</span><small>${m}</small></button>`}<span class="dots">${gi.map(i=>`<i style="background:${KC[i%8]}"></i>`).join('')}</span></td>`;}
+    h+='</tr>';}
+  return h+'</table>';
+}
+const GSIZE={1:'Single',2:'Pair',4:'Quad',8:'Octa',16:'All 16'};
+function miniK(ones){const st=Array(16).fill(0);ones.forEach(m=>st[m]=1);const r=solveK(4,st,false);return kmapHTML(4,st,r.groups,{sm:1,ro:1})+`<p class="m" style="text-align:center;margin:4px 0">f = ${r.expr}</p>`;}
+section('kmap','Karnaugh map (K-map)',`
+<ul><li>Used to <b>simplify a Boolean expression</b> in picture form, without using the laws. Number of cells = <b>2<sup>n</sup></b> for n variables.</li><li>Row and column labels run in Gray-code order (00, 01, 11, 10) so neighbouring cells differ in exactly one variable. The number in each cell is its minterm.</li></ul>
+<div class="tool"><div class="th">K-map solver — click cells: 0 → 1 → X (don't care)</div><div class="tb">
+<div class="row"><label for="kN">Variables</label><select id="kN"><option>2</option><option>3</option><option selected>4</option></select><label for="kM">Form</label><select id="kM"><option value="sop">SOP (group the 1s)</option><option value="pos">POS (group the 0s)</option></select><button class="btn" id="kClr">Clear</button></div>
+<div class="row"><b style="font-size:13.5px">Load the notes' questions:</b><button class="btn" data-q="1">Question 1</button><button class="btn" data-q="2">Question 2</button><button class="btn" data-q="3">Question 3</button><button class="btn" data-q="4">Don't care</button></div>
+<div class="scroll" id="kTab"></div><p class="m" id="kSpec"></p><div class="big" id="kExpr"></div><ul class="leg" id="kLeg"></ul></div></div>
+<h3>Rules for creating groups</h3>
+<ul><li><b>No zero</b> inside a group (in SOP).</li><li>Groups can be horizontal and vertical but <b>not diagonal</b>.</li><li><b>Overlapping</b> is allowed.</li><li>Each group should be <b>as large as possible</b> (2, 4 or 8 cells). The edges wrap around.</li></ul>
+<div class="mini"><figure>${miniK([4,5])}<figcaption>Pair</figcaption></figure><figure>${miniK([0,2])}<figcaption>Pair across the edge (wrap-around)</figcaption></figure><figure>${miniK([0,1,4,5])}<figcaption>Quad</figcaption></figure><figure>${miniK([0,1,4,5,8,9,12,13])}<figcaption>Octa</figcaption></figure></div>
+<h3>Reading a group</h3>
+<ul><li>Write the cells of the group in binary. Variables that stay the <b>same</b> are kept (1 → A, 0 → ${N('A')}); variables that <b>change</b> are cut.</li><li>OR the terms of all groups together.</li></ul>
+<h3>Worked questions from the notes</h3>
+<div class="eg"><b>Question 1.</b> f(A,B) = Σ(0, 2, 3), 2² = 4 cells. Pair 1 (m0, m2) = 00 and 10 → A cut → <b>${N('B')}</b>. Pair 2 (m2, m3) = 10 and 11 → B cut → <b>A</b>. So f = <b>A + ${N('B')}</b>.</div>
+<div class="eg"><b>Question 2.</b> f(A,B,C) = Σ(0, 1, 2, 3, 5), 2³ = 8 cells. Quad (m0–m3) = 0XX → <b>${N('A')}</b>. Pair (m1, m5) = X01 → <b>${N('B')}C</b>. So f = <b>${N('A')} + ${N('B')}C</b>. (The notes label the second group "Quad 2", but m1 and m5 form a pair.)</div>
+<div class="eg"><b>Question 3.</b> f(A,B,C,D) = Σ(0, 1, 4, 5, 8, 9, 12, 13). One octet, XX0X, so f = <b>${N('C')}</b>.</div>
+<h3>Don't-care situation</h3>
+<ul><li>When the output of a Boolean expression is <b>unspecified</b> or <b>not needed</b>, it is a <b>don't care</b>, written X in a K-map.</li><li>Make the <b>largest possible groups</b>, and include an X only when it helps enlarge a group.</li></ul>
+<div class="eg"><b>Example.</b> f(A,B,C,D) = Σ(0, 3, 4, 5, 7, 11, 15), d = Σ(1, 2, 6). Quad 1 (m0, m1(X), m4, m5) = 0X0X → ${N('A')}${N('C')}. Quad 2 (m3, m7, m11, m15) = XX11 → CD. So f = <b>${N('A')}${N('C')} + CD</b>, the answer in the notes. <br><b>Going further:</b> if the X cells m2 and m6 are also used, the first group grows to an octa (m0–m7, which is all of A = 0) and f simplifies to <b>${N('A')} + CD</b>. Both are correct; the second is the true minimum. Load the example in the solver above to see it.</div>
+`,root=>{
+  let n=4,st=Array(16).fill(0),pos=false;
+  function draw(){
+    const r=solveK(n,st,pos);$('#kTab').innerHTML=kmapHTML(n,st,r.groups);
+    const all=[...Array(1<<n).keys()],f1=all.filter(m=>st[m]===1),d=all.filter(m=>st[m]===2),f0=all.filter(m=>st[m]===0);
+    $('#kSpec').textContent=pos?`f = ΠM(${f0.join(', ')||'—'})${d.length?'  d('+d.join(', ')+')':''}`:`f = Σm(${f1.join(', ')||'—'})${d.length?'  d('+d.join(', ')+')':''}`;
+    $('#kExpr').innerHTML='f = '+r.expr;
+    $('#kLeg').innerHTML=r.groups.map((g,i)=>{const t=termHTML(g.imp,n,pos);return `<li data-i="${i}"><i style="background:${KC[i%8]}"></i><span><b>${GSIZE[g.cells.length]||g.cells.length+' cells'}</b> — cells ${g.cells.join(', ')} → <b>${t.html}</b></span></li>`;}).join('')||'<li>No groups yet — click cells to set some to 1.</li>';
+    $$('#kLeg li[data-i]').forEach(li=>{const hl=on=>{const g=r.groups[+li.dataset.i];g.cells.forEach(m=>{const td=$(`#kTab td[data-m="${m}"]`);td&&td.classList.toggle('hl',on);});};li.onmouseenter=()=>hl(true);li.onmouseleave=()=>hl(false);});
+    $$('#kTab button').forEach(b=>b.onclick=()=>{const m=+b.dataset.m;st[m]=(st[m]+1)%3;draw();$(`#kTab button[data-m="${m}"]`).focus();});
+  }
+  function load(nn,ones,dcs){n=nn;st=Array(1<<n).fill(0);ones.forEach(m=>st[m]=1);dcs.forEach(m=>st[m]=2);$('#kN').value=n;draw();}
+  window.loadKmap=load;
+  $('#kN').onchange=()=>{n=+$('#kN').value;st=Array(1<<n).fill(0);draw();};
+  $('#kM').onchange=()=>{pos=$('#kM').value==='pos';draw();};
+  $('#kClr').onclick=()=>{st=Array(1<<n).fill(0);draw();};
+  const Q={1:[2,[0,2,3],[]],2:[3,[0,1,2,3,5],[]],3:[4,[0,1,4,5,8,9,12,13],[]],4:[4,[0,3,4,5,7,11,15],[1,2,6]]};
+  root.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{$('#kM').value='sop';pos=false;load(...Q[b.dataset.q]);});
+  load(...Q[4]);
+});
+
+/* ================= CORRECTIONS ================= */
+section('fixes','Corrections to the handwritten notes',`
+<p>While typing up the notes these slips were corrected or clarified. Everything else follows the handwritten pages.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Topic</th><th class="l">Handwritten notes</th><th class="l">Here</th></tr>
+<tr><td class="l">Binary → octal (6)</td><td class="l">Answer (31)<sub>8</sub></td><td class="l">(131)<sub>8</sub></td></tr>
+<tr><td class="l">Hex → decimal (17)</td><td class="l">1280 + 160 + 9 = 1449</td><td class="l">1280 + 64 + 9 = <b>1353</b></td></tr>
+<tr><td class="l">Hex fraction → binary (15)</td><td class="l">Question line looks like (175.5)</td><td class="l">Working and answer are for (172.5)<sub>16</sub></td></tr>
+<tr><td class="l">Octal complement</td><td class="l">Heading unclear</td><td class="l">Method shown is the 8's complement</td></tr>
+<tr><td class="l">De-multiplexer</td><td class="l">"many to one principle"</td><td class="l">One-to-many</td></tr>
+<tr><td class="l">Full subtractor gate count</td><td class="l">7 gates = 2 EX-OR, 2 AND, 1 OR</td><td class="l">The other 2 are the NOT gates inside the half subtractors</td></tr>
+<tr><td class="l">2-variable K-map</td><td class="l">Bottom row numbered 3, 2</td><td class="l">2, 3 (as Question 1 uses)</td></tr>
+<tr><td class="l">K-map Question 2</td><td class="l">Second group called "Quad 2"</td><td class="l">It is a pair (m1, m5)</td></tr>
+<tr><td class="l">De Morgan's theorem, BCD addition</td><td class="l">Heading / rule only</td><td class="l">Statement and a calculator added</td></tr></table></div>
+`,null);
+
+/* ================= BOOT ================= */
+(function(){
+  const nav=$('#nav'),main=$('#main');
+  nav.innerHTML=`<div class="brand"><div>Digital Electronics<small>Interactive notes</small></div><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
+  $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
+  $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))setOpen(false);});
+  main.innerHTML=`<header class="hero"><div class="wrap"><h1>Digital Electronics</h1><p>Your class notes, made interactive. Flip the bits below and watch the same number appear in every system and code.</p><div id="heroBits"></div><div class="readouts" id="heroOut"></div></div></header>`+
+    SECTIONS.map((s,i)=>`<section class="ch" id="${s.id}"><div class="wrap"><h2><i>${i+1}</i>${s.title}</h2>${s.html}</div></section>`).join('');
+  try{heroInit();}catch(e){console.error(e);}
+  SECTIONS.forEach(s=>{if(s.init){try{s.init(document.getElementById(s.id));}catch(e){console.error('Section '+s.id,e);}}});
+  const links=$$('#navlist a'),obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('act',a.dataset.id===e.target.id));const a=$(`#navlist a[data-id="${e.target.id}"]`);$('#menuLbl').textContent=a?a.textContent.replace(/^\d+/,'').trim():'Chapters';if(a&&innerWidth>980){const t=a.offsetTop,nv=nav;if(t<nv.scrollTop||t>nv.scrollTop+nv.clientHeight-60)nv.scrollTop=t-80;}}});},{rootMargin:'-20% 0px -70% 0px'});
+  SECTIONS.forEach(s=>obs.observe(document.getElementById(s.id)));
+})();
+</script></body></html>

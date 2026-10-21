@@ -1,0 +1,1792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Structures – Complete Interactive Guide</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#1c2130;--surface3:#242938;
+  --border:#2a3045;--border2:#333d55;
+  --accent:#58a6ff;--accent2:#3fb950;--warn:#f5a623;--danger:#f85149;--purple:#a78bfa;--pink:#ec4899;
+  --text:#e6edf3;--text2:#8b949e;--text3:#484f58;
+  --radius:8px;--mono:'JetBrains Mono',monospace;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* HEADER */
+.site-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;}
+.logo{font-size:18px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.site-header p{font-size:12px;color:var(--text2);}
+
+/* LAYOUT */
+.layout{display:flex;min-height:calc(100vh - 57px);}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;}
+.sidebar-group{margin-bottom:4px;}
+.sidebar-group-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);padding:10px 16px 4px;}
+.sidebar-item{display:block;width:100%;text-align:left;font-family:inherit;font-size:12px;padding:6px 16px;border:none;background:none;color:var(--text2);cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
+.sidebar-item:hover{background:var(--surface2);color:var(--text);}
+.sidebar-item.active{background:var(--surface2);color:var(--accent);border-left-color:var(--accent);}
+
+/* MAIN */
+.main{flex:1;padding:32px;max-width:860px;overflow-x:hidden;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* PAGE HEADER */
+.page-title{font-size:26px;font-weight:700;margin-bottom:6px;letter-spacing:-.5px;}
+.page-desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:28px;max-width:680px;}
+
+/* SECTIONS */
+.section{margin-bottom:32px;}
+.sec-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;}
+
+/* CARDS GRID */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;}
+.card h4{font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text);}
+.card p{font-size:12px;color:var(--text2);line-height:1.65;}
+.card code{font-family:var(--mono);font-size:11px;background:var(--surface2);padding:1px 5px;border-radius:3px;color:var(--accent);}
+
+/* STEPS */
+.steps{counter-reset:step;list-style:none;}
+.steps li{counter-increment:step;display:flex;gap:12px;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);line-height:1.6;}
+.steps li:last-child{border-bottom:none;}
+.steps li::before{content:counter(step);min-width:22px;height:22px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
+th{text-align:left;padding:9px 12px;background:var(--surface2);color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);}
+td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:11px;}
+tr:last-child td{border-bottom:none;}
+.hl td{color:var(--accent2);}
+
+/* CONTROLS */
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+.btn{font-family:inherit;font-size:12px;font-weight:500;padding:6px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s;}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn:disabled{opacity:.35;cursor:default;pointer-events:none;}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#0d1117;}
+.btn.primary:hover{background:#79b8ff;}
+
+/* INFO BOX */
+.info-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--text2);min-height:38px;line-height:1.6;margin-bottom:10px;}
+.info-box.ok{border-color:var(--accent2);color:var(--accent2);}
+.info-box.bad{border-color:var(--warn);color:var(--warn);}
+
+/* CANVAS */
+.canvas{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+svg{display:block;width:100%;}
+
+/* PILLS */
+.pills{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.pill{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text2);transition:all .2s;}
+.pill.cur{background:var(--warn);border-color:var(--warn);color:#000;font-weight:600;}
+.pill.ok{background:var(--accent2);border-color:var(--accent2);color:#000;}
+.pill.bad{background:var(--danger);border-color:var(--danger);color:#fff;text-decoration:line-through;}
+
+/* LEGEND */
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-top:8px;}
+.legend span{display:flex;align-items:center;gap:5px;}
+.ldot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.lline{display:inline-block;width:18px;height:3px;border-radius:2px;}
+
+/* BARS */
+.bar-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 12px 8px;display:flex;align-items:flex-end;gap:4px;height:150px;}
+.bar{flex:1;border-radius:3px 3px 0 0;background:var(--accent);transition:height .25s,background .2s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;}
+.bar span{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.8);}
+.bar.comparing{background:var(--warn);}
+.bar.sorted{background:var(--accent2);}
+.bar.pivot{background:var(--danger);}
+.bar.swapped,.bar.shifting{background:var(--purple);}
+
+/* LINKED LIST NODE */
+.ll-node{display:inline-flex;border:1px solid var(--border2);border-radius:var(--radius);overflow:hidden;font-family:var(--mono);font-size:12px;}
+.ll-data{background:var(--surface2);padding:6px 10px;color:var(--text);}
+.ll-ptr{background:var(--surface3);padding:6px 10px;color:var(--accent);min-width:36px;text-align:center;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap;}
+.tab{font-family:inherit;font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;transition:all .15s;}
+.tab:hover{background:var(--surface2);color:var(--text);}
+.tab.active{background:var(--accent);color:#0d1117;border-color:var(--accent);}
+
+/* TREE SVG node */
+.tree-node{cursor:pointer;}
+
+/* BADGE */
+.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;margin-left:6px;}
+.badge-blue{background:#1a3a5c;color:var(--accent);}
+.badge-green{background:#1a3a2a;color:var(--accent2);}
+.badge-red{background:#3a1a1a;color:var(--danger);}
+
+/* NOTATION DISPLAY */
+.expr{font-family:var(--mono);font-size:15px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;color:var(--accent);margin:6px 0;}
+
+/* QUEUE VIS */
+.queue-visual{display:flex;gap:0;margin:8px 0;}
+.q-cell{min-width:44px;height:40px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;background:var(--surface2);color:var(--text);transition:all .3s;}
+.q-cell.front{border-color:var(--accent2);color:var(--accent2);}
+.q-cell.rear{border-color:var(--danger);color:var(--danger);}
+.q-cell.empty{color:var(--text3);}
+.q-label{font-size:10px;color:var(--text2);text-align:center;margin-top:3px;}
+
+@media(max-width:700px){
+  .sidebar{display:none;}
+  .main{padding:16px;}
+  .cards{grid-template-columns:1fr;}
+  .site-header{padding:12px 16px;}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">DS Explorer</div>
+  <p>Complete Interactive Data Structures & Algorithms Guide</p>
+</header>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Foundations</div>
+    <button class="sidebar-item active" onclick="nav('overview')">Overview & Types</button>
+    <button class="sidebar-item" onclick="nav('complexity')">Complexity & Asymptotic</button>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Linear DS</div>
+    <button class="sidebar-item" onclick="nav('stack')">Stack</button>
+    <button class="sidebar-item" onclick="nav('queue')">Queue</button>
+    <button class="sidebar-item" onclick="nav('linkedlist')">Linked List</button>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Non-Linear DS</div>
+    <button class="sidebar-item" onclick="nav('tree')">Trees</button>
+    <button class="sidebar-item" onclick="nav('graph')">Graph</button>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Graph Algorithms</div>
+    <button class="sidebar-item" onclick="nav('bfs')">BFS</button>
+    <button class="sidebar-item" onclick="nav('dfs')">DFS</button>
+    <button class="sidebar-item" onclick="nav('spanning')">Spanning Tree</button>
+    <button class="sidebar-item" onclick="nav('prim')">Prim's Algorithm</button>
+    <button class="sidebar-item" onclick="nav('kruskal')">Kruskal's Algorithm</button>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Sorting</div>
+    <button class="sidebar-item" onclick="nav('sorting_intro')">Sorting Concepts</button>
+    <button class="sidebar-item" onclick="nav('bubble')">Bubble Sort</button>
+    <button class="sidebar-item" onclick="nav('selection')">Selection Sort</button>
+    <button class="sidebar-item" onclick="nav('insertion')">Insertion Sort</button>
+    <button class="sidebar-item" onclick="nav('merge')">Merge Sort</button>
+    <button class="sidebar-item" onclick="nav('quick')">Quick Sort</button>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Searching</div>
+    <button class="sidebar-item" onclick="nav('searching')">Linear & Binary Search</button>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Expressions</div>
+    <button class="sidebar-item" onclick="nav('expressions')">Infix / Prefix / Postfix</button>
+  </div>
+  <div class="sidebar-group">
+    <div class="sidebar-group-label">Advanced</div>
+    <button class="sidebar-item" onclick="nav('advanced')">Shortest Path & NP</button>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- ===== OVERVIEW ===== -->
+<div class="page active" id="page-overview">
+  <div class="page-title">Data Structures — Overview</div>
+  <div class="page-desc">A data structure is a way of organizing data in memory so it can be accessed and modified efficiently. Your notes classify them into Simple and Composite types.</div>
+  <div class="section">
+    <div class="sec-label">Classification</div>
+    <div class="cards">
+      <div class="card"><h4>Simple DS</h4><p>Basic storage types: <code>Array</code>, <code>Structure</code>. Direct memory allocation, fixed size.</p></div>
+      <div class="card"><h4>Composite — Linear</h4><p>Sequential access: <code>Stack</code>, <code>Queue</code>, <code>Linked List</code>. Elements arranged in order.</p></div>
+      <div class="card"><h4>Composite — Non-Linear</h4><p>Hierarchical/network: <code>Tree</code>, <code>Graph</code>. Elements can have multiple connections.</p></div>
+      <div class="card"><h4>DSA Operations</h4><p>Insertion · Deletion · Searching · Sorting · Updation · <code>Traversal</code> (Data Process)</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Memory Management</div>
+    <div class="cards">
+      <div class="card"><h4>Stack Memory</h4><p>4th Gen computers use Stack for data storage. Used by function calls, recursion, and local variables. LIFO access.</p></div>
+      <div class="card"><h4>Heap Memory</h4><p>Linked lists use Heap/Buffer memory. Dynamic allocation. Size not fixed at compile time.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Uses of Stack (from notes)</div>
+    <div class="cards">
+      <div class="card"><h4>Applications</h4><p>Undo/Redo · Recursion · Tower of Hanoi · Function Calling · String Reverse · Tree Traversal · Graph Traversal</p></div>
+      <div class="card"><h4>Expression Types</h4><p><code>Infix</code>: a+b &nbsp;|&nbsp; <code>Prefix</code> (Polish): +ab &nbsp;|&nbsp; <code>Postfix</code> (RPN): ab+</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COMPLEXITY ===== -->
+<div class="page" id="page-complexity">
+  <div class="page-title">Complexity & Asymptotic Notation</div>
+  <div class="page-desc">Algorithm analysis uses asymptotic notation to describe how time and space grow with input size. Time-Space trade-off: faster → more space; less space → slower.</div>
+  <div class="section">
+    <div class="sec-label">Notations</div>
+    <div class="cards">
+      <div class="card"><h4>Big O — O(n)</h4><p><strong>Upper bound</strong> — Worst-case complexity. "At most this slow."</p></div>
+      <div class="card"><h4>Omega — Ω(n)</h4><p><strong>Lower bound</strong> — Best-case complexity. "At least this fast."</p></div>
+      <div class="card"><h4>Theta — Θ(n)</h4><p><strong>Tight bound</strong> — Both upper & lower. Used for average case.</p></div>
+      <div class="card"><h4>Little o / ω</h4><p><code>o(g(n))</code>: strictly smaller than upper bound. <code>ω(g(n))</code>: strictly larger than lower bound.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Algorithm Analysis Types</div>
+    <div class="cards">
+      <div class="card"><h4>Input Size</h4><p>How much data the algorithm can handle. Affects time & space.</p></div>
+      <div class="card"><h4>Output</h4><p>The solution an algorithm produces for a problem.</p></div>
+      <div class="card"><h4>Best Case</h4><p>Minimum operations needed. Ideal input scenario.</p></div>
+      <div class="card"><h4>Worst / Average Case</h4><p>Maximum or typical operations. Most practically relevant.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Sorting Complexity Summary (from notes)</div>
+    <table>
+      <tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable</th></tr>
+      <tr><td>Bubble</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✓</td></tr>
+      <tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✗</td></tr>
+      <tr class="hl"><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✓</td></tr>
+      <tr class="hl"><td>Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>✓</td></tr>
+      <tr><td>Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>✗</td></tr>
+    </table>
+  </div>
+  <div class="section">
+    <div class="sec-label">Divide & Conquer Examples (from notes)</div>
+    <div class="cards">
+      <div class="card"><h4>Algorithms</h4><p>Binary Search · Merge Sort · Finding Min/Max [O(n)]</p></div>
+      <div class="card"><h4>Recurrence Equation</h4><p>Equation where each term relates to previous terms. E.g., Fibonacci: F(n) = F(n-1) + F(n-2)</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== STACK ===== -->
+<div class="page" id="page-stack">
+  <div class="page-title">Stack</div>
+  <div class="page-desc">LIFO (Last In, First Out) data structure. Think of a stack of plates — you add and remove from the top only.</div>
+  <div class="section">
+    <div class="sec-label">Key Properties</div>
+    <div class="cards">
+      <div class="card"><h4>LIFO</h4><p>Last element inserted is the first to be removed. One end (top) for both operations.</p></div>
+      <div class="card"><h4>Operations</h4><p><code>Push</code> — insert at top. <code>Pop</code> — remove from top. <code>Peek</code> — view top. <code>isEmpty</code> — check empty.</p></div>
+      <div class="card"><h4>Memory</h4><p>4th Gen computers use Stack for data storage. Also used for function call management.</p></div>
+      <div class="card"><h4>Applications</h4><p>Undo/Redo · Recursion · Tower of Hanoi · Expression evaluation · Graph/Tree traversal</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Stack Simulator</div>
+    <div class="controls">
+      <input id="stack-input" type="number" placeholder="Value" style="width:80px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;" value="42">
+      <button class="btn primary" onclick="stackPush()">Push</button>
+      <button class="btn" onclick="stackPop()">Pop</button>
+      <button class="btn" onclick="stackPeek()">Peek</button>
+      <button class="btn" onclick="stackReset()">Reset</button>
+    </div>
+    <div class="info-box" id="stack-info">Stack is empty. Push some values!</div>
+    <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Stack (top → bottom)</div>
+        <div id="stack-vis" style="min-width:100px;min-height:180px;border:1px solid var(--border);border-radius:var(--radius);padding:8px;display:flex;flex-direction:column;gap:4px;background:var(--surface);"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);line-height:2;">
+        <div>Top pointer: <span id="stack-top" style="color:var(--accent);font-family:var(--mono);">-1</span></div>
+        <div>Size: <span id="stack-size" style="color:var(--accent2);font-family:var(--mono);">0</span></div>
+        <div>Max: <span style="color:var(--text3);font-family:var(--mono);">8</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUEUE ===== -->
+<div class="page" id="page-queue">
+  <div class="page-title">Queue</div>
+  <div class="page-desc">Abstract Data Structure — FIFO (First In, First Out). Insertion at Rear, Deletion at Front. If n elements, max index = (n-1).</div>
+  <div class="section">
+    <div class="sec-label">Types of Queue</div>
+    <div class="cards">
+      <div class="card"><h4>1. Input Restricted</h4><p>Deletion from both sides, but <strong>insertion from one side only</strong>.</p></div>
+      <div class="card"><h4>2. Output Restricted</h4><p>Insertion from both sides, but <strong>deletion from front end only</strong>.</p></div>
+      <div class="card"><h4>3. Double-Ended (Deque)</h4><p><strong>Insert and Delete from both sides</strong>. Most flexible queue type.</p></div>
+      <div class="card"><h4>4. Priority Queue</h4><p>Each element has own priority number. Two modes: <code>Ascending</code> (delete in ascending order) and <code>Descending</code>. Used for CPU scheduling.</p></div>
+      <div class="card"><h4>5. Circular Queue</h4><p>Front and Rear connected to each other. Also called <strong>Ring Buffer</strong>. Solves wasted space problem of linear queue.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Queue Simulator</div>
+    <div class="tabs">
+      <button class="tab active" onclick="qType('linear',this)">Linear</button>
+      <button class="tab" onclick="qType('circular',this)">Circular</button>
+    </div>
+    <div class="controls">
+      <input id="q-input" type="number" placeholder="Value" style="width:70px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;" value="10">
+      <button class="btn primary" onclick="qEnqueue()">Enqueue (Rear)</button>
+      <button class="btn" onclick="qDequeue()">Dequeue (Front)</button>
+      <button class="btn" onclick="qReset()">Reset</button>
+    </div>
+    <div class="info-box" id="q-info">Queue is empty. Enqueue some values!</div>
+    <div id="q-vis" style="display:flex;gap:0;margin:8px 0;flex-wrap:wrap;"></div>
+    <div style="display:flex;gap:24px;font-size:12px;color:var(--text2);margin-top:6px;">
+      <span>Front: <span id="q-front" style="color:var(--accent2);font-family:var(--mono);">-</span></span>
+      <span>Rear: <span id="q-rear" style="color:var(--danger);font-family:var(--mono);">-</span></span>
+      <span>Size: <span id="q-size" style="color:var(--accent);font-family:var(--mono);">0</span>/6</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LINKED LIST ===== -->
+<div class="page" id="page-linkedlist">
+  <div class="page-title">Linked List</div>
+  <div class="page-desc">Linear data structure where elements (nodes) are in sequence. Each node has a Data Element + Next Pointer (address of next node). Last node's next pointer is NULL. Memory allocation using Heap/Buffer. Easy to insert.</div>
+  <div class="section">
+    <div class="sec-label">Types of Linked List</div>
+    <div class="tabs">
+      <button class="tab active" onclick="llType(0,this)">Singly</button>
+      <button class="tab" onclick="llType(1,this)">Doubly</button>
+      <button class="tab" onclick="llType(2,this)">Circular Singly</button>
+      <button class="tab" onclick="llType(3,this)">Doubly Circular</button>
+    </div>
+    <div class="info-box" id="ll-desc">Singly Linked List: Forward direction only (one-way). Each node has Data + Next pointer.</div>
+    <div class="canvas" style="padding:16px;" id="ll-canvas">
+      <svg id="ll-svg" viewBox="0 0 700 80"></svg>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive: Build a Singly Linked List</div>
+    <div class="controls">
+      <input id="ll-input" type="number" placeholder="Value" style="width:70px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;" value="5">
+      <button class="btn primary" onclick="llInsert()">Insert</button>
+      <button class="btn" onclick="llDelete()">Delete Head</button>
+      <button class="btn" onclick="llReset()">Reset</button>
+    </div>
+    <div class="info-box" id="ll-info">Insert nodes to build a linked list.</div>
+    <div class="canvas" style="padding:16px;overflow-x:auto;">
+      <svg id="ll-live" viewBox="0 0 700 80" style="min-width:400px;"></svg>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Properties</div>
+    <div class="cards">
+      <div class="card"><h4>Singly LL</h4><p>Forward direction only. Each node: <code>[data | next→]</code>. NULL at end.</p></div>
+      <div class="card"><h4>Doubly LL</h4><p>Each node has 3 elements. Direction: forward & backward. Contains <code>[prev | data | next]</code>.</p></div>
+      <div class="card"><h4>Circular LL</h4><p>Last node's next pointer contains address of first node. Forms a loop.</p></div>
+      <div class="card"><h4>Doubly Circular</h4><p>Both directions + circular. Last node points to first, first's prev points to last.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TREE ===== -->
+<div class="page" id="page-tree">
+  <div class="page-title">Trees</div>
+  <div class="page-desc">Non-linear, hierarchical data structure. Root is topmost node. Leaf nodes have no children. Internal nodes have at least one child. Degree = total child nodes.</div>
+  <div class="section">
+    <div class="sec-label">Types of Trees</div>
+    <div class="tabs">
+      <button class="tab active" onclick="treeType('general',this)">General</button>
+      <button class="tab" onclick="treeType('binary',this)">Binary</button>
+      <button class="tab" onclick="treeType('bst',this)">BST</button>
+      <button class="tab" onclick="treeType('avl',this)">AVL</button>
+      <button class="tab" onclick="treeType('rb',this)">Red-Black</button>
+    </div>
+    <div class="info-box" id="tree-info">General Tree: No constraint. Unbalanced. Superset of every tree. Node may have infinite children.</div>
+    <div class="canvas"><svg id="tree-svg" viewBox="0 0 700 280"></svg></div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Tree Terminology</div>
+    <div class="cards">
+      <div class="card"><h4>Root</h4><p>Topmost node. Has no parent.</p></div>
+      <div class="card"><h4>Key</h4><p>Value stored in a node.</p></div>
+      <div class="card"><h4>Internal Node</h4><p>Node that contains at least one child node.</p></div>
+      <div class="card"><h4>Leaf Node</h4><p>Node with no children. Also called external node.</p></div>
+      <div class="card"><h4>Degree</h4><p>Total number of child nodes a node has.</p></div>
+      <div class="card"><h4>Height vs Depth</h4><p>Height: longest path from node to leaf. Depth: distance from root to node.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Tree Traversal</div>
+    <div class="tabs">
+      <button class="tab active" onclick="traversalShow('inorder',this)">In-Order (LRoR)</button>
+      <button class="tab" onclick="traversalShow('preorder',this)">Pre-Order (RoLR)</button>
+      <button class="tab" onclick="traversalShow('postorder',this)">Post-Order (LRRo)</button>
+    </div>
+    <div class="info-box" id="trav-info">In-Order: Left → Root → Right. Gives sorted output for BST.</div>
+    <div class="canvas"><svg id="trav-svg" viewBox="0 0 700 220"></svg></div>
+    <div style="margin-top:8px;font-size:13px;color:var(--text2);">Result: <span id="trav-result" style="font-family:var(--mono);color:var(--accent2);"></span></div>
+  </div>
+</div>
+
+<!-- ===== GRAPH ===== -->
+<div class="page" id="page-graph">
+  <div class="page-title">Graph</div>
+  <div class="page-desc">Collection of Nodes and Edges. G = (V, E) where V = set of vertices, E = set of edges. Connected path called a node. Nodes also called vertices.</div>
+  <div class="section">
+    <div class="sec-label">Types of Graphs</div>
+    <div class="tabs">
+      <button class="tab active" onclick="graphType('undirected',this)">Undirected</button>
+      <button class="tab" onclick="graphType('directed',this)">Directed</button>
+      <button class="tab" onclick="graphType('dag',this)">DAG</button>
+      <button class="tab" onclick="graphType('weighted',this)">Weighted</button>
+      <button class="tab" onclick="graphType('complete',this)">Complete</button>
+    </div>
+    <div class="info-box" id="graph-info">Undirected Graph: No direction on edges. Bidirectional. e₁={A,B} means both {A,B} and {B,A}.</div>
+    <div class="canvas"><svg id="graph-svg" viewBox="0 0 700 260"></svg></div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Graph Terminology</div>
+    <div class="cards">
+      <div class="card"><h4>Walk</h4><p>Moving from one node to another. Open walk (different start/end) or Closed walk (same start/end).</p></div>
+      <div class="card"><h4>Trail</h4><p>A path where <strong>edges cannot be repeated</strong> but nodes/vertices can be repeated.</p></div>
+      <div class="card"><h4>Circuit</h4><p>A type of closed trail. Closed trail = Circuit = Cycle.</p></div>
+      <div class="card"><h4>Loop</h4><p>Single edge used to connect the same node. A→A.</p></div>
+      <div class="card"><h4>Degree of Node</h4><p>Total connected edges. Types: Degree (all), In-degree (inward edges), Out-degree (outward edges).</p></div>
+      <div class="card"><h4>Adjacent Nodes</h4><p>Two different nodes connected to a single node. They share a common neighbor.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Graph Representation</div>
+    <div class="cards">
+      <div class="card"><h4>Adjacency Matrix (2D Array)</h4><p>Rule 1: If node has neighbour → degree = 1. Rule 2: No neighbour → degree = 0. For directed weighted graph, use weight values. Undirected: 2N nodes. Directed: N nodes.</p></div>
+      <div class="card"><h4>Adjacency List (Linked List)</h4><p>Use linked list. Only check connectivity, no direction check. Every node converted to linked list node. Space efficient for sparse graphs.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BFS ===== -->
+<div class="page" id="page-bfs">
+  <div class="page-title">BFS — Breadth First Search</div>
+  <div class="page-desc">Traversal = A→B→C→D→E→F→G (level by level). Slower than DFS. Uses Queue (FIFO). Less memory use. Best if target node is nearest to root. First access sibling, then child. Back-tracking NOT allowed.</div>
+  <div class="section">
+    <div class="sec-label">Steps</div>
+    <ul class="steps">
+      <li>Start at root/source node, mark it visited. Add to queue.</li>
+      <li>Dequeue front node, process it (print/visit).</li>
+      <li>Add all unvisited neighbors of current node to the queue, mark visited.</li>
+      <li>Repeat until queue is empty.</li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive BFS</div>
+    <div class="controls">
+      <button class="btn primary" id="bfs-step-btn" onclick="bfsStep()">Step →</button>
+      <button class="btn" id="bfs-auto-btn" onclick="bfsAuto()">Auto play</button>
+      <button class="btn" onclick="bfsReset()">Reset</button>
+    </div>
+    <div class="info-box" id="bfs-info">Press Step. BFS visits nodes level by level using a Queue.</div>
+    <div class="canvas"><svg id="bfs-svg" viewBox="0 0 700 280"></svg></div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text2);">
+      Queue: <span id="bfs-queue" style="font-family:var(--mono);color:var(--warn);"></span><br>
+      Visited: <span id="bfs-visited" style="font-family:var(--mono);color:var(--accent2);"></span>
+    </div>
+    <div class="legend">
+      <span><span class="ldot" style="background:var(--accent)"></span>Visited</span>
+      <span><span class="ldot" style="background:var(--warn)"></span>In Queue</span>
+      <span><span class="ldot" style="background:var(--surface3)"></span>Unvisited</span>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">BFS vs DFS Quick Compare</div>
+    <table>
+      <tr><th>Property</th><th>BFS</th><th>DFS</th></tr>
+      <tr><td>Data Structure</td><td>Queue (FIFO)</td><td>Stack (LIFO)</td></tr>
+      <tr><td>Order</td><td>Level by level</td><td>Depth first</td></tr>
+      <tr><td>Memory</td><td>Less (shallow trees)</td><td>More</td></tr>
+      <tr><td>Backtracking</td><td>Not allowed</td><td>Allowed</td></tr>
+      <tr class="hl"><td>Best for</td><td>Nearest node to root</td><td>Deep paths</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== DFS ===== -->
+<div class="page" id="page-dfs">
+  <div class="page-title">DFS — Depth First Search</div>
+  <div class="page-desc">Traversal = A→B→D→E→C→F→G (depth first). Faster. Uses Stack (LIFO). More memory use. Back-tracking allowed. First child, then sibling.</div>
+  <div class="section">
+    <div class="sec-label">Steps</div>
+    <ul class="steps">
+      <li>Start at root/source node, mark it visited. Push to stack.</li>
+      <li>Pop top of stack, process it.</li>
+      <li>Push all unvisited neighbors to stack, mark visited.</li>
+      <li>Repeat. If stack empty and unvisited nodes remain, start from next unvisited (for disconnected graphs).</li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive DFS</div>
+    <div class="controls">
+      <button class="btn primary" id="dfs-step-btn" onclick="dfsStep()">Step →</button>
+      <button class="btn" id="dfs-auto-btn" onclick="dfsAuto()">Auto play</button>
+      <button class="btn" onclick="dfsReset()">Reset</button>
+    </div>
+    <div class="info-box" id="dfs-info">Press Step. DFS goes deep into each branch before backtracking.</div>
+    <div class="canvas"><svg id="dfs-svg" viewBox="0 0 700 280"></svg></div>
+    <div style="margin-top:8px;font-size:12px;color:var(--text2);">
+      Stack: <span id="dfs-stack" style="font-family:var(--mono);color:var(--purple);"></span><br>
+      Visited: <span id="dfs-visited" style="font-family:var(--mono);color:var(--accent2);"></span>
+    </div>
+    <div class="legend">
+      <span><span class="ldot" style="background:var(--accent)"></span>Visited</span>
+      <span><span class="ldot" style="background:var(--purple)"></span>In Stack</span>
+      <span><span class="ldot" style="background:var(--surface3)"></span>Unvisited</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SPANNING ===== -->
+<div class="page" id="page-spanning">
+  <div class="page-title">Spanning Tree</div>
+  <div class="page-desc">A subgraph of an undirected graph that includes all nodes of the main graph, with number of edges reduced to minimum (just enough to keep graph connected). Coined by Radia Perlman. For N nodes: possible spanning trees = N^(N-2).</div>
+  <div class="section">
+    <div class="sec-label">Key Facts</div>
+    <div class="cards">
+      <div class="card"><h4>V−1 Edges</h4><p>A spanning tree with V vertices always has exactly V−1 edges. 3 nodes → 2 edges (3^(3-2) = 3 spanning trees possible).</p></div>
+      <div class="card"><h4>MST Algorithms</h4><p>To find Minimum Spanning Tree: (i) Prim's Algo (ii) Kruskal's Algo. Applied to weighted undirected graphs.</p></div>
+      <div class="card"><h4>Cost of Spanning Tree</h4><p>Sum of weights of all edges. Best = less cost.</p></div>
+      <div class="card"><h4>MST Property</h4><p>These algorithms connect all nodes using minimum edge/overall cost. Each edge has cost/weight.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive — Valid vs Invalid</div>
+    <div class="tabs">
+      <button class="tab active" onclick="spanShow(0,this)">Original</button>
+      <button class="tab" onclick="spanShow(1,this)">Spanning Tree 1</button>
+      <button class="tab" onclick="spanShow(2,this)">Spanning Tree 2</button>
+      <button class="tab" onclick="spanShow(3,this)">Invalid ✗</button>
+    </div>
+    <div class="info-box" id="span-info">Original graph with 5 nodes and 7 edges. Multiple spanning trees exist.</div>
+    <div class="canvas"><svg id="span-svg" viewBox="0 0 700 240"></svg></div>
+  </div>
+</div>
+
+<!-- ===== PRIM'S ===== -->
+<div class="page" id="page-prim">
+  <div class="page-title">Prim's Algorithm <span class="badge badge-blue">O(E log V)</span></div>
+  <div class="page-desc">Greedy algorithm to build MST. Start from any arbitrary vertex. After choosing a vertex, examine costs of edges to adjacent vertices and connect the vertex with minimum cost edge. Repeat until all vertices connected. Do not form any cycle. It traverses one vertex for more than one time to get min distance (First Node then Edge).</div>
+  <div class="section">
+    <div class="sec-label">Algorithm Steps (from notes)</div>
+    <ul class="steps">
+      <li>Remove all cycles, loops & parallel edges.</li>
+      <li>Choose any arbitrary vertex as Root Node and start creating MST.</li>
+      <li>Check outgoing edges & choose the edge having minimum cost.</li>
+      <li>Add that vertex to visited set. Add its edges to priority queue.</li>
+      <li>Repeat until all vertices are connected. Never form a cycle.</li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Visualization</div>
+    <div class="controls">
+      <button class="btn primary" id="prim-step-btn" onclick="primStep()">Step →</button>
+      <button class="btn" id="prim-auto-btn" onclick="primAuto()">Auto play</button>
+      <button class="btn" onclick="primReset()">Reset</button>
+    </div>
+    <div class="info-box" id="prim-info">Press Step. Starting from node A.</div>
+    <div class="canvas"><svg id="prim-svg" viewBox="0 0 700 300"></svg></div>
+    <div class="legend">
+      <span><span class="ldot" style="background:var(--accent)"></span>Visited</span>
+      <span><span class="ldot" style="background:var(--warn)"></span>Frontier</span>
+      <span><span class="lline" style="background:var(--accent)"></span>MST edge</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== KRUSKAL'S ===== -->
+<div class="page" id="page-kruskal">
+  <div class="page-title">Kruskal's Algorithm <span class="badge badge-blue">O(E log E)</span></div>
+  <div class="page-desc">To find MST: pick the edge with smallest cost first, then next smallest-cost edge. Continue until all vertices are connected to the MST. Do not create any loop & cycle. Traverse one vertex once only. Edge first, Node last.</div>
+  <div class="section">
+    <div class="sec-label">Steps</div>
+    <ul class="steps">
+      <li>Sort all edges by weight ascending.</li>
+      <li>Initialize each vertex as its own component (Union-Find).</li>
+      <li>Pick smallest cost edge — if it doesn't form a cycle, add to MST.</li>
+      <li>If it creates a cycle, skip it.</li>
+      <li>Repeat until V−1 edges are added to MST.</li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="sec-label">Sorted Edge Queue</div>
+    <div class="pills" id="krus-pills"></div>
+    <div class="controls">
+      <button class="btn primary" id="krus-step-btn" onclick="krusStep()">Step →</button>
+      <button class="btn" id="krus-auto-btn" onclick="krusAuto()">Auto play</button>
+      <button class="btn" onclick="krusReset()">Reset</button>
+    </div>
+    <div class="info-box" id="krus-info">Press Step to process edges cheapest first.</div>
+    <div class="canvas"><svg id="krus-svg" viewBox="0 0 700 300"></svg></div>
+    <div class="legend">
+      <span><span class="lline" style="background:var(--accent2)"></span>MST edge</span>
+      <span><span class="lline" style="background:var(--danger)"></span>Rejected (cycle)</span>
+      <span><span class="lline" style="background:var(--warn)"></span>Considering</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SORTING INTRO ===== -->
+<div class="page" id="page-sorting_intro">
+  <div class="page-title">Sorting — Concepts</div>
+  <div class="page-desc">Arranging elements in ascending or descending order. Your notes cover 3 patterns for classifying sorts.</div>
+  <div class="section">
+    <div class="sec-label">Pattern A: Inplace vs Non-Inplace</div>
+    <div class="cards">
+      <div class="card"><h4>Inplace Sorting</h4><p>No extra memory required. Sorts within the original array. Examples: <code>Bubble</code>, <code>Insertion</code>, <code>Selection</code>, <code>Quick</code>.</p></div>
+      <div class="card"><h4>Non-Inplace Sorting</h4><p>Extra memory required for sorting. Examples: <code>Merge Sort</code> O(n) extra space.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Pattern B: Stable vs Unstable</div>
+    <div class="cards">
+      <div class="card"><h4>Stable Sorting</h4><p>While sorting, order of equal elements does NOT change. Examples: <code>Merge Sort</code>, <code>Insertion Sort</code>, <code>Bubble Sort</code>.</p></div>
+      <div class="card"><h4>Unstable Sorting</h4><p>Order of equal elements CAN change. Examples: <code>Quick Sort</code>, <code>Selection Sort</code>.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Pattern C: Adaptive vs Non-Adaptive</div>
+    <div class="cards">
+      <div class="card"><h4>Adaptive Sorting</h4><p>If positions of elements already sorted are NOT changed. Benefits from partially sorted input. Examples: <code>Bubble Sort</code>, <code>Insertion Sort</code>.</p></div>
+      <div class="card"><h4>Non-Adaptive Sorting</h4><p>Positions of already-sorted elements ARE also changed. No benefit from pre-sorted input. Examples: <code>Selection Sort</code>.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Summary from Notes</div>
+    <table>
+      <tr><th>Sort</th><th>Inplace</th><th>Stable</th><th>Adaptive</th><th>Best</th></tr>
+      <tr><td>Bubble</td><td>✓</td><td>✓</td><td>✓</td><td>O(n)</td></tr>
+      <tr><td>Selection</td><td>✓</td><td>✗</td><td>✗</td><td>O(n²)</td></tr>
+      <tr><td>Insertion</td><td>✓</td><td>✓</td><td>✓</td><td>O(n)</td></tr>
+      <tr class="hl"><td>Merge</td><td>✗</td><td>✓</td><td>✗</td><td>O(n log n)</td></tr>
+      <tr><td>Quick</td><td>✓</td><td>✗</td><td>✗</td><td>O(n log n)</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== BUBBLE SORT ===== -->
+<div class="page" id="page-bubble">
+  <div class="page-title">Bubble Sort</div>
+  <div class="page-desc">Simple comparison-based algorithm. Compare each element with adjacent element; if out of order, swap them. Like bubbles in soda, elements bubble to their correct positions. After each pass, largest element settles at nth position, then next largest at n-1, so on.</div>
+  <div class="section">
+    <div class="sec-label">Key Points from Notes</div>
+    <div class="cards">
+      <div class="card"><h4>Pass terminates</h4><p>Pass will terminate if each step has no swap. Early exit optimization.</p></div>
+      <div class="card"><h4>Complexity</h4><p>Best/Average/Worst = O(n²). If already sorted → O(n). Not preferable for big data.</p></div>
+      <div class="card"><h4>Inplace & Stable</h4><p>Sorts in-place (O(1) space). Stable sort — equal elements maintain relative order.</p></div>
+      <div class="card"><h4>Passes = n−1</h4><p>Comparisons per pass decrease by 1 each time. Total comparisons ≈ n(n-1)/2.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Visualization</div>
+    <div class="controls">
+      <button class="btn primary" id="bub-step" onclick="sortStep('bubble')">Step →</button>
+      <button class="btn" id="bub-auto" onclick="sortAuto('bubble')">Auto play</button>
+      <button class="btn" onclick="sortReset('bubble')">Reset</button>
+      <button class="btn" onclick="sortShuffle('bubble')">Shuffle</button>
+    </div>
+    <div class="info-box" id="bubble-info">Press Step to begin comparing adjacent pairs.</div>
+    <div class="bar-area" id="bubble-bars"></div>
+    <div class="legend" style="margin-top:8px;">
+      <span><span class="ldot" style="background:var(--accent)"></span>Unsorted</span>
+      <span><span class="ldot" style="background:var(--warn)"></span>Comparing</span>
+      <span><span class="ldot" style="background:var(--purple)"></span>Swapped</span>
+      <span><span class="ldot" style="background:var(--accent2)"></span>Sorted</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SELECTION SORT ===== -->
+<div class="page" id="page-selection">
+  <div class="page-title">Selection Sort</div>
+  <div class="page-desc">Simple inplace sorting algorithm. Repeatedly find the smallest element in the unsorted region and swap it with the current position. Continue until entire array is sorted. Passes = (n-1). Comparisons = n(n-1)/2.</div>
+  <div class="section">
+    <div class="sec-label">Key Points</div>
+    <div class="cards">
+      <div class="card"><h4>Minimum Swaps</h4><p>Makes exactly n−1 swaps regardless of input. Good when writes are expensive.</p></div>
+      <div class="card"><h4>Complexity</h4><p>Best, Average, Worst = O(n²). Space = O(1). Not adaptive.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Visualization</div>
+    <div class="controls">
+      <button class="btn primary" id="sel-step" onclick="sortStep('selection')">Step →</button>
+      <button class="btn" id="sel-auto" onclick="sortAuto('selection')">Auto play</button>
+      <button class="btn" onclick="sortReset('selection')">Reset</button>
+      <button class="btn" onclick="sortShuffle('selection')">Shuffle</button>
+    </div>
+    <div class="info-box" id="selection-info">Press Step to find the minimum element.</div>
+    <div class="bar-area" id="selection-bars"></div>
+  </div>
+</div>
+
+<!-- ===== INSERTION SORT ===== -->
+<div class="page" id="page-insertion">
+  <div class="page-title">Insertion Sort</div>
+  <div class="page-desc">Maintains a growing sorted sublist. For each element, scan leftwards through the sorted part to find its correct position and insert it. Starts from the second element (first is considered sorted). Inplace and Stable. Adaptive.</div>
+  <div class="section">
+    <div class="sec-label">Key Points</div>
+    <div class="cards">
+      <div class="card"><h4>Best Case O(n)</h4><p>When already sorted. Only n−1 comparisons, no shifts needed.</p></div>
+      <div class="card"><h4>Average/Worst O(n²)</h4><p>Reverse sorted input causes maximum shifts.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Visualization</div>
+    <div class="controls">
+      <button class="btn primary" id="ins-step" onclick="sortStep('insertion')">Step →</button>
+      <button class="btn" id="ins-auto" onclick="sortAuto('insertion')">Auto play</button>
+      <button class="btn" onclick="sortReset('insertion')">Reset</button>
+      <button class="btn" onclick="sortShuffle('insertion')">Shuffle</button>
+    </div>
+    <div class="info-box" id="insertion-info">Press Step to insert elements into sorted position.</div>
+    <div class="bar-area" id="insertion-bars"></div>
+  </div>
+</div>
+
+<!-- ===== MERGE SORT ===== -->
+<div class="page" id="page-merge">
+  <div class="page-title">Merge Sort</div>
+  <div class="page-desc">Divide and Conquer method. Most efficient algorithm. Best, Average, Worst → O(n log n). Merging Complexity = O(n). Stable Sorting. Not inplace (needs O(n) extra space).</div>
+  <div class="section">
+    <div class="sec-label">Steps</div>
+    <ul class="steps">
+      <li>If array has 0 or 1 elements, return (base case — already sorted).</li>
+      <li>Divide array into two halves at midpoint.</li>
+      <li>Recursively merge-sort the left half.</li>
+      <li>Recursively merge-sort the right half.</li>
+      <li>Merge the two sorted halves by comparing elements front-to-front.</li>
+    </ul>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Visualization</div>
+    <div class="controls">
+      <button class="btn primary" id="mrg-step" onclick="sortStep('merge')">Step →</button>
+      <button class="btn" id="mrg-auto" onclick="sortAuto('merge')">Auto play</button>
+      <button class="btn" onclick="sortReset('merge')">Reset</button>
+      <button class="btn" onclick="sortShuffle('merge')">Shuffle</button>
+    </div>
+    <div class="info-box" id="merge-info">Press Step to see divide and conquer in action.</div>
+    <div class="bar-area" id="merge-bars"></div>
+  </div>
+</div>
+
+<!-- ===== QUICK SORT ===== -->
+<div class="page" id="page-quick">
+  <div class="page-title">Quick Sort</div>
+  <div class="page-desc">Divide the array into two parts using a pivot (rightmost element used). Elements on left are less than pivot, elements on right are greater. Recursively quick-sort left and right partitions. Order after partition: lesser element &lt; Pivot &lt; greater elements. Inplace sorting. Not Stable, Not Adaptive.</div>
+  <div class="section">
+    <div class="sec-label">Key Points</div>
+    <div class="cards">
+      <div class="card"><h4>Best/Average: O(n log n)</h4><p>Good pivot selection is key to performance.</p></div>
+      <div class="card"><h4>Worst: O(n²)</h4><p>Occurs when wrong pivot is selected (e.g., already sorted array, pivot = first/last).</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Visualization</div>
+    <div class="controls">
+      <button class="btn primary" id="qck-step" onclick="sortStep('quick')">Step →</button>
+      <button class="btn" id="qck-auto" onclick="sortAuto('quick')">Auto play</button>
+      <button class="btn" onclick="sortReset('quick')">Reset</button>
+      <button class="btn" onclick="sortShuffle('quick')">Shuffle</button>
+    </div>
+    <div class="info-box" id="quick-info">Press Step. Red bar = current pivot.</div>
+    <div class="bar-area" id="quick-bars"></div>
+    <div class="legend" style="margin-top:8px;">
+      <span><span class="ldot" style="background:var(--danger)"></span>Pivot</span>
+      <span><span class="ldot" style="background:var(--warn)"></span>Comparing</span>
+      <span><span class="ldot" style="background:var(--purple)"></span>Swapping</span>
+      <span><span class="ldot" style="background:var(--accent2)"></span>Sorted</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SEARCHING ===== -->
+<div class="page" id="page-searching">
+  <div class="page-title">Searching</div>
+  <div class="page-desc">Finding a target element in a data structure. Two main methods covered in your notes: Linear Search and Binary Search.</div>
+  <div class="section">
+    <div class="sec-label">1. Linear Search</div>
+    <div class="cards">
+      <div class="card"><h4>How it works</h4><p>Target element searched sequentially until found. Matched against every element. Works on both sorted and unsorted data.</p></div>
+      <div class="card"><h4>Complexity</h4><p>O(n). Best case O(1) if target is first element. Space = O(1).</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">2. Binary Search</div>
+    <div class="cards">
+      <div class="card"><h4>How it works</h4><p>Works ONLY on sorted array. Compare target with middle element. If equal → return index. If target &lt; middle → search left subarray. If target &gt; middle → search right subarray.</p></div>
+      <div class="card"><h4>Complexity</h4><p>O(log n). Best for large number of elements. Space = O(1) iterative, O(log n) recursive.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Binary Search</div>
+    <div class="controls">
+      <input id="search-target" type="number" placeholder="Target" style="width:70px;padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;" value="42">
+      <button class="btn primary" id="search-step-btn" onclick="searchStep()">Step →</button>
+      <button class="btn" onclick="searchReset()">Reset</button>
+    </div>
+    <div class="info-box" id="search-info">Enter target and press Step. Array is sorted.</div>
+    <div style="display:flex;gap:4px;margin:10px 0;flex-wrap:wrap;" id="search-vis"></div>
+    <div style="font-size:12px;color:var(--text2);margin-top:6px;">
+      Low: <span id="s-low" style="font-family:var(--mono);color:var(--accent);">-</span> &nbsp;
+      Mid: <span id="s-mid" style="font-family:var(--mono);color:var(--warn);">-</span> &nbsp;
+      High: <span id="s-high" style="font-family:var(--mono);color:var(--danger);">-</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EXPRESSIONS ===== -->
+<div class="page" id="page-expressions">
+  <div class="page-title">Expression Evaluation</div>
+  <div class="page-desc">Combination of arithmetic operators & operands/variables. Operators solved based on precedence: ↑(Power) highest → /, * next → +, − lowest. Brackets solved first.</div>
+  <div class="section">
+    <div class="sec-label">Three Notations</div>
+    <div class="cards">
+      <div class="card"><h4>Infix (A+B)</h4><p>Operator between operands. Standard human-readable form. Requires precedence rules. E.g.: <code>(A+B)*C</code></p></div>
+      <div class="card"><h4>Prefix / Polish (+AB)</h4><p>Operator before operands. No brackets needed. E.g.: <code>*+ABC</code></p></div>
+      <div class="card"><h4>Postfix / RPN (AB+)</h4><p>Operator after operands. Also called Reverse Polish Notation. E.g.: <code>AB+C*</code></p></div>
+      <div class="card"><h4>Precedence</h4><p>Higher: <code>^</code> (Power) → Next: <code>/, *</code> → Lowest: <code>+, −</code>. Brackets solved first.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Interactive Converter</div>
+    <div class="controls">
+      <select id="expr-select" style="padding:5px 8px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;">
+        <option value="0">(A+B)*C</option>
+        <option value="1">A+B*C-D</option>
+        <option value="2">A+(B*C-(D/E^F)*G)*H</option>
+        <option value="3">5*(6+2)-12/4</option>
+      </select>
+      <button class="btn primary" onclick="showExpr()">Show Conversions</button>
+    </div>
+    <div id="expr-result"></div>
+  </div>
+  <div class="section">
+    <div class="sec-label">From Notes — Examples</div>
+    <table>
+      <tr><th>Infix</th><th>Prefix</th><th>Postfix</th></tr>
+      <tr><td>(A+B)*C</td><td>*+ABC</td><td>AB+C*</td></tr>
+      <tr><td>A+B*C-D</td><td>+-A*BCD</td><td>ABC*+D-</td></tr>
+      <tr><td>5*(6+2)-12/4</td><td>-*5+62/124</td><td>562+*124/-</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ===== ADVANCED ===== -->
+<div class="page" id="page-advanced">
+  <div class="page-title">Shortest Path & Advanced Topics</div>
+  <div class="page-desc">Advanced graph algorithms, multi-stage graphs, NP problems, and classical algorithmic problems from your notes.</div>
+  <div class="section">
+    <div class="sec-label">Shortest Path Algorithms</div>
+    <div class="cards">
+      <div class="card"><h4>Floyd-Warshall</h4><p>All Pairs Shortest Path (APSP). Calculates shortest path between all pairs of vertices. Works with negative weights (no negative cycles).</p></div>
+      <div class="card"><h4>Dijkstra's Algorithm</h4><p>Single Source Shortest Path. No negative weights. Time complexity: O(V²) adjacency matrix, O(V+E log V) with adjacency list.</p></div>
+      <div class="card"><h4>Multi-Stage Graph</h4><p>Graph whose vertices are divided into multiple levels. Edges go only from one stage to the next. Example: Shortest-path problem.</p></div>
+      <div class="card"><h4>All Trees are Graphs</h4><p>but not all graphs are trees. Trees have no cycles, graphs can.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">Classical Problems</div>
+    <div class="cards">
+      <div class="card"><h4>8-Queen Problem</h4><p>Place 8 queens on a chessboard so no two attack each other. Constraint: no two queens share same row, column, or diagonal. Approach: use Backtracking.</p></div>
+      <div class="card"><h4>Hamiltonian Problem</h4><p>From graph theory. Determine if a graph has a path visiting every node exactly once, and possibly a cycle returning to start. Hamiltonian Path visits every vertex once. Hamiltonian Cycle visits every vertex once and returns to start.</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="sec-label">NP — Non-Deterministic Polynomial Time</div>
+    <div class="cards">
+      <div class="card"><h4>What is NP?</h4><p>Problems whose solution can be verified in polynomial time. Finding the solution may take exponential time.</p></div>
+      <div class="card"><h4>NP-Hard</h4><p>Traveling Salesman Problem (TSP), 3D matching. At least as hard as NP problems.</p></div>
+      <div class="card"><h4>NP-Complete</h4><p>SAT, Hamiltonian Cycle, Clique, Vertex Cover, 0/1 Knapsack. Both NP and NP-Hard.</p></div>
+      <div class="card"><h4>AVL Tree BF</h4><p>Balance Factor = Height of Left Subtree − Height of Right Subtree. Valid BF = {−1, 0, +1}. Self-balancing (Adelson-Velski & Landis).</p></div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ============================================================
+// NAV
+// ============================================================
+function nav(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  event.target.classList.add('active');
+  // lazy init
+  if(id==='stack'&&!stackInit) initStack();
+  if(id==='queue'&&!qInit) initQueue();
+  if(id==='linkedlist'&&!llInit){initLL();llType(0,document.querySelector('#page-linkedlist .tab'));}
+  if(id==='tree'&&!treeInit){initTree();treeType('general',document.querySelector('#page-tree .tab'));}
+  if(id==='graph'&&!graphInit){initGraph();graphType('undirected',document.querySelector('#page-graph .tab'));}
+  if(id==='bfs'&&!bfsInit) initBFS();
+  if(id==='dfs'&&!dfsInit) initDFS();
+  if(id==='spanning'&&!spanInit){initSpan();spanShow(0,document.querySelector('#page-spanning .tab'));}
+  if(id==='prim'&&!primInit) primReset();
+  if(id==='kruskal'&&!krusInit) krusReset();
+  if(id==='searching'&&!searchInit) initSearch();
+  if(['bubble','selection','insertion','merge','quick'].includes(id)&&!sortStates[id]) initSort(id);
+}
+
+// ============================================================
+// SVG HELPER
+// ============================================================
+function mkEl(tag,attrs,text){
+  const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  if(attrs) Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+  if(text!==undefined) el.textContent=text;
+  return el;
+}
+function clrSvg(id){document.getElementById(id).innerHTML='';}
+function getSvg(id){return document.getElementById(id);}
+
+// ============================================================
+// STACK
+// ============================================================
+let stackInit=false,stackArr=[];
+function initStack(){stackInit=true;renderStack();}
+function stackPush(){
+  const v=parseInt(document.getElementById('stack-input').value)||0;
+  if(stackArr.length>=8){document.getElementById('stack-info').textContent='Stack overflow! Max size 8.';return;}
+  stackArr.push(v);
+  document.getElementById('stack-info').textContent=`Pushed ${v} onto stack. Top = ${v}.`;
+  renderStack();
+}
+function stackPop(){
+  if(!stackArr.length){document.getElementById('stack-info').textContent='Stack underflow! Stack is empty.';return;}
+  const v=stackArr.pop();
+  document.getElementById('stack-info').textContent=`Popped ${v} from stack.`;
+  renderStack();
+}
+function stackPeek(){
+  if(!stackArr.length){document.getElementById('stack-info').textContent='Stack is empty!';return;}
+  document.getElementById('stack-info').textContent=`Peek: top element is ${stackArr[stackArr.length-1]}.`;
+}
+function stackReset(){stackArr=[];document.getElementById('stack-info').textContent='Stack cleared.';renderStack();}
+function renderStack(){
+  const vis=document.getElementById('stack-vis');vis.innerHTML='';
+  [...stackArr].reverse().forEach((v,i)=>{
+    const el=document.createElement('div');
+    el.style.cssText=`background:${i===0?'var(--accent)':'var(--surface2)'};border:1px solid ${i===0?'var(--accent)':'var(--border)'};border-radius:4px;padding:5px 10px;font-family:var(--mono);font-size:13px;color:${i===0?'#0d1117':'var(--text)'};display:flex;justify-content:space-between;align-items:center;`;
+    el.innerHTML=`<span>${v}</span>${i===0?'<span style="font-size:10px;opacity:.7">← top</span>':''}`;
+    vis.appendChild(el);
+  });
+  document.getElementById('stack-top').textContent=stackArr.length-1;
+  document.getElementById('stack-size').textContent=stackArr.length;
+}
+
+// ============================================================
+// QUEUE
+// ============================================================
+let qInit=false,qArr=[],qType_='linear',qFront=0,qRear=-1;
+function initQueue(){qInit=true;renderQueue();}
+function qType(t,el){qType_=t;document.querySelectorAll('#page-queue .tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');qReset();}
+function qReset(){qArr=[];qFront=0;qRear=-1;document.getElementById('q-info').textContent='Queue cleared.';renderQueue();}
+function qEnqueue(){
+  const v=parseInt(document.getElementById('q-input').value)||0;
+  if(qArr.length>=6){document.getElementById('q-info').textContent='Queue full!';return;}
+  qArr.push(v);qRear=qArr.length-1;
+  document.getElementById('q-info').textContent=`Enqueued ${v} at rear.`;renderQueue();
+}
+function qDequeue(){
+  if(!qArr.length){document.getElementById('q-info').textContent='Queue empty!';return;}
+  const v=qArr.shift();
+  document.getElementById('q-info').textContent=`Dequeued ${v} from front.`;renderQueue();
+}
+function renderQueue(){
+  const vis=document.getElementById('q-vis');vis.innerHTML='';
+  const max=6;
+  for(let i=0;i<max;i++){
+    const wrap=document.createElement('div');
+    const cell=document.createElement('div');
+    cell.className='q-cell';
+    const label=document.createElement('div');label.className='q-label';
+    if(i<qArr.length){
+      cell.textContent=qArr[i];
+      if(i===0)cell.classList.add('front'),label.textContent='Front';
+      else if(i===qArr.length-1)cell.classList.add('rear'),label.textContent='Rear';
+      else label.textContent=i;
+    } else {cell.textContent='-';cell.classList.add('empty');label.textContent=i;}
+    wrap.appendChild(cell);wrap.appendChild(label);
+    vis.appendChild(wrap);
+  }
+  document.getElementById('q-front').textContent=qArr.length?0:'-';
+  document.getElementById('q-rear').textContent=qArr.length?qArr.length-1:'-';
+  document.getElementById('q-size').textContent=qArr.length;
+}
+
+// ============================================================
+// LINKED LIST
+// ============================================================
+let llInit=false,llNodes=[];
+const llTypes=[
+  {desc:'Singly Linked List: Forward direction only (one-way). Each node has Data + Next pointer → NULL at end.',render:drawSLL},
+  {desc:'Doubly Linked List: Each node has 3 elements (prev|data|next). Direction: forward & backward.',render:drawDLL},
+  {desc:'Circular Singly: Last node\'s next pointer contains address of first node. Forms a ring.',render:drawCSLL},
+  {desc:'Doubly Circular: Both directions + circular. All nodes interconnected in both directions.',render:drawDCLL},
+];
+function initLL(){llInit=true;llNodes=[1,2,3,4];drawLLLive();}
+function llType(i,el){
+  document.querySelectorAll('#page-linkedlist .tab').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('ll-desc').textContent=llTypes[i].desc;
+  llTypes[i].render();
+}
+function drawSLL(){
+  const svg=getSvg('ll-svg');svg.innerHTML='';
+  const nodes=[10,20,30,null];
+  let x=60;
+  nodes.forEach((v,i)=>{
+    if(v===null){
+      svg.appendChild(mkEl('rect',{x,y:25,width:50,height:30,rx:4,fill:'var(--surface3)',stroke:'var(--border)'}));
+      svg.appendChild(mkEl('text',{x:x+25,y:45,'text-anchor':'middle','font-size':'11','font-family':'var(--mono)',fill:'var(--danger)'},'NULL'));
+    } else {
+      svg.appendChild(mkEl('rect',{x,y:25,width:50,height:30,rx:4,fill:'var(--surface2)',stroke:'var(--accent)'}));
+      svg.appendChild(mkEl('text',{x:x+15,y:45,'text-anchor':'middle','font-size':'12','font-family':'var(--mono)',fill:'var(--text)'},v));
+      svg.appendChild(mkEl('rect',{x:x+28,y:28,width:20,height:24,rx:2,fill:'var(--surface3)'}));
+      svg.appendChild(mkEl('text',{x:x+38,y:43,'text-anchor':'middle','font-size':'9','font-family':'var(--mono)',fill:'var(--accent)'},'→'));
+      if(i<nodes.length-2){svg.appendChild(mkEl('line',{x1:x+50,y1:40,x2:x+80,y2:40,stroke:'var(--accent)','stroke-width':'1.5'}));}
+      else{svg.appendChild(mkEl('line',{x1:x+50,y1:40,x2:x+80,y2:40,stroke:'var(--accent)','stroke-width':'1.5'}));}
+    }
+    x+=90;
+  });
+}
+function drawDLL(){
+  const svg=getSvg('ll-svg');svg.innerHTML='';
+  const nodes=[10,20,30];let x=40;
+  nodes.forEach((v,i)=>{
+    svg.appendChild(mkEl('rect',{x,y:20,width:70,height:36,rx:4,fill:'var(--surface2)',stroke:'var(--accent)'}));
+    svg.appendChild(mkEl('rect',{x,y:22,width:18,height:32,rx:2,fill:'var(--surface3)'}));
+    svg.appendChild(mkEl('text',{x:x+9,y:41,'text-anchor':'middle','font-size':'9',fill:'var(--purple)'},'←'));
+    svg.appendChild(mkEl('text',{x:x+35,y:42,'text-anchor':'middle','font-size':'12','font-family':'var(--mono)',fill:'var(--text)'},v));
+    svg.appendChild(mkEl('rect',{x:x+52,y:22,width:18,height:32,rx:2,fill:'var(--surface3)'}));
+    svg.appendChild(mkEl('text',{x:x+61,y:41,'text-anchor':'middle','font-size':'9',fill:'var(--accent)'},'→'));
+    if(i<nodes.length-1){
+      svg.appendChild(mkEl('line',{x1:x+70,y1:35,x2:x+110,y2:35,stroke:'var(--accent)','stroke-width':'1.5'}));
+      svg.appendChild(mkEl('line',{x1:x+110,y1:45,x2:x+70,y2:45,stroke:'var(--purple)','stroke-width':'1.5','stroke-dasharray':'4,2'}));
+    }
+    x+=110;
+  });
+}
+function drawCSLL(){
+  const svg=getSvg('ll-svg');svg.innerHTML='';
+  const nodes=[10,20,30];let x=60;
+  nodes.forEach((v,i)=>{
+    svg.appendChild(mkEl('rect',{x,y:25,width:50,height:30,rx:4,fill:'var(--surface2)',stroke:'var(--accent2)'}));
+    svg.appendChild(mkEl('text',{x:x+15,y:45,'text-anchor':'middle','font-size':'12','font-family':'var(--mono)',fill:'var(--text)'},v));
+    svg.appendChild(mkEl('rect',{x:x+28,y:28,width:20,height:24,rx:2,fill:'var(--surface3)'}));
+    if(i<nodes.length-1) svg.appendChild(mkEl('line',{x1:x+50,y1:40,x2:x+90,y2:40,stroke:'var(--accent2)','stroke-width':'1.5'}));
+    x+=90;
+  });
+  svg.appendChild(mkEl('path',{d:'M 330 40 Q 330 70 195 70 Q 60 70 60 40',stroke:'var(--accent2)','stroke-width':'1.5',fill:'none','stroke-dasharray':'5,3'}));
+  svg.appendChild(mkEl('text',{x:195,y:78,'text-anchor':'middle','font-size':'10',fill:'var(--accent2)'},'circular →'));
+}
+function drawDCLL(){
+  const svg=getSvg('ll-svg');svg.innerHTML='';
+  const nodes=[10,20,30];let x=60;
+  nodes.forEach((v,i)=>{
+    svg.appendChild(mkEl('rect',{x,y:20,width:70,height:36,rx:4,fill:'var(--surface2)',stroke:'var(--purple)'}));
+    svg.appendChild(mkEl('text',{x:x+35,y:42,'text-anchor':'middle','font-size':'12','font-family':'var(--mono)',fill:'var(--text)'},v));
+    if(i<nodes.length-1){
+      svg.appendChild(mkEl('line',{x1:x+70,y1:33,x2:x+110,y2:33,stroke:'var(--purple)','stroke-width':'1.5'}));
+      svg.appendChild(mkEl('line',{x1:x+110,y1:43,x2:x+70,y2:43,stroke:'var(--purple)','stroke-width':'1.5','stroke-dasharray':'4,2'}));
+    }
+    x+=110;
+  });
+  svg.appendChild(mkEl('path',{d:'M 340 25 Q 340 5 195 5 Q 50 5 50 25',stroke:'var(--purple)','stroke-width':'1.5',fill:'none'}));
+  svg.appendChild(mkEl('path',{d:'M 50 55 Q 50 75 195 75 Q 340 75 340 55',stroke:'var(--purple)','stroke-width':'1.5',fill:'none','stroke-dasharray':'5,3'}));
+}
+function llInsert(){
+  const v=parseInt(document.getElementById('ll-input').value)||0;
+  llNodes.push(v);document.getElementById('ll-info').textContent=`Inserted ${v}. List has ${llNodes.length} nodes.`;drawLLLive();
+}
+function llDelete(){
+  if(!llNodes.length){document.getElementById('ll-info').textContent='List is empty!';return;}
+  const v=llNodes.shift();document.getElementById('ll-info').textContent=`Deleted head node ${v}.`;drawLLLive();
+}
+function llReset(){llNodes=[1,2,3,4];document.getElementById('ll-info').textContent='Reset to default.';drawLLLive();}
+function drawLLLive(){
+  const svg=getSvg('ll-live');svg.innerHTML='';
+  if(!llNodes.length){svg.appendChild(mkEl('text',{x:20,y:40,'font-size':'12',fill:'var(--text3)'},'Empty list'));return;}
+  let x=20;
+  llNodes.forEach((v,i)=>{
+    svg.appendChild(mkEl('rect',{x,y:20,width:50,height:36,rx:4,fill:'var(--surface2)',stroke:'var(--accent)'}));
+    svg.appendChild(mkEl('text',{x:x+16,y:42,'text-anchor':'middle','font-size':'12','font-family':'var(--mono)',fill:'var(--text)'},v));
+    svg.appendChild(mkEl('rect',{x:x+30,y:23,width:18,height:30,rx:2,fill:'var(--surface3)'}));
+    if(i===0)svg.appendChild(mkEl('text',{x:x+25,y:14,'text-anchor':'middle','font-size':'9',fill:'var(--accent2)'},'HEAD'));
+    if(i<llNodes.length-1){
+      svg.appendChild(mkEl('line',{x1:x+50,y1:38,x2:x+80,y2:38,stroke:'var(--accent)','stroke-width':'1.5'}));
+      svg.appendChild(mkEl('polygon',{points:`${x+80},34 ${x+88},38 ${x+80},42`,fill:'var(--accent)'}));
+    } else {
+      svg.appendChild(mkEl('text',{x:x+39,y:41,'text-anchor':'middle','font-size':'9',fill:'var(--danger)'},'∅'));
+    }
+    x+=90;
+  });
+  svg.setAttribute('viewBox',`0 0 ${Math.max(700,x+20)} 80`);
+}
+
+// ============================================================
+// GRAPH NODES
+// ============================================================
+const GNODES={A:{x:100,y:60},B:{x:300,y:40},C:{x:520,y:60},D:{x:80,y:200},E:{x:280,y:185},F:{x:500,y:210},G:{x:360,y:280}};
+const GEDGES=[['A','B',4],['A','D',2],['B','C',6],['B','E',3],['C','F',1],['D','E',5],['D','G',3],['E','F',4],['E','G',2],['F','G',7]];
+
+function drawGraphBase(svgId,mstEdges,rejEdges,considering,nodeColors,visited,inQueue,bfsEdges){
+  const svg=getSvg(svgId);svg.innerHTML='';
+  const mstSet=new Set((mstEdges||[]).map(([u,v])=>`${u}-${v}`));
+  const rejSet=new Set((rejEdges||[]).map(([u,v])=>`${u}-${v}`));
+  const bfsEdgeSet=new Set((bfsEdges||[]).map(([u,v])=>`${u}-${v}`));
+  GEDGES.forEach(([u,v,w])=>{
+    const a=GNODES[u],b=GNODES[v];
+    const k1=`${u}-${v}`,k2=`${v}-${u}`;
+    const isMST=mstSet.has(k1)||mstSet.has(k2);
+    const isRej=rejSet.has(k1)||rejSet.has(k2);
+    const isBFS=bfsEdgeSet.has(k1)||bfsEdgeSet.has(k2);
+    const isCand=considering&&((considering[0]===u&&considering[1]===v)||(considering[0]===v&&considering[1]===u));
+    let color=isMST?'var(--accent2)':isRej?'var(--danger)':isCand?'var(--warn)':isBFS?'var(--accent)':'var(--border2)';
+    const line=mkEl('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:color,'stroke-width':isMST||isBFS?2.5:isCand?2:1});
+    if(isRej) line.setAttribute('stroke-dasharray','5,4');
+    svg.appendChild(line);
+    const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+    const dx=b.y-a.y,dy=-(b.x-a.x),len=Math.sqrt(dx*dx+dy*dy)||1;
+    svg.appendChild(mkEl('text',{x:mx+dx/len*11,y:my+dy/len*11,'text-anchor':'middle','dominant-baseline':'central','font-size':'10','font-family':'var(--mono)',fill:isMST?'var(--accent2)':isCand?'var(--warn)':'var(--text3)','font-weight':isMST?'600':'400'},w));
+  });
+  Object.entries(GNODES).forEach(([id,pos])=>{
+    let color=nodeColors&&nodeColors[id]?nodeColors[id]:(visited&&visited.has(id)?'var(--accent)':inQueue&&inQueue.has(id)?'var(--warn)':'var(--surface3)');
+    svg.appendChild(mkEl('circle',{cx:pos.x,cy:pos.y,r:20,fill:color,stroke:'rgba(0,0,0,.3)','stroke-width':'1'}));
+    svg.appendChild(mkEl('text',{x:pos.x,y:pos.y,'text-anchor':'middle','dominant-baseline':'central','font-size':'13','font-weight':'600','font-family':'Inter,sans-serif',fill:'var(--text)'},id));
+  });
+}
+
+// ============================================================
+// TREE
+// ============================================================
+let treeInit=false;
+const TNODES={P:{x:350,y:30},Q:{x:200,y:90},R:{x:500,y:90},A:{x:130,y:160},B:{x:230,y:160},C:{x:430,y:160},D:{x:560,y:160},L:{x:100,y:230},M:{x:480,y:230},E:{x:60,y:280},F:{x:110,y:280},G:{x:160,y:280},H:{x:440,y:280},I:{x:520,y:280}};
+const TEDGES=[['P','Q'],['P','R'],['Q','A'],['Q','B'],['R','C'],['R','D'],['A','L'],['D','M'],['L','E'],['L','F'],['L','G'],['M','H'],['M','I']];
+function initTree(){treeInit=true;}
+function treeType(t,el){
+  document.querySelectorAll('#page-tree .tabs:first-of-type .tab').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const infos={
+    general:'General Tree: No constraint. Unbalanced. Superset of every tree. Node may have infinite number of children.',
+    binary:'Binary Tree: Mostly 2 children per node. Balanced tree. Has Parent node, Left node (left kid), Right node (right kid).',
+    bst:'Binary Search Tree: Extension of Binary Tree. Balanced. Value of left node < Parent node < value of right node. Nodes sequentially arranged. Searching easy.',
+    avl:'AVL Tree (Adelson-Velski & Landis): Self-Balancing tree. Uses Balance Factor. BF = Height of Left Subtree − Height of Right Subtree. Valid BF = {−1, 0, +1}.',
+    rb:'Red-Black Tree: Level-wise coloring. Properties similar to AVL tree. Maintains balance through color properties.'
+  };
+  document.getElementById('tree-info').textContent=infos[t];
+  const svg=getSvg('tree-svg');svg.innerHTML='';
+  TEDGES.forEach(([p,c])=>{const a=TNODES[p],b=TNODES[c];svg.appendChild(mkEl('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'var(--border2)','stroke-width':'1.5'}));});
+  const leafSet=new Set(['E','F','G','H','I','B','C']);
+  Object.entries(TNODES).forEach(([id,pos])=>{
+    const isLeaf=leafSet.has(id);const isRoot=id==='P';
+    svg.appendChild(mkEl('circle',{cx:pos.x,cy:pos.y,r:18,fill:isRoot?'var(--accent)':isLeaf?'var(--accent2)':'var(--surface2)',stroke:isRoot?'var(--accent)':isLeaf?'var(--accent2)':'var(--border2)','stroke-width':'1.5'}));
+    svg.appendChild(mkEl('text',{x:pos.x,y:pos.y,'text-anchor':'middle','dominant-baseline':'central','font-size':'12','font-weight':'600',fill:'var(--text)'},id));
+  });
+  const legendY=270;
+  [{c:'var(--accent)',l:'Root'},{c:'var(--surface2)',l:'Internal'},{c:'var(--accent2)',l:'Leaf'}].forEach(({c,l},i)=>{
+    svg.appendChild(mkEl('circle',{cx:80+i*110,cy:legendY,r:8,fill:c}));
+    svg.appendChild(mkEl('text',{x:94+i*110,y:legendY,'dominant-baseline':'central','font-size':'11',fill:'var(--text2)'},l));
+  });
+}
+
+// ============================================================
+// TREE TRAVERSAL
+// ============================================================
+const BSTNODES={8:{x:350,y:25},5:{x:200,y:85},9:{x:480,y:85},7:{x:130,y:155},1:{x:260,y:155},4:{x:370,y:155},6:{x:570,y:155},11:{x:100,y:215},2:{x:200,y:215},3:{x:290,y:215}};
+const BSTEDGES=[[8,5],[8,9],[5,7],[5,1],[9,4],[9,6],[7,11],[1,2],[2,3]];
+function traversalShow(t,el){
+  document.querySelectorAll('#page-tree .tabs:last-of-type .tab').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const info={inorder:'In-Order: Left → Root → Right. Gives sorted output for BST. Result: 9 5 1 7 2 11 8 4 3 6',preorder:'Pre-Order: Root → Left → Right. Good for copying tree. Result: 8 5 9 7 1 11 2 4 6 3',postorder:'Post-Order: Left → Right → Root. Good for deletion. Result: 9 1 2 11 7 5 3 4 6 8'};
+  const res={inorder:'9  5  1  7  2  11  8  4  3  6',preorder:'8  5  9  7  1  11  2  4  6  3',postorder:'9  1  2  11  7  5  3  4  6  8'};
+  document.getElementById('trav-info').textContent=info[t];
+  document.getElementById('trav-result').textContent=res[t];
+  const svg=getSvg('trav-svg');svg.innerHTML='';
+  BSTEDGES.forEach(([p,c])=>{const a=BSTNODES[p],b=BSTNODES[c];svg.appendChild(mkEl('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,stroke:'var(--border2)','stroke-width':'1.5'}));});
+  const order={inorder:[9,5,1,7,2,11,8,4,3,6],preorder:[8,5,9,7,1,11,2,4,6,3],postorder:[9,1,2,11,7,5,3,4,6,8]};
+  const colorMap={};
+  order[t].forEach((n,i)=>{colorMap[n]=`hsl(${210+i*15},70%,${40+i*3}%)`});
+  Object.entries(BSTNODES).forEach(([id,pos])=>{
+    svg.appendChild(mkEl('circle',{cx:pos.x,cy:pos.y,r:18,fill:colorMap[parseInt(id)]||'var(--surface2)',stroke:'var(--border2)','stroke-width':'1.5'}));
+    svg.appendChild(mkEl('text',{x:pos.x,y:pos.y,'text-anchor':'middle','dominant-baseline':'central','font-size':'12','font-weight':'600',fill:'var(--text)'},id));
+    const idx=order[t].indexOf(parseInt(id))+1;
+    svg.appendChild(mkEl('text',{x:pos.x+18,y:pos.y-14,'font-size':'10',fill:'var(--warn)','font-weight':'600'},idx));
+  });
+}
+
+// ============================================================
+// GRAPH TYPES
+// ============================================================
+let graphInit=false;
+function initGraph(){graphInit=true;}
+const graphInfos={
+  undirected:'Undirected Graph: No direction on edges. Bidirectional. e₁={A,B} means both {A,B} and {B,A} exist.',
+  directed:'Directed Graph: Edges have direction. Single side direction (unidirectional). e₁={A,B}✓ but {B,A}✗.',
+  dag:'Directed Acyclic Graph (DAG): Directed graph with no cycle formation.',
+  weighted:'Weighted Graph: Edges contain weight/number representing cost/time/value/length/volume. Used for shortest path.',
+  complete:'Complete Graph: Each node connected with every other node. Fully connected / Mesh graph.'
+};
+function graphType(t,el){
+  document.querySelectorAll('#page-graph .tab').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('graph-info').textContent=graphInfos[t];
+  const directed=t==='directed'||t==='dag';
+  const weighted=t==='weighted';
+  drawGraphBase('graph-svg',[],[],null,null,null,null,[]);
+  if(directed){
+    const svg=getSvg('graph-svg');
+    GEDGES.forEach(([u,v,w])=>{
+      const a=GNODES[u],b=GNODES[v];
+      const dx=b.x-a.x,dy=b.y-a.y,len=Math.sqrt(dx*dx+dy*dy);
+      const ex=b.x-dx/len*22,ey=b.y-dy/len*22;
+      const arrow=mkEl('line',{x1:a.x,y1:a.y,x2:ex,y2:ey,stroke:'var(--accent)','stroke-width':'1.5','marker-end':'url(#arr)'});
+      svg.appendChild(arrow);
+    });
+    const defs=mkEl('defs',{});
+    const mk=mkEl('marker',{id:'arr',viewBox:'0 0 10 10',refX:'8',refY:'5',markerWidth:'5',markerHeight:'5',orient:'auto'});
+    mk.appendChild(mkEl('path',{d:'M2 1L8 5L2 9',fill:'none',stroke:'var(--accent)','stroke-width':'1.5'}));
+    defs.appendChild(mk);svg.insertBefore(defs,svg.firstChild);
+  }
+  if(weighted){
+    const svg=getSvg('graph-svg');
+    GEDGES.forEach(([u,v,w])=>{
+      const a=GNODES[u],b=GNODES[v];
+      const mx=(a.x+b.x)/2,my=(a.y+b.y)/2;
+      const bg=mkEl('circle',{cx:mx,cy:my,r:9,fill:'var(--surface)','stroke':'var(--border)'});
+      const t=mkEl('text',{x:mx,y:my,'text-anchor':'middle','dominant-baseline':'central','font-size':'10','font-family':'var(--mono)',fill:'var(--warn)','font-weight':'600'},w);
+      svg.appendChild(bg);svg.appendChild(t);
+    });
+  }
+}
+
+// ============================================================
+// BFS
+// ============================================================
+let bfsInit=false,bfsState={},bfsTimer=null;
+const BFS_ADJ={A:['B','D'],B:['A','C','E'],C:['B','F'],D:['A','E','G'],E:['B','D','F'],F:['C','E','G'],G:['D','F']};
+function initBFS(){bfsInit=true;bfsReset();}
+function bfsReset(){
+  clearInterval(bfsTimer);bfsTimer=null;
+  document.getElementById('bfs-auto-btn').textContent='Auto play';
+  bfsState={visited:new Set(),queue:[],bfsEdges:[],done:false,order:[]};
+  document.getElementById('bfs-info').textContent='Press Step. BFS visits nodes level by level using a Queue.';
+  document.getElementById('bfs-queue').textContent='[ ]';
+  document.getElementById('bfs-visited').textContent='none';
+  document.getElementById('bfs-step-btn').disabled=false;
+  document.getElementById('bfs-auto-btn').disabled=false;
+  drawGraphBase('bfs-svg',[],[],null,null,null,null,[]);
+}
+function bfsStep(){
+  const s=bfsState;
+  if(s.done)return;
+  if(!s.queue.length&&!s.visited.size){s.queue.push('A');s.visited.add('A');}
+  else if(!s.queue.length){bfsDone();return;}
+  const cur=s.queue.shift();s.order.push(cur);
+  const nc={};Object.keys(GNODES).forEach(n=>{nc[n]=s.visited.has(n)?'var(--accent)':s.queue.includes(n)?'var(--warn)':'var(--surface3)';});
+  nc[cur]='var(--accent)';
+  (BFS_ADJ[cur]||[]).forEach(nb=>{
+    if(!s.visited.has(nb)){s.visited.add(nb);s.queue.push(nb);s.bfsEdges.push([cur,nb]);}
+  });
+  drawGraphBase('bfs-svg',[],[],null,nc,null,null,s.bfsEdges);
+  document.getElementById('bfs-queue').textContent='['+s.queue.join(', ')+']';
+  document.getElementById('bfs-visited').textContent=s.order.join(' → ');
+  document.getElementById('bfs-info').textContent=`Processing: ${cur}. Added neighbors to queue.`;
+  if(!s.queue.length){bfsDone();}
+}
+function bfsDone(){
+  bfsState.done=true;
+  document.getElementById('bfs-info').textContent=`BFS complete! Traversal: ${bfsState.order.join(' → ')}`;
+  document.getElementById('bfs-step-btn').disabled=true;
+  document.getElementById('bfs-auto-btn').disabled=true;
+  clearInterval(bfsTimer);bfsTimer=null;
+}
+function bfsAuto(){
+  if(bfsTimer){clearInterval(bfsTimer);bfsTimer=null;document.getElementById('bfs-auto-btn').textContent='Auto play';return;}
+  document.getElementById('bfs-auto-btn').textContent='Pause';
+  bfsTimer=setInterval(()=>{bfsStep();if(bfsState.done){clearInterval(bfsTimer);bfsTimer=null;document.getElementById('bfs-auto-btn').textContent='Auto play';}},800);
+}
+
+// ============================================================
+// DFS
+// ============================================================
+let dfsInit=false,dfsState={},dfsTimer=null;
+function initDFS(){dfsInit=true;dfsReset();}
+function dfsReset(){
+  clearInterval(dfsTimer);dfsTimer=null;
+  document.getElementById('dfs-auto-btn').textContent='Auto play';
+  dfsState={visited:new Set(),stack:[],dfsEdges:[],done:false,order:[]};
+  document.getElementById('dfs-info').textContent='Press Step. DFS goes deep into each branch before backtracking.';
+  document.getElementById('dfs-stack').textContent='[ ]';
+  document.getElementById('dfs-visited').textContent='none';
+  document.getElementById('dfs-step-btn').disabled=false;
+  document.getElementById('dfs-auto-btn').disabled=false;
+  drawGraphBase('dfs-svg',[],[],null,null,null,null,[]);
+}
+function dfsStep(){
+  const s=dfsState;
+  if(s.done)return;
+  if(!s.stack.length&&!s.visited.size){s.stack.push('A');}
+  else if(!s.stack.length){dfsDone();return;}
+  const cur=s.stack.pop();
+  if(s.visited.has(cur)){if(!s.stack.length)dfsDone();return;}
+  s.visited.add(cur);s.order.push(cur);
+  const nc={};Object.keys(GNODES).forEach(n=>{nc[n]=s.visited.has(n)?'var(--accent)':s.stack.includes(n)?'var(--purple)':'var(--surface3)';});
+  const nb=[...BFS_ADJ[cur]||[]].reverse();
+  nb.forEach(n=>{if(!s.visited.has(n)){s.stack.push(n);s.dfsEdges.push([cur,n]);}});
+  drawGraphBase('dfs-svg',[],[],null,nc,null,null,s.dfsEdges);
+  document.getElementById('dfs-stack').textContent='['+s.stack.join(', ')+']';
+  document.getElementById('dfs-visited').textContent=s.order.join(' → ');
+  document.getElementById('dfs-info').textContent=`Visited: ${cur}. Pushed neighbors to stack.`;
+  if(!s.stack.length)dfsDone();
+}
+function dfsDone(){
+  dfsState.done=true;
+  document.getElementById('dfs-info').textContent=`DFS complete! Traversal: ${dfsState.order.join(' → ')}`;
+  document.getElementById('dfs-step-btn').disabled=true;
+  document.getElementById('dfs-auto-btn').disabled=true;
+  clearInterval(dfsTimer);dfsTimer=null;
+}
+function dfsAuto(){
+  if(dfsTimer){clearInterval(dfsTimer);dfsTimer=null;document.getElementById('dfs-auto-btn').textContent='Auto play';return;}
+  document.getElementById('dfs-auto-btn').textContent='Pause';
+  dfsTimer=setInterval(()=>{dfsStep();if(dfsState.done){clearInterval(dfsTimer);dfsTimer=null;document.getElementById('dfs-auto-btn').textContent='Auto play';}},800);
+}
+
+// ============================================================
+// SPANNING TREE
+// ============================================================
+let spanInit=false;
+const SNODES={A:{x:120,y:60},B:{x:330,y:40},C:{x:540,y:60},D:{x:160,y:200},E:{x:390,y:190}};
+const SEDGES=[['A','B'],['A','D'],['B','C'],['B','D'],['B','E'],['C','E'],['D','E']];
+const spanViews=[
+  {active:SEDGES,ghost:[],cross:[],info:'Original graph — 5 nodes, 7 edges. A spanning tree needs exactly 4 edges (V−1).'},
+  {active:[['A','B'],['B','C'],['A','D'],['D','E']],ghost:[['B','D'],['B','E'],['C','E']],cross:[],info:'✓ Spanning Tree 1 — 4 edges, all nodes connected, no cycles. 3 edges removed.'},
+  {active:[['A','B'],['B','E'],['C','E'],['A','D']],ghost:[['A','B'],['B','C'],['B','D'],['D','E']].filter(e=>![['A','B'],['B','E'],['C','E'],['A','D']].some(a=>a[0]===e[0]&&a[1]===e[1])),cross:[],info:'✓ Spanning Tree 2 — different valid spanning tree using different 4 edges.'},
+  {active:[['A','B'],['B','C'],['C','E']],ghost:[['A','D'],['B','D'],['B','E'],['D','E']],cross:['D'],info:'✗ Invalid — only 3 edges. Node D is disconnected. Not a spanning tree!'},
+];
+function initSpan(){spanInit=true;}
+function spanShow(vi,el){
+  document.querySelectorAll('#page-spanning .tab').forEach(b=>b.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const v=spanViews[vi];
+  const info=document.getElementById('span-info');
+  info.textContent=v.info;info.className='info-box'+(vi===3?' bad':vi>0?' ok':'');
+  const svg=getSvg('span-svg');svg.innerHTML='';
+  const activeSet=new Set(v.active.map(([a,b])=>a+'-'+b));
+  SEDGES.forEach(([a,b])=>{
+    const na=SNODES[a],nb=SNODES[b];
+    const active=activeSet.has(a+'-'+b)||activeSet.has(b+'-'+a);
+    const ln=mkEl('line',{x1:na.x,y1:na.y,x2:nb.x,y2:nb.y,stroke:active?'var(--accent2)':'var(--border2)','stroke-width':active?2.5:1});
+    if(!active&&vi>0) ln.setAttribute('stroke-dasharray','5,4');
+    svg.appendChild(ln);
+  });
+  Object.entries(SNODES).forEach(([id,pos])=>{
+    const disc=v.cross.includes(id);
+    svg.appendChild(mkEl('circle',{cx:pos.x,cy:pos.y,r:20,fill:disc?'#3a1a1a':'var(--accent)',stroke:disc?'var(--danger)':'rgba(0,0,0,.3)','stroke-width':disc?2:1}));
+    svg.appendChild(mkEl('text',{x:pos.x,y:pos.y,'text-anchor':'middle','dominant-baseline':'central','font-size':'13','font-weight':'600',fill:disc?'var(--danger)':'var(--text)'},id));
+    if(disc){svg.appendChild(mkEl('text',{x:pos.x,y:pos.y+38,'text-anchor':'middle','font-size':'10',fill:'var(--danger)'},'disconnected'));}
+  });
+}
+
+// ============================================================
+// PRIM'S
+// ============================================================
+let primInit=false,primState={},primTimer=null;
+function primGetCands(visited){
+  const map={};
+  visited.forEach(v=>GEDGES.forEach(([a,b,w])=>{
+    let u=null,nb=null;
+    if(a===v&&!visited.has(b)){u=a;nb=b;}
+    else if(b===v&&!visited.has(a)){u=b;nb=a;}
+    if(u){const k=[u,nb].sort().join('-');if(!map[k]||map[k][2]>w)map[k]=[u,nb,w];}
+  }));
+  return Object.values(map).sort((a,b)=>a[2]-b[2]);
+}
+function primReset(){
+  clearInterval(primTimer);primTimer=null;
+  primInit=true;
+  primState={visited:new Set(),mst:[],cost:0,done:false};
+  document.getElementById('prim-info').textContent='Press Step. Starting from node A.';
+  document.getElementById('prim-info').className='info-box';
+  document.getElementById('prim-step-btn').disabled=false;
+  document.getElementById('prim-auto-btn').disabled=false;
+  document.getElementById('prim-auto-btn').textContent='Auto play';
+  drawGraphBase('prim-svg',[],[],null,null,null,null,[]);
+}
+function primStep(){
+  if(primState.done)return;
+  const s=primState;
+  if(!s.visited.size){s.visited.add('A');}
+  else{
+    const cands=primGetCands(s.visited);
+    if(!cands.length){primDone();return;}
+    const [u,v,w]=cands[0];
+    s.visited.add(v);s.mst.push([u,v,w]);s.cost+=w;
+    document.getElementById('prim-info').textContent=`✓ Added ${u}–${v} (weight ${w}). Cost so far: ${s.cost}`;
+    document.getElementById('prim-info').className='info-box ok';
+    if(s.visited.size===Object.keys(GNODES).length){primDone();return;}
+  }
+  const cands2=primGetCands(s.visited);
+  const nc={};const frontier=new Set();
+  s.visited.forEach(v=>GEDGES.forEach(([a,b])=>{
+    if(a===v&&!s.visited.has(b))frontier.add(b);
+    if(b===v&&!s.visited.has(a))frontier.add(a);
+  }));
+  Object.keys(GNODES).forEach(n=>{nc[n]=s.visited.has(n)?'var(--accent)':frontier.has(n)?'var(--warn)':'var(--surface3)';});
+  drawGraphBase('prim-svg',s.mst,[],cands2[0]||null,nc,null,null,[]);
+}
+function primDone(){
+  primState.done=true;
+  document.getElementById('prim-info').textContent=`✓ MST complete! Total cost: ${primState.cost}`;
+  document.getElementById('prim-step-btn').disabled=true;document.getElementById('prim-auto-btn').disabled=true;
+  clearInterval(primTimer);primTimer=null;document.getElementById('prim-auto-btn').textContent='Auto play';
+  const nc={};Object.keys(GNODES).forEach(n=>{nc[n]='var(--accent)';});
+  drawGraphBase('prim-svg',primState.mst,[],null,nc,null,null,[]);
+}
+function primAuto(){
+  if(primTimer){clearInterval(primTimer);primTimer=null;document.getElementById('prim-auto-btn').textContent='Auto play';return;}
+  document.getElementById('prim-auto-btn').textContent='Pause';
+  primTimer=setInterval(()=>{primStep();if(primState.done){clearInterval(primTimer);primTimer=null;document.getElementById('prim-auto-btn').textContent='Auto play';}},900);
+}
+
+// ============================================================
+// KRUSKAL'S
+// ============================================================
+let krusInit=false,krusState={},krusTimer=null;
+const KSORTED=[...GEDGES].sort((a,b)=>a[2]-b[2]);
+const KCOLORS=['var(--accent)','var(--accent2)','var(--warn)','var(--purple)','var(--pink,#ec4899)','#f97316','#14b8a6'];
+function makeUF(keys){
+  const p={},r={};keys.forEach(k=>{p[k]=k;r[k]=0;});
+  function find(x){if(p[x]!==x)p[x]=find(p[x]);return p[x];}
+  function union(a,b){let ra=find(a),rb=find(b);if(ra===rb)return false;if(r[ra]<r[rb])[ra,rb]=[rb,ra];p[rb]=ra;if(r[ra]===r[rb])r[ra]++;return true;}
+  return{find,union};
+}
+function krusReset(){
+  clearInterval(krusTimer);krusTimer=null;krusInit=true;
+  krusState={step:-1,mst:[],rejected:[],uf:makeUF(Object.keys(GNODES)),done:false,cost:0,considering:null};
+  document.getElementById('krus-info').textContent='Press Step to process edges cheapest first.';
+  document.getElementById('krus-info').className='info-box';
+  document.getElementById('krus-step-btn').disabled=false;document.getElementById('krus-auto-btn').disabled=false;
+  document.getElementById('krus-auto-btn').textContent='Auto play';
+  krusPills();drawGraphBase('krus-svg',[],[],null,null,null,null,[]);
+}
+function krusPills(){
+  const c=document.getElementById('krus-pills');c.innerHTML='';
+  KSORTED.forEach(([u,v,w],i)=>{
+    const p=document.createElement('div');p.className='pill';
+    p.textContent=`${u}–${v}(${w})`;
+    if(krusState.mst.some(([a,b])=>a===u&&b===v||a===v&&b===u))p.classList.add('ok');
+    else if(krusState.rejected.some(([a,b])=>a===u&&b===v||a===v&&b===u))p.classList.add('bad');
+    else if(i===krusState.considering)p.classList.add('cur');
+    c.appendChild(p);
+  });
+}
+function krusGetColors(){
+  const map={};let ci=0;
+  Object.keys(GNODES).forEach(id=>{const r=krusState.uf.find(id);if(!(r in map))map[r]=KCOLORS[ci++%KCOLORS.length];});
+  const cc={};Object.keys(GNODES).forEach(id=>cc[id]=map[krusState.uf.find(id)]);
+  return cc;
+}
+function krusStep(){
+  if(krusState.done)return;
+  krusState.step++;
+  if(krusState.step>=KSORTED.length){krusDone();return;}
+  const [u,v,w]=KSORTED[krusState.step];
+  krusState.considering=krusState.step;
+  const added=krusState.uf.union(u,v);
+  const info=document.getElementById('krus-info');
+  if(added){krusState.mst.push([u,v,w]);krusState.cost+=w;info.textContent=`✓ Added ${u}–${v} (weight ${w}). No cycle. Cost: ${krusState.cost}`;info.className='info-box ok';}
+  else{krusState.rejected.push([u,v,w]);info.textContent=`✗ Skipped ${u}–${v} (weight ${w}) — would create a cycle!`;info.className='info-box bad';}
+  if(krusState.mst.length===Object.keys(GNODES).length-1){krusDone();return;}
+  krusPills();drawGraphBase('krus-svg',krusState.mst,krusState.rejected,KSORTED[krusState.step],krusGetColors(),null,null,[]);
+}
+function krusDone(){
+  krusState.done=true;document.getElementById('krus-info').textContent=`✓ MST complete! Total cost: ${krusState.cost}`;document.getElementById('krus-info').className='info-box ok';
+  document.getElementById('krus-step-btn').disabled=true;document.getElementById('krus-auto-btn').disabled=true;
+  clearInterval(krusTimer);krusTimer=null;document.getElementById('krus-auto-btn').textContent='Auto play';
+  krusState.considering=null;krusPills();drawGraphBase('krus-svg',krusState.mst,krusState.rejected,null,krusGetColors(),null,null,[]);
+}
+function krusAuto(){
+  if(krusTimer){clearInterval(krusTimer);krusTimer=null;document.getElementById('krus-auto-btn').textContent='Auto play';return;}
+  document.getElementById('krus-auto-btn').textContent='Pause';
+  krusTimer=setInterval(()=>{krusStep();if(krusState.done){clearInterval(krusTimer);krusTimer=null;document.getElementById('krus-auto-btn').textContent='Auto play';}},900);
+}
+
+// ============================================================
+// SORTING
+// ============================================================
+const DEF_ARR=[7,3,9,1,5,8,2,6,4];
+const sortStates={},sortTimers={};
+function initSort(name){
+  sortTimers[name]&&clearInterval(sortTimers[name]);sortTimers[name]=null;
+  const arr=[...DEF_ARR];
+  let steps=[];
+  if(name==='bubble')steps=genBubble([...arr]);
+  else if(name==='selection')steps=genSelection([...arr]);
+  else if(name==='insertion')steps=genInsertion([...arr]);
+  else if(name==='merge')steps=genMerge([...arr]);
+  else if(name==='quick')steps=genQuick([...arr]);
+  sortStates[name]={arr:[...arr],steps,idx:0,done:false};
+  renderBars(name,arr.map(v=>({val:v,state:'unsorted'})));
+  const info=document.getElementById(name+'-info');if(info){info.textContent='Press Step to begin.';info.className='info-box';}
+  const aId={bubble:'bub',selection:'sel',insertion:'ins',merge:'mrg',quick:'qck'}[name];
+  if(document.getElementById(aId+'-step')){document.getElementById(aId+'-step').disabled=false;document.getElementById(aId+'-auto').disabled=false;document.getElementById(aId+'-auto').textContent='Auto play';}
+}
+function sortShuffle(name){
+  const a=[...DEF_ARR].sort(()=>Math.random()-.5);
+  sortTimers[name]&&clearInterval(sortTimers[name]);sortTimers[name]=null;
+  let steps=[];
+  if(name==='bubble')steps=genBubble([...a]);
+  else if(name==='selection')steps=genSelection([...a]);
+  else if(name==='insertion')steps=genInsertion([...a]);
+  else if(name==='merge')steps=genMerge([...a]);
+  else if(name==='quick')steps=genQuick([...a]);
+  sortStates[name]={arr:[...a],steps,idx:0,done:false};
+  renderBars(name,a.map(v=>({val:v,state:'unsorted'})));
+  const info=document.getElementById(name+'-info');if(info){info.textContent='Shuffled! Press Step.';info.className='info-box';}
+  const aId={bubble:'bub',selection:'sel',insertion:'ins',merge:'mrg',quick:'qck'}[name];
+  if(document.getElementById(aId+'-step')){document.getElementById(aId+'-step').disabled=false;document.getElementById(aId+'-auto').disabled=false;document.getElementById(aId+'-auto').textContent='Auto play';}
+}
+function sortReset(name){initSort(name);}
+function sortStep(name){
+  const s=sortStates[name];if(!s||s.done)return;
+  if(s.idx>=s.steps.length){sortDone(name);return;}
+  const step=s.steps[s.idx++];
+  const arr=step.arr.map(v=>({val:v,state:'unsorted'}));
+  (step.highlight||[]).forEach(i=>{if(arr[i])arr[i].state=step.hs||'comparing';});
+  (step.sorted||[]).forEach(i=>{if(arr[i])arr[i].state='sorted';});
+  renderBars(name,arr);
+  const info=document.getElementById(name+'-info');if(info){info.textContent=step.msg||'';info.className='info-box';}
+  if(s.idx>=s.steps.length)sortDone(name);
+}
+function sortDone(name){
+  sortStates[name].done=true;
+  const n=sortStates[name].steps.length;
+  const fa=sortStates[name].steps[n-1]?.arr||[];
+  renderBars(name,fa.map(v=>({val:v,state:'sorted'})));
+  const info=document.getElementById(name+'-info');if(info){info.textContent='✓ Sorted! Complete.';info.className='info-box ok';}
+  const aId={bubble:'bub',selection:'sel',insertion:'ins',merge:'mrg',quick:'qck'}[name];
+  if(document.getElementById(aId+'-step')){document.getElementById(aId+'-step').disabled=true;document.getElementById(aId+'-auto').disabled=true;}
+  clearInterval(sortTimers[name]);sortTimers[name]=null;
+  const ab=document.getElementById(aId+'-auto');if(ab)ab.textContent='Auto play';
+}
+function sortAuto(name){
+  const aId={bubble:'bub',selection:'sel',insertion:'ins',merge:'mrg',quick:'qck'}[name];
+  const ab=document.getElementById(aId+'-auto');
+  if(sortTimers[name]){clearInterval(sortTimers[name]);sortTimers[name]=null;if(ab)ab.textContent='Auto play';return;}
+  if(ab)ab.textContent='Pause';
+  sortTimers[name]=setInterval(()=>{sortStep(name);if(sortStates[name].done){clearInterval(sortTimers[name]);sortTimers[name]=null;if(ab)ab.textContent='Auto play';}},350);
+}
+function renderBars(name,arr){
+  const c=document.getElementById(name+'-bars');if(!c)return;
+  const maxV=Math.max(...arr.map(b=>b.val));c.innerHTML='';
+  arr.forEach(b=>{
+    const bar=document.createElement('div');bar.className='bar';
+    bar.style.height=Math.round((b.val/maxV)*115)+'px';
+    if(b.state==='comparing')bar.classList.add('comparing');
+    else if(b.state==='sorted')bar.classList.add('sorted');
+    else if(b.state==='pivot')bar.classList.add('pivot');
+    else if(b.state==='swapped'||b.state==='shifting')bar.classList.add('swapped');
+    const sp=document.createElement('span');sp.textContent=b.val;bar.appendChild(sp);
+    c.appendChild(bar);
+  });
+}
+
+// BUBBLE
+function genBubble(a){
+  const steps=[],n=a.length,sorted=[];
+  for(let i=0;i<n-1;i++){let sw=false;
+    for(let j=0;j<n-1-i;j++){
+      steps.push({arr:[...a],highlight:[j,j+1],hs:'comparing',sorted:[...sorted],msg:`Pass ${i+1}: Compare ${a[j]} and ${a[j+1]}`});
+      if(a[j]>a[j+1]){[a[j],a[j+1]]=[a[j+1],a[j]];sw=true;steps.push({arr:[...a],highlight:[j,j+1],hs:'swapped',sorted:[...sorted],msg:`Swapped! Now: [${a.join(', ')}]`});}
+    }
+    sorted.unshift(n-1-i);
+    if(!sw){steps.push({arr:[...a],highlight:[],sorted:[...Array(n).keys()],msg:'No swaps — early exit!'});break;}
+  }
+  steps.push({arr:[...a],highlight:[],sorted:[...Array(a.length).keys()],msg:'Bubble sort complete!'});
+  return steps;
+}
+// SELECTION
+function genSelection(a){
+  const steps=[],n=a.length,sorted=[];
+  for(let i=0;i<n-1;i++){
+    let mi=i;
+    for(let j=i+1;j<n;j++){
+      steps.push({arr:[...a],highlight:[j,mi],hs:'comparing',sorted:[...sorted],msg:`Scanning: ${a[j]} vs current min ${a[mi]}`});
+      if(a[j]<a[mi])mi=j;
+    }
+    if(mi!==i){steps.push({arr:[...a],highlight:[i,mi],hs:'swapped',sorted:[...sorted],msg:`Swap: min ${a[mi]} goes to pos ${i}`});[a[i],a[mi]]=[a[mi],a[i]];}
+    sorted.push(i);steps.push({arr:[...a],highlight:[],sorted:[...sorted],msg:`Position ${i} fixed: ${a[i]}`});
+  }
+  steps.push({arr:[...a],highlight:[],sorted:[...Array(a.length).keys()],msg:'Selection sort complete!'});
+  return steps;
+}
+// INSERTION
+function genInsertion(a){
+  const steps=[],n=a.length;
+  for(let i=1;i<n;i++){
+    const key=a[i];steps.push({arr:[...a],highlight:[i],hs:'comparing',sorted:[...Array(i).keys()],msg:`Key=${key}. Inserting into sorted portion.`});
+    let j=i-1;
+    while(j>=0&&a[j]>key){a[j+1]=a[j];steps.push({arr:[...a],highlight:[j,j+1],hs:'shifting',sorted:[...Array(i).keys()],msg:`Shift ${a[j]} right.`});j--;}
+    a[j+1]=key;steps.push({arr:[...a],highlight:[j+1],hs:'swapped',sorted:[...Array(i+1).keys()],msg:`Inserted ${key} at pos ${j+1}.`});
+  }
+  steps.push({arr:[...a],highlight:[],sorted:[...Array(a.length).keys()],msg:'Insertion sort complete!'});
+  return steps;
+}
+// MERGE
+function genMerge(a){
+  const steps=[],arr=[...a];
+  function ms(ar,l,r){
+    if(l>=r)return;const m=Math.floor((l+r)/2);
+    ms(ar,l,m);ms(ar,m+1,r);
+    const L=ar.slice(l,m+1),R=ar.slice(m+1,r+1);
+    steps.push({arr:[...ar],highlight:[...Array(r-l+1).keys()].map(x=>x+l),hs:'comparing',sorted:[],msg:`Merging [${L}] and [${R}]`});
+    let i=0,j=0,k=l;
+    while(i<L.length&&j<R.length){if(L[i]<=R[j])ar[k++]=L[i++];else ar[k++]=R[j++];}
+    while(i<L.length)ar[k++]=L[i++];while(j<R.length)ar[k++]=R[j++];
+    steps.push({arr:[...ar],highlight:[...Array(r-l+1).keys()].map(x=>x+l),hs:'swapped',sorted:[],msg:`Merged: [${ar.slice(l,r+1)}]`});
+  }
+  ms(arr,0,arr.length-1);
+  steps.push({arr:[...arr],highlight:[],sorted:[...Array(arr.length).keys()],msg:'Merge sort complete!'});
+  return steps;
+}
+// QUICK
+function genQuick(a){
+  const steps=[],arr=[...a],done=new Set();
+  function qs(ar,lo,hi){if(lo>=hi){if(lo===hi)done.add(lo);return;}const pi=part(ar,lo,hi);done.add(pi);qs(ar,lo,pi-1);qs(ar,pi+1,hi);}
+  function part(ar,lo,hi){
+    const pv=ar[hi];steps.push({arr:[...ar],highlight:[hi],hs:'pivot',sorted:[...done],msg:`Pivot=${pv} at [${hi}]. Partitioning [${lo}..${hi}].`});
+    let i=lo-1;
+    for(let j=lo;j<hi;j++){
+      steps.push({arr:[...ar],highlight:[j,hi],hs:'comparing',sorted:[...done],msg:`Compare ${ar[j]} with pivot ${pv}`});
+      if(ar[j]<=pv){i++;if(i!==j){[ar[i],ar[j]]=[ar[j],ar[i]];steps.push({arr:[...ar],highlight:[i,j],hs:'swapped',sorted:[...done],msg:`Swap ${ar[j]} ↔ ${ar[i]}`});}}
+    }
+    [ar[i+1],ar[hi]]=[ar[hi],ar[i+1]];
+    steps.push({arr:[...ar],highlight:[i+1],hs:'swapped',sorted:[...done,i+1],msg:`Pivot ${pv} placed at final pos ${i+1}.`});
+    return i+1;
+  }
+  qs(arr,0,arr.length-1);
+  steps.push({arr:[...arr],highlight:[],sorted:[...Array(arr.length).keys()],msg:'Quick sort complete!'});
+  return steps;
+}
+
+// ============================================================
+// BINARY SEARCH
+// ============================================================
+let searchInit=false,searchState={};
+const SEARCH_ARR=[3,8,15,22,31,42,57,68,74,85,91];
+function initSearch(){
+  searchInit=true;
+  renderSearchVis(SEARCH_ARR,-1,-1,-1);
+  searchState={lo:0,hi:SEARCH_ARR.length-1,done:false,target:-1};
+}
+function searchReset(){
+  searchState={lo:0,hi:SEARCH_ARR.length-1,done:false,target:-1};
+  renderSearchVis(SEARCH_ARR,-1,-1,-1);
+  document.getElementById('search-info').textContent='Enter target and press Step. Array is sorted.';
+  document.getElementById('search-info').className='info-box';
+  document.getElementById('s-low').textContent='-';document.getElementById('s-mid').textContent='-';document.getElementById('s-high').textContent='-';
+  document.getElementById('search-step-btn').disabled=false;
+}
+function searchStep(){
+  const t=parseInt(document.getElementById('search-target').value);
+  if(searchState.target!==-1&&searchState.target!==t) searchReset();
+  if(searchState.done)return;
+  searchState.target=t;
+  const {lo,hi}=searchState;
+  if(lo>hi){
+    document.getElementById('search-info').textContent=`${t} not found in array.`;document.getElementById('search-info').className='info-box bad';
+    searchState.done=true;document.getElementById('search-step-btn').disabled=true;return;
+  }
+  const mid=Math.floor((lo+hi)/2);
+  renderSearchVis(SEARCH_ARR,lo,mid,hi);
+  document.getElementById('s-low').textContent=lo;document.getElementById('s-mid').textContent=mid;document.getElementById('s-high').textContent=hi;
+  if(SEARCH_ARR[mid]===t){
+    document.getElementById('search-info').textContent=`✓ Found ${t} at index ${mid}!`;document.getElementById('search-info').className='info-box ok';
+    searchState.done=true;document.getElementById('search-step-btn').disabled=true;
+  } else if(SEARCH_ARR[mid]<t){
+    document.getElementById('search-info').textContent=`${SEARCH_ARR[mid]} < ${t} → search right half [${mid+1}..${hi}]`;
+    searchState.lo=mid+1;
+  } else {
+    document.getElementById('search-info').textContent=`${SEARCH_ARR[mid]} > ${t} → search left half [${lo}..${mid-1}]`;
+    searchState.hi=mid-1;
+  }
+}
+function renderSearchVis(arr,lo,mid,hi){
+  const vis=document.getElementById('search-vis');vis.innerHTML='';
+  arr.forEach((v,i)=>{
+    const cell=document.createElement('div');
+    cell.style.cssText=`min-width:38px;height:38px;border:1px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;flex-direction:column;`;
+    if(i===mid&&mid!==-1){cell.style.background='var(--warn)';cell.style.color='#000';cell.style.borderColor='var(--warn)';}
+    else if(i>=lo&&i<=hi&&lo!==-1){cell.style.background='var(--surface2)';cell.style.color='var(--text)';}
+    else{cell.style.background='var(--surface)';cell.style.color='var(--text3)';}
+    cell.innerHTML=`<span>${v}</span><span style="font-size:8px;color:inherit;opacity:.6">[${i}]</span>`;
+    vis.appendChild(cell);
+  });
+}
+
+// ============================================================
+// EXPRESSIONS
+// ============================================================
+const exprs=[
+  {infix:'(A+B)*C',prefix:'*+ABC',postfix:'AB+C*'},
+  {infix:'A+B*C-D',prefix:'+-A*BCD',postfix:'ABC*+D-'},
+  {infix:'A+(B*C-(D/E^F)*G)*H',prefix:'+A*-*BC*/DEFGh',postfix:'ABC*DEF^/G*-H*+'},
+  {infix:'5*(6+2)-12/4',prefix:'-*5+62/124',postfix:'562+*124/-'},
+];
+function showExpr(){
+  const e=exprs[parseInt(document.getElementById('expr-select').value)];
+  document.getElementById('expr-result').innerHTML=`
+    <div style="margin:8px 0"><div style="font-size:11px;color:var(--text3);margin-bottom:3px">INFIX</div><div class="expr">${e.infix}</div></div>
+    <div style="margin:8px 0"><div style="font-size:11px;color:var(--text3);margin-bottom:3px">PREFIX (Polish Notation)</div><div class="expr" style="color:var(--accent2)">${e.prefix}</div></div>
+    <div style="margin:8px 0"><div style="font-size:11px;color:var(--text3);margin-bottom:3px">POSTFIX (Reverse Polish Notation)</div><div class="expr" style="color:var(--warn)">${e.postfix}</div></div>`;
+}
+
+// ============================================================
+// INIT VISIBLE PAGE
+// ============================================================
+initStack();
+setTimeout(()=>{
+  drawSLL();
+  spanShow(0,document.querySelector('#page-spanning .tab'));
+  traversalShow('inorder',document.querySelector('#page-tree .tabs:last-of-type .tab'));
+  treeType('general',document.querySelector('#page-tree .tabs:first-of-type .tab'));
+  graphType('undirected',document.querySelector('#page-graph .tab'));
+  ['bubble','selection','insertion','merge','quick'].forEach(initSort);
+  initQueue();initLL();drawLLLive();
+},100);
+</script>
+
+<!-- ── Download PDF FAB ── -->
+<a id="dl-fab" href="DS_Notes_v2.pdf" download="DS_Notes_Complete.pdf"
+  title="Download DS Notes PDF"
+  onmouseover="this.style.transform='scale(1.12)';this.style.boxShadow='0 6px 28px rgba(79,142,247,.75)'"
+  onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 20px rgba(79,142,247,.55)'"
+  style="position:fixed;bottom:28px;right:28px;z-index:9999;
+         width:64px;height:64px;border-radius:50%;
+         background:linear-gradient(145deg,#4f8ef7 0%,#7c5cfc 100%);
+         box-shadow:0 4px 20px rgba(79,142,247,.55);
+         display:flex;flex-direction:column;align-items:center;justify-content:center;
+         cursor:pointer;transition:transform .18s,box-shadow .18s;
+         border:2.5px solid rgba(255,255,255,.25);text-decoration:none;">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+       stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <polyline points="7 10 12 15 17 10"/>
+    <line x1="12" y1="15" x2="12" y2="3"/>
+  </svg>
+  <span style="color:#fff;font-size:7.5px;font-weight:700;margin-top:2px;
+               letter-spacing:.4px;font-family:Inter,sans-serif">PDF</span>
+</a>
+
+</body>
+</html>
