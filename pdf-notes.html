@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PDF Notes — BPSC TRE CS Hub</title>
+<script src="vendor/pdf.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
@@ -45,11 +46,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .nav-pill.home-btn:hover{background:rgba(34,211,238,.2);}
 
 /* LAYOUT */
-.layout{display:flex;flex:1;position:relative;z-index:1;min-height:calc(100vh - 57px);}
+.layout{display:flex;flex:1;position:relative;min-height:calc(100vh - 57px);}
 
 /* SIDEBAR */
 .sidebar{width:280px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;position:sticky;top:57px;height:calc(100vh - 57px);overflow:hidden;}
+  display:flex;flex-direction:column;position:sticky;top:57px;height:calc(100vh - 57px);overflow:hidden;z-index:20;}
 .sidebar-head{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
 .sidebar-head h2{font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:10px;}
 .search-box{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);
@@ -61,7 +62,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 /* PDF LIST */
 .pdf-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 10px;}
 .pdf-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius);
-  cursor:pointer;transition:all .18s;border:1px solid transparent;margin-bottom:4px;text-decoration:none;}
+  cursor:pointer;transition:all .18s;border:1px solid transparent;margin-bottom:4px;text-decoration:none;
+  position:relative;z-index:2;pointer-events:auto;user-select:none;-webkit-tap-highlight-color:rgba(34,211,238,.2);}
+.pdf-item > *{pointer-events:none;}
 .pdf-item:hover{background:var(--surface2);border-color:var(--border);}
 .pdf-item.active{background:var(--surface2);border-color:rgba(34,211,238,.3);}
 .pdf-item .pdf-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;
@@ -93,8 +96,147 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 .tool-btn.primary:hover{background:rgba(34,211,238,.2);}
 
 /* VIEWER FRAME */
-.viewer-frame{flex:1;position:relative;}
-.viewer-frame iframe{display:block;width:100%;height:100%;min-height:calc(100vh - 120px);border:none;}
+.viewer-frame{flex:1;position:relative;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+
+/* SCROLL CONTAINER (Native Canvas PDF Viewer) */
+.pdf-scroll-container{
+  flex:1;
+  position:relative;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  background:#090d18;
+  padding:20px 16px 40px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  scroll-behavior:smooth;
+}
+
+.pdf-pages-list{
+  width:100%;
+  max-width:840px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:20px;
+  transition:max-width .2s ease;
+}
+
+.pdf-page-card{
+  width:100%;
+  background:#141b2d;
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 6px 28px rgba(0,0,0,.4);
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.page-badge{
+  width:100%;
+  padding:8px 14px;
+  font:700 11px var(--mono);
+  color:var(--text3);
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  letter-spacing:.5px;
+}
+
+.page-canvas-wrap{
+  width:100%;
+  background:#ffffff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.page-canvas-wrap canvas{
+  display:block;
+  width:100% !important;
+  height:auto !important;
+}
+
+.page-skeleton{
+  position:absolute;
+  inset:0;
+  background:#0f1526;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:var(--text3);
+  font:500 12px 'Inter',sans-serif;
+}
+
+.pdf-loading-indicator{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:60px 20px;
+  text-align:center;
+}
+
+.pdf-spinner{
+  width:36px;
+  height:36px;
+  border:3px solid var(--border);
+  border-top-color:var(--cyan);
+  border-radius:50%;
+  animation:pdfSpin .8s linear infinite;
+}
+
+.pdf-spinner-sm{
+  width:22px;
+  height:22px;
+  border:2px solid var(--border);
+  border-top-color:var(--cyan);
+  border-radius:50%;
+  animation:pdfSpin .8s linear infinite;
+}
+
+@keyframes pdfSpin{
+  to{transform:rotate(360deg);}
+}
+
+.pdf-watermark-floating{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) rotate(-35deg);
+  font:900 clamp(16px,4vw,44px) 'Inter',sans-serif;
+  color:rgba(255,255,255,0.035);
+  pointer-events:none;
+  white-space:nowrap;
+  user-select:none;
+  z-index:10;
+}
+
+.viewer-frame iframe{display:block;width:100%;flex:1;min-height:calc(100vh - 130px);border:none;}
+
+/* WATERMARK */
+.pdf-watermark{
+  position:absolute;inset:0;z-index:3;
+  pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  opacity:.04;
+  transform:rotate(-35deg);
+  font:900 clamp(18px,4vw,52px) 'Inter',sans-serif;
+  color:#fff;
+  letter-spacing:.08em;
+  white-space:nowrap;
+  text-transform:uppercase;
+  user-select:none;
+}
 
 /* EMPTY STATE */
 .empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -117,9 +259,11 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;cursor:pointer;}
 .mob-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;}
 .mob-curr-title{font-size:13px;font-weight:700;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:40;opacity:0;pointer-events:none;transition:opacity .25s;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:70;opacity:0;pointer-events:none;transition:opacity .25s;}
 .sidebar-overlay.active{opacity:1;pointer-events:auto;}
-.sidebar.mob-open{transform:translateX(0)!important;}
+@media(min-width:769px){
+  .sidebar-overlay{display:none !important;pointer-events:none !important;}
+}
 
 /* ===== MOBILE OVERHAUL ===== */
 /* Floating Action Button (mobile) */
@@ -174,13 +318,14 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 @media(max-width:768px){
   /* Hide desktop sidebar, show as bottom sheet */
   .layout{flex-direction:column;}
+  .sidebar-overlay{display:block;}
   .sidebar{
     position:fixed;
     bottom:0;left:0;right:0;
     top:auto;
     height:82vh;
     width:100%!important;max-width:100%;
-    z-index:45;
+    z-index:80!important; /* Above sidebar-overlay (70) and bottom nav (55) */
     border-right:none;
     border-top:1px solid var(--border);
     border-radius:20px 20px 0 0;
@@ -205,9 +350,25 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
   .tool-btn span{display:none;}
   .viewer-title{font-size:13px;}
 
-  /* iframe fills remaining vertical space */
-  .viewer-frame{flex:1;}
-  .viewer-frame iframe{height:calc(100vh - 200px);min-height:300px;}
+  /* Viewer frame and scroll container */
+  .viewer-frame{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .pdf-scroll-container{
+    padding:10px 8px 30px;
+    gap:14px;
+    height:calc(100vh - 180px);
+  }
+  .pdf-pages-list{
+    gap:14px;
+    max-width:100%;
+  }
+  .pdf-page-card{
+    border-radius:8px;
+  }
+  .page-badge{
+    padding:6px 10px;
+    font-size:10px;
+  }
+  .viewer-frame iframe{width:100%;height:calc(100vh - 180px);min-height:480px;-webkit-overflow-scrolling:touch;}
 
   .empty-state{padding:24px 16px;}
   .hint-grid{grid-template-columns:repeat(2,1fr);}
@@ -240,14 +401,14 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
     Zoom In
   </button>
-  <button class="mob-nav-btn" id="btnOpenTab" onclick="openInNewTab()" disabled>
-    <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-    Open
+  <button class="mob-nav-btn" id="btnReset" onclick="resetZoom()" disabled>
+    <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+    Reset
   </button>
-  <a class="mob-nav-btn" id="btnDownload" href="#" style="text-decoration:none">
-    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    Save
-  </a>
+  <span class="mob-nav-btn" style="opacity:.45;cursor:default;pointer-events:none;">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    Protected
+  </span>
 </nav>
 
 <!-- TOP NAV -->
@@ -293,9 +454,9 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
     <!-- Mobile subject pill scroller -->
     <div class="mob-subject-scroll" id="mobSubjectScroll"></div>
 
-    <!-- Mobile tip: open in browser -->
+    <!-- Mobile tip: content protected -->
     <div class="mob-pdf-tip" id="mobPdfTip" style="display:none">
-      <span>📱 PDF not displaying? Tap <strong>Open</strong> in the bottom bar to view in your browser.</span>
+      <span>🔒 Content is <strong>view-only</strong>. Downloading &amp; sharing is not permitted.</span>
       <span class="tip-close" onclick="document.getElementById('mobPdfTip').style.display='none'">✕</span>
     </div>
 
@@ -317,10 +478,10 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
         <svg viewBox="0 0 24 24"><path d="M21 3H3v7l9 9 9-9V3z"/></svg>
         <span>Reset</span>
       </button>
-      <a class="tool-btn primary" id="downloadBtn" download>
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        <span>Download</span>
-      </a>
+      <span class="tool-btn" style="cursor:default;opacity:.6;pointer-events:none;">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>Protected</span>
+      </span>
     </div>
 
     <!-- Viewer Frame -->
@@ -442,7 +603,10 @@ function renderList(list) {
   container.innerHTML = list.map(p => `
     <div class="pdf-item ${currentPdf && currentPdf.id === p.id ? 'active' : ''}"
          id="item-${p.id}"
+         role="button"
+         tabindex="0"
          onclick="openPDF('${p.id}')"
+         onkeydown="if(event.key==='Enter'||event.key===' ')openPDF('${p.id}')"
          style="--c:${p.color}">
       <div class="pdf-icon" style="background:color-mix(in srgb,${p.color} 12%,transparent);">
         ${p.icon}
@@ -485,21 +649,200 @@ function renderPills() {
 
 // ===== UPDATE BOTTOM NAV STATES =====
 function updateBottomNav(hasPdf) {
-  ['btnZoomOut','btnZoomIn','btnOpenTab'].forEach(id => {
+  ['btnZoomOut','btnZoomIn','btnReset'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.disabled = !hasPdf;
   });
-  const dlBtn = document.getElementById('btnDownload');
-  if (dlBtn) {
-    if (hasPdf && currentPdf) {
-      dlBtn.href = currentPdf.file;
-      dlBtn.setAttribute('download', currentPdf.name.replace(/\s+/g,'_') + '.pdf');
-      dlBtn.style.pointerEvents = 'auto';
-      dlBtn.style.opacity = '1';
-    } else {
-      dlBtn.href = '#';
-      dlBtn.style.pointerEvents = 'none';
-      dlBtn.style.opacity = '.4';
+}
+
+// Configure PDF.js worker
+if (typeof pdfjsLib !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'vendor/pdf.worker.min.js';
+}
+
+let currentPdfDoc = null;
+let currentRenderTasks = new Map();
+let currentObserver = null;
+let renderedPages = new Set();
+
+// ===== FALLBACK TO IFRAME (if pdfjs not available) =====
+function fallbackToIframe(pdf) {
+  const frame = document.getElementById('viewerFrame');
+  frame.innerHTML = `
+    <iframe
+      id="pdfIframe"
+      src="${pdf.file}#toolbar=0&navpanes=0"
+      title="${pdf.name} — Handwritten Notes"
+      style="transform-origin:top left;transition:transform .2s;"
+    ></iframe>
+    <div class="pdf-watermark-floating">BPSC TRE · Study Only · Not for Distribution</div>
+    <div style="padding:12px 16px 8px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:relative;z-index:7;flex-shrink:0;">
+      <div style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>View-only · <span style="color:var(--text2);font-weight:600;">${pdf.name}</span></span>
+      </div>
+      <a href="${pdf.interactive}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font:600 12px 'Inter',sans-serif;background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.3);border-radius:8px;text-decoration:none;transition:all .2s;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Open Interactive Version
+      </a>
+    </div>
+  `;
+}
+
+// ===== RENDER PDF DOCUMENT (Native Canvas on Mobile & Desktop) =====
+async function renderPdfDocument(pdf) {
+  const frame = document.getElementById('viewerFrame');
+  frame.innerHTML = `
+    <div class="pdf-scroll-container" id="pdfScrollContainer">
+      <div class="pdf-loading-indicator" id="pdfLoading">
+        <div class="pdf-spinner"></div>
+        <div style="font-size:13px;font-weight:600;color:var(--text2);margin-top:12px;">Loading ${pdf.name}...</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;" id="pdfLoadingProgress">Preparing pages...</div>
+      </div>
+      <div class="pdf-pages-list" id="pdfPagesList"></div>
+      <div class="pdf-watermark-floating">BPSC TRE · Study Only · Not for Distribution</div>
+    </div>
+    <div style="padding:12px 16px 8px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;position:relative;z-index:7;flex-shrink:0;">
+      <div style="font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span>View-only · <span style="color:var(--text2);font-weight:600;">${pdf.name}</span></span>
+      </div>
+      <a href="${pdf.interactive}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font:600 12px 'Inter',sans-serif;background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.3);border-radius:8px;text-decoration:none;transition:all .2s;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Open Interactive Version
+      </a>
+    </div>
+  `;
+
+  if (typeof pdfjsLib === 'undefined') {
+    fallbackToIframe(pdf);
+    return;
+  }
+
+  // Cancel prior renders
+  if (currentObserver) { currentObserver.disconnect(); currentObserver = null; }
+  currentRenderTasks.forEach(task => { try { task.cancel(); } catch(e){} });
+  currentRenderTasks.clear();
+  renderedPages.clear();
+
+  try {
+    const loadingTask = pdfjsLib.getDocument(pdf.file);
+    loadingTask.onProgress = function(p) {
+      if (p.total > 0) {
+        const pct = Math.round((p.loaded / p.total) * 100);
+        const el = document.getElementById('pdfLoadingProgress');
+        if (el) el.textContent = `Loading notes: ${pct}%`;
+      }
+    };
+
+    const pdfDoc = await loadingTask.promise;
+    currentPdfDoc = pdfDoc;
+    const numPages = pdfDoc.numPages;
+
+    const loadingEl = document.getElementById('pdfLoading');
+    if (loadingEl) loadingEl.style.display = 'none';
+
+    const pagesList = document.getElementById('pdfPagesList');
+    if (!pagesList) return;
+
+    // Measure page 1 aspect ratio
+    const firstPage = await pdfDoc.getPage(1);
+    const vp1 = firstPage.getViewport({ scale: 1 });
+    const ratio = vp1.height / vp1.width;
+
+    // Create cards for all pages
+    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+      const card = document.createElement('div');
+      card.className = 'pdf-page-card';
+      card.id = `page-card-${pageNum}`;
+      card.setAttribute('data-page-num', pageNum);
+      card.innerHTML = `
+        <div class="page-badge">
+          <span>PAGE ${pageNum} OF ${numPages}</span>
+          <span style="font-weight:500;font-size:10px;color:var(--text3);">${pdf.name}</span>
+        </div>
+        <div class="page-canvas-wrap" id="wrap-${pageNum}" style="aspect-ratio: 1 / ${ratio}; min-height: 220px;">
+          <div class="page-skeleton" id="skeleton-${pageNum}">
+            <div class="pdf-spinner-sm"></div>
+            <span>Loading page ${pageNum}...</span>
+          </div>
+          <canvas id="pdf-canvas-${pageNum}" style="display:none;"></canvas>
+        </div>
+      `;
+      pagesList.appendChild(card);
+    }
+
+    // Set up IntersectionObserver for smooth lazy rendering
+    const scrollContainer = document.getElementById('pdfScrollContainer');
+    currentObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const num = parseInt(entry.target.getAttribute('data-page-num'), 10);
+          renderSinglePage(pdfDoc, num);
+        }
+      });
+    }, {
+      root: scrollContainer,
+      rootMargin: '500px 0px 500px 0px',
+      threshold: 0.01
+    });
+
+    document.querySelectorAll('.pdf-page-card').forEach(card => {
+      currentObserver.observe(card);
+    });
+
+    // Render first 2 pages immediately
+    renderSinglePage(pdfDoc, 1);
+    if (numPages >= 2) renderSinglePage(pdfDoc, 2);
+
+    applyZoom();
+
+  } catch (err) {
+    console.error('PDF.js render failed, falling back to iframe:', err);
+    fallbackToIframe(pdf);
+  }
+}
+
+// ===== RENDER INDIVIDUAL PAGE CANVAS =====
+async function renderSinglePage(pdfDoc, pageNum) {
+  if (renderedPages.has(pageNum)) return;
+  renderedPages.add(pageNum);
+
+  const canvas = document.getElementById(`pdf-canvas-${pageNum}`);
+  const skeleton = document.getElementById(`skeleton-${pageNum}`);
+  if (!canvas) return;
+
+  try {
+    const page = await pdfDoc.getPage(pageNum);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+    const unscaledViewport = page.getViewport({ scale: 1 });
+    
+    // Target display width: min(840, window.innerWidth - 24)
+    const displayWidth = Math.min(840, Math.max(300, window.innerWidth - 24));
+    const scale = (displayWidth / unscaledViewport.width) * dpr;
+    const viewport = page.getViewport({ scale: scale });
+
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
+
+    const ctx = canvas.getContext('2d');
+    const renderContext = {
+      canvasContext: ctx,
+      viewport: viewport
+    };
+
+    const renderTask = page.render(renderContext);
+    currentRenderTasks.set(pageNum, renderTask);
+    await renderTask.promise;
+    currentRenderTasks.delete(pageNum);
+
+    if (skeleton) skeleton.style.display = 'none';
+    canvas.style.display = 'block';
+  } catch (err) {
+    if (err && err.name !== 'RenderingCancelledException') {
+      console.warn(`Page ${pageNum} render error:`, err);
     }
   }
 }
@@ -528,46 +871,17 @@ function openPDF(id) {
   document.getElementById('mobCurrTitle').textContent = pdf.name;
   closeSidebar();
 
-  // Show mobile tip on first load (mobile only)
-  if (window.innerWidth <= 768) {
-    const tip = document.getElementById('mobPdfTip');
-    if (tip) tip.style.display = 'flex';
-  }
-
   // Show toolbar
   const toolbar = document.getElementById('viewerToolbar');
   toolbar.style.display = 'flex';
   document.getElementById('toolbarTitle').textContent = pdf.name;
   document.getElementById('toolbarMeta').textContent = pdf.unit + ' · ' + pdf.size + ' · Handwritten Notes';
 
-  // Set download (desktop toolbar)
-  const dlBtn = document.getElementById('downloadBtn');
-  dlBtn.href = pdf.file;
-  dlBtn.setAttribute('download', pdf.name.replace(/\s+/g, '_') + '.pdf');
-
   // Update bottom nav
   updateBottomNav(true);
 
-  // Render PDF in iframe
-  const frame = document.getElementById('viewerFrame');
-  frame.innerHTML = `
-    <iframe
-      id="pdfIframe"
-      src="${pdf.file}"
-      title="${pdf.name} — Handwritten Notes"
-      style="transform-origin:top left;transition:transform .2s;"
-    ></iframe>
-    <div style="padding:12px 16px 8px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-      <div style="font-size:12px;color:var(--text3);">
-        📄 Viewing handwritten notes · 
-        <span style="color:var(--text2);font-weight:600;">${pdf.name}</span>
-      </div>
-      <a href="${pdf.interactive}" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font:600 12px 'Inter',sans-serif;background:rgba(34,211,238,.1);color:var(--cyan);border:1px solid rgba(34,211,238,.3);border-radius:8px;text-decoration:none;transition:all .2s;">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        Open Interactive Version
-      </a>
-    </div>
-  `;
+  // Render PDF using Canvas / PDF.js
+  renderPdfDocument(pdf);
 
   // Scroll sidebar to keep active item visible
   if (activeEl) {
@@ -596,12 +910,19 @@ function resetZoom() {
   applyZoom();
 }
 function applyZoom() {
+  const pagesList = document.getElementById('pdfPagesList');
+  if (pagesList) {
+    const scale = currentZoom / 100;
+    pagesList.style.maxWidth = `${Math.round(840 * scale)}px`;
+    pagesList.style.width = `${Math.round(100 * scale)}%`;
+  }
   const iframe = document.getElementById('pdfIframe');
-  if (!iframe) return;
-  const scale = currentZoom / 100;
-  iframe.style.transform = `scale(${scale})`;
-  iframe.style.width = (100 / scale) + '%';
-  iframe.style.height = (100 / scale) + '%';
+  if (iframe) {
+    const scale = currentZoom / 100;
+    iframe.style.transform = `scale(${scale})`;
+    iframe.style.width = (100 / scale) + '%';
+    iframe.style.height = (100 / scale) + '%';
+  }
 }
 
 // ===== FILTER =====
@@ -637,17 +958,19 @@ function closeSidebar() {
 (function() {
   let startY = 0, startTime = 0, isDragging = false;
   const sidebar = document.getElementById('sidebar');
+  const handle = document.querySelector('.sidebar-sheet-handle');
 
-  sidebar.addEventListener('touchstart', e => {
-    // Only start drag if near the top of the sheet (handle area)
-    if (e.touches[0].clientY < sidebar.getBoundingClientRect().top + 60) {
+  const target = handle || sidebar;
+  target.addEventListener('touchstart', e => {
+    // Only drag from handle or very top edge
+    if (handle || e.touches[0].clientY < sidebar.getBoundingClientRect().top + 40) {
       startY = e.touches[0].clientY;
       startTime = Date.now();
       isDragging = true;
     }
   }, { passive: true });
 
-  sidebar.addEventListener('touchmove', e => {
+  window.addEventListener('touchmove', e => {
     if (!isDragging) return;
     const dy = e.touches[0].clientY - startY;
     if (dy > 0) {
@@ -655,7 +978,7 @@ function closeSidebar() {
     }
   }, { passive: true });
 
-  sidebar.addEventListener('touchend', e => {
+  window.addEventListener('touchend', e => {
     if (!isDragging) return;
     isDragging = false;
     const dy = e.changedTouches[0].clientY - startY;
@@ -669,6 +992,20 @@ function closeSidebar() {
     }
   }, { passive: true });
 })();
+
+// Prevent context menu (right click) on the viewer
+document.addEventListener('contextmenu', e => {
+  if (e.target.closest('#viewerPanel') || e.target.closest('#viewerFrame')) {
+    e.preventDefault();
+  }
+});
+
+// Block Ctrl+S / Ctrl+P / Ctrl+U
+window.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && ['s', 'p', 'u', 'S', 'P', 'U'].includes(e.key)) {
+    e.preventDefault();
+  }
+});
 
 // ESC to close sidebar
 document.addEventListener('keydown', e => {

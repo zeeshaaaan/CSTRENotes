@@ -155,9 +155,30 @@ footer p{font-size:11.5px;color:var(--text3);line-height:1.8}
 footer .f-brand{font-weight:700;color:var(--text2)}
 
 /* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .topnav{padding:10px 12px;gap:8px;justify-content:space-between}
+  .topnav .brand-text small{display:none}
+  .topnav .nav-right{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    max-width:65%;
+  }
+  .topnav .nav-right::-webkit-scrollbar{display:none}
+  .nav-pill{
+    padding:5px 9px;
+    font-size:11.5px;
+    white-space:nowrap;
+    flex-shrink:0;
+  }
+  .pdf-nav-btn{
+    font-weight:700;
+  }
+}
 @media(max-width:600px){
-  .topnav{padding:10px 14px;gap:8px}
-  .topnav .nav-right{display:none}
   .hero{padding:40px 16px 36px}
   .exam-strip{gap:6px}
   .exam-chip{padding:8px 12px}
@@ -184,9 +205,10 @@ footer .f-brand{font-weight:700;color:var(--text2)}
   </a>
   <div class="nav-right">
     <a href="#syllabus" class="nav-pill active">Syllabus</a>
+    <a href="pdf-notes.html" class="nav-pill pdf-nav-btn">📄 PDF Notes</a>
     <a href="#exam-info" class="nav-pill">Exam Info</a>
     <a href="#features" class="nav-pill">Features</a>
-      <a href="pdf-notes.html" class="nav-pill pdf-nav-btn">📄 PDF Notes</a>
+  
   </div>
 </nav>
 
