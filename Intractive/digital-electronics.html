@@ -927,7 +927,7 @@ section('fixes','Corrections to the handwritten notes',`
 /* ================= BOOT ================= */
 (function(){
   const nav=$('#nav'),main=$('#main');
-  nav.innerHTML=`<div class="brand"><div>Digital Electronics<small>Interactive notes</small></div><a href="index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  nav.innerHTML=`<div class="brand"><div>Digital Electronics<small>Interactive notes</small></div><a href="../index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
   const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
   $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
   $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});

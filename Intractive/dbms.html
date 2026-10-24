@@ -1,0 +1,1201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DBMS — Interactive Notes</title>
+<style>
+:root{--ink:#15233b;--ink2:#51607a;--paper:#f3f6f2;--grid:#e3e9e4;--panel:#fff;--teal:#0a8f7b;--teal2:#d8f1ea;--amber:#d98e04;--amber2:#fff0c9;--red:#c43d2f;--red2:#fbe3df;--blue:#2c5fb3;--blue2:#e2ebf8;--line:#b8c3bc;
+--serif:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;--ui:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;--mono:ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--serif)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+nav#nav{position:fixed;inset:0 auto 0 0;width:262px;background:#fff;border-right:1.5px solid var(--ink);overflow:auto;padding:18px 0 30px;font-family:var(--ui);z-index:5}
+nav#nav .brand{padding:0 20px 14px;font-weight:800;font-size:17px;line-height:1.2;border-bottom:1.5px solid var(--ink);margin-bottom:8px}
+nav#nav .brand small{display:block;font-weight:500;color:var(--ink2);font-size:12.5px;margin-top:4px}
+nav#nav a{display:block;padding:7px 20px 7px 17px;color:var(--ink);text-decoration:none;font-size:14.5px;border-left:3px solid transparent}
+nav#nav a:hover{background:var(--teal2)}
+nav#nav a.act{border-left-color:var(--teal);background:var(--teal2);font-weight:700}
+nav#nav a span{display:inline-block;width:22px;color:var(--ink2);font-family:var(--mono);font-size:12.5px}
+main{margin-left:262px;padding:0 0 80px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px}
+.hero{background:var(--ink);color:#fff;padding:44px 0 36px;border-bottom:6px solid var(--teal)}
+.hero h1{font:800 clamp(30px,5vw,50px)/1.05 var(--ui);margin:0 0 10px;letter-spacing:-.02em}
+.hero p{margin:0 0 22px;color:#c9d5e6;max-width:60ch;font-family:var(--ui);font-size:16px}
+.bitrow{display:flex;gap:6px;flex-wrap:wrap}
+.hero .tg{background:#22355a;color:#fff;border-color:#5b7098}
+.hero .tg.on{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.readouts div{border-top:2px solid #5b7098;padding-top:6px;font-family:var(--ui);font-size:12.5px;color:#a9b9d3}
+.readouts b{display:block;font:600 22px var(--mono);color:#fff;letter-spacing:.02em;word-break:break-all}
+section.ch{padding:56px 0 8px;scroll-margin-top:0}
+section.ch>.wrap>h2{font:800 32px/1.15 var(--ui);margin:0 0 6px;letter-spacing:-.01em}
+section.ch>.wrap>h2 i{font:500 15px var(--mono);color:var(--teal);margin-right:12px;font-style:normal}
+h3{font:700 20px/1.3 var(--ui);margin:34px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+h4{font:700 16px var(--ui);margin:22px 0 4px;color:var(--teal)}
+p{margin:.55em 0}
+ul{padding-left:1.25em;margin:.5em 0}li{margin:.2em 0}
+.lead{font-size:18.5px;color:#26354f}
+code,.m{font-family:var(--mono);font-size:.9em}
+.n{text-decoration:overline;text-decoration-thickness:1.5px}
+.tool{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;box-shadow:5px 5px 0 var(--teal2);margin:18px 0;font-family:var(--ui);font-size:15px;line-height:1.5}
+.tool>.th{background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:6px 14px;border-radius:2px 2px 0 0}
+.tool>.tb{padding:14px 16px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.tabs button,.btn,select,input[type=text]{font:600 14px var(--ui);border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:6px 11px;border-radius:3px;cursor:pointer}
+input[type=text]{cursor:text;font-family:var(--mono);font-weight:500;font-size:15px;min-width:0}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.btn:hover,.tabs button:hover{background:var(--teal2)}.tabs button[aria-selected=true]:hover{background:var(--ink)}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.row label{font-weight:600;font-size:13.5px;color:var(--ink2)}
+.tg{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:58px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;font-family:var(--mono);padding:2px 4px}
+.tg small{font:600 10.5px var(--ui);opacity:.75}.tg b{font-size:21px;line-height:1.1}
+.tg.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.led{display:inline-block;width:16px;height:16px;border-radius:50%;background:#d4dcd7;border:1.5px solid #95a39b;vertical-align:-3px}
+.led.on{background:var(--teal);border-color:var(--teal);box-shadow:0 0 0 3px var(--teal2)}
+.out{display:inline-flex;align-items:center;gap:7px;font:600 15px var(--mono);margin-right:14px}
+table.t{border-collapse:collapse;font-family:var(--mono);font-size:14px;margin:8px 0}
+table.t th,table.t td{border:1.2px solid var(--line);padding:4px 10px;text-align:center}
+table.t th{background:#e8efe9;font-family:var(--ui);font-weight:700;font-size:13px}
+table.t td.l,table.t th.l{text-align:left}
+table.t tr.hi td{background:var(--amber2);font-weight:700}
+table.t td.ok{color:var(--teal);font-weight:700}
+.scroll{overflow-x:auto}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.res button{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:6px 10px;cursor:pointer;font-family:var(--ui)}
+.res button.sel{border-color:var(--teal);background:var(--teal2)}
+.res small{display:block;color:var(--ink2);font-size:12px}.res b{font:600 16px var(--mono);word-break:break-all}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1.2px solid var(--ink);border-radius:3px;padding:2px 8px;font:600 14px var(--mono);background:#fff;text-align:center}
+.chip small{display:block;font:500 11px var(--ui);color:var(--ink2)}
+.chip.o{background:var(--amber2);border-color:var(--amber)}
+.note,.fix,.key,.eg{padding:10px 14px;margin:14px 0;border-left:4px solid;font-size:15.5px;font-family:var(--ui);line-height:1.55}
+.note{background:var(--blue2);border-color:var(--blue)}.fix{background:var(--red2);border-color:var(--red)}
+.key{background:var(--teal2);border-color:var(--teal)}.eg{background:var(--amber2);border-color:var(--amber)}
+.note b:first-child,.fix b:first-child,.key b:first-child,.eg b:first-child{margin-right:4px}
+pre.w{font:500 14.5px/1.5 var(--mono);margin:8px 0;white-space:pre;overflow-x:auto}
+svg{max-width:100%;height:auto}
+svg text{font-family:var(--ui)}
+.w{fill:none;stroke:#9aa8a1;stroke-width:2.4;stroke-linejoin:round}.w.on{stroke:var(--teal)}
+.g{fill:#fff;stroke:var(--ink);stroke-width:2}
+.pin{font:700 12px var(--ui);fill:var(--ink)}
+.dot{fill:#9aa8a1}.dot.on{fill:var(--teal)}
+.kmap{border-collapse:separate;border-spacing:0;font-family:var(--mono)}
+.kmap td,.kmap th{width:62px;height:58px;border:1.5px solid var(--ink);text-align:center;padding:0;position:relative}
+.kmap th{background:#e8efe9;width:auto;height:auto;font:700 13px var(--mono);padding:4px 8px;border-width:1.5px}
+.kmap th.corner{background:#fff;border:none;font-size:12px;text-align:right}
+.kmap button{all:unset;display:block;width:100%;height:100%;cursor:pointer;font:700 22px var(--mono);position:relative}
+.kmap button small{position:absolute;right:4px;top:2px;font:500 10px var(--mono);color:#7b8a83}
+.kmap button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}
+.kmap td.hl{outline:4px solid var(--amber);outline-offset:-4px;z-index:2}
+.kmap .dots{position:absolute;left:3px;bottom:3px;display:flex;gap:2px}
+.kmap .dots i{width:9px;height:9px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.35)}
+.kmap .v0{color:#9aa8a1;font-weight:500}.kmap .v1{color:var(--ink)}.kmap .vx{color:var(--amber)}
+.leg{list-style:none;padding:0;margin:8px 0;font-family:var(--ui)}
+.leg li{display:flex;gap:10px;align-items:center;padding:4px 6px;border-radius:3px;cursor:default}
+.leg li:hover{background:var(--amber2)}
+.leg i{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.35)}
+.big{font:700 22px var(--mono);padding:8px 12px;background:var(--teal2);border-left:4px solid var(--teal);margin:8px 0;overflow-x:auto}
+.fam ul{list-style:none;padding-left:1.1em;border-left:2px solid var(--ink);margin:2px 0 2px .4em}
+.fam>ul{border:0;padding:0;margin:0}.fam li{margin:4px 0;font-family:var(--ui);font-size:15px}
+.fam li b{background:var(--ink);color:#fff;padding:1px 9px;border-radius:3px;font-size:14px}
+.fam li.leaf b{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.msg{font-weight:700;color:var(--red);min-height:1.4em}
+.mini{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.mini figure{margin:0;text-align:center;font:13px var(--ui);color:var(--ink2)}
+.ff{display:flex;gap:6px;margin:10px 0}
+.ffb{border:2px solid var(--ink);min-width:62px;text-align:center;padding:6px 4px;background:#fff;font-family:var(--mono);border-radius:3px;transition:background .15s}
+.ffb small{display:block;font:600 11px var(--ui);color:var(--ink2)}.ffb b{font-size:26px}
+.ffb.on{background:var(--teal);color:#fff;border-color:var(--teal)}.ffb.on small{color:#d8f1ea}
+.ffb.flash{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.menu-btn{display:none}
+.kmap.sm td{width:44px;height:42px}.kmap.sm button{font-size:16px}.kmap.sm th{font-size:11px;padding:2px 5px}.kmap.sm button small{font-size:8.5px}
+.menu-btn{display:none}
+@media (max-width:980px){
+ nav#nav{position:fixed;inset:0 0 auto 0;width:auto;height:auto;max-height:100vh;overflow:visible;padding:0;border-right:0;border-bottom:1.5px solid var(--ink);display:block}
+ nav#nav .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 6px 14px;margin:0;border-bottom:0;font-size:15px}
+ nav#nav .brand small{display:none}
+ .menu-btn{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--ui);background:var(--ink);color:#fff;border:0;border-radius:3px;padding:9px 13px;min-height:40px;cursor:pointer}
+ #navlist{display:none;max-height:calc(100vh - 58px);overflow-y:auto;border-top:1.5px solid var(--ink);background:#fff;-webkit-overflow-scrolling:touch}
+ nav#nav.open #navlist{display:block}
+ nav#nav a{padding:13px 18px;border-bottom:1px solid #e3e9e4;font-size:16px}
+ main{margin-left:0;padding-top:52px}.wrap{padding:0 16px}
+ section.ch{scroll-margin-top:56px}
+ .kmap td{width:50px;height:50px}
+ .hero{padding-top:28px}
+}
+@media print{nav#nav{display:none}main{margin:0}.tool{break-inside:avoid}}
+.home-link{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;font:700 13px var(--ui);color:var(--teal);background:var(--teal2);border:1.5px solid var(--teal);border-radius:3px;text-decoration:none;transition:all .2s;margin-left:auto;}
+.home-link:hover{background:var(--teal);color:#fff;}
+.null{color:#9aa8a1;font-style:italic}
+td.bad{background:var(--red2)!important;color:var(--red);font-weight:700}td.good{background:var(--teal2)!important}
+td.lock{background:var(--amber2)!important}
+textarea.sql{width:100%;min-height:150px;font:500 14.5px/1.5 var(--mono);border:1.5px solid var(--ink);border-radius:3px;padding:10px;resize:vertical;background:#fbfcfb;color:var(--ink)}
+.err{background:var(--red2);border-left:4px solid var(--red);padding:8px 12px;margin:8px 0;font:600 14px var(--mono);white-space:pre-wrap}
+.okm{background:var(--teal2);border-left:4px solid var(--teal);padding:8px 12px;margin:8px 0;font:600 14px var(--ui)}
+pre.code{background:#f1f4f2;border:1px solid var(--line);border-left:4px solid var(--ink);padding:10px 12px;margin:8px 0;font:500 13.5px/1.55 var(--mono);overflow-x:auto;white-space:pre}
+details.acc{border:1.5px solid var(--ink);border-radius:3px;margin:8px 0;background:#fff;font-family:var(--ui)}
+details.acc>summary{cursor:pointer;padding:9px 14px;font-weight:700;font-size:15px;list-style:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::before{content:'+';display:inline-block;width:20px;color:var(--teal);font-family:var(--mono)}
+details.acc[open]>summary::before{content:'−'}
+details.acc[open]>summary{background:var(--teal2);border-bottom:1.5px solid var(--ink)}
+details.acc>div{padding:8px 16px 12px;font-size:15px}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.cols2>div{min-width:0}
+.pill{display:inline-block;padding:1px 9px;border-radius:12px;font:700 12px var(--ui);background:var(--ink);color:#fff;margin:0 4px 2px 0}
+.pill.g{background:var(--teal)}.pill.r{background:var(--red)}.pill.a{background:var(--amber);color:var(--ink)}
+.sel{cursor:pointer}.sel:hover td{background:var(--amber2)}
+tr.pick td{background:var(--teal2)!important;font-weight:700}
+.stepbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.stepbar span{padding:4px 11px;border:1.5px solid var(--line);border-radius:14px;font:600 13px var(--ui);color:var(--ink2)}
+.stepbar span.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.hero .tg{min-width:auto;height:46px;padding:0 14px;flex-direction:row;font:700 15px var(--ui)}
+.hero .arrowx{color:#5b7098;align-self:center;font-weight:700}
+.heroTxt{margin-top:16px;min-height:3.2em;font-family:var(--ui);color:#e3ebf7;font-size:16px;max-width:62ch}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Chapters"></nav>
+<main id="main"></main>
+<script>
+/* ===== Mini SQL engine (teaching subset) ===== */
+function sqlTok(s){
+  const out=[];let i=0;
+  while(i<s.length){
+    const c=s[i];
+    if(/\s/.test(c)){i++;continue;}
+    if(c==='-'&&s[i+1]==='-'){while(i<s.length&&s[i]!=='\n')i++;continue;}
+    if(/[0-9]/.test(c)||(c==='.'&&/[0-9]/.test(s[i+1]||''))){let j=i;while(j<s.length&&/[0-9.]/.test(s[j]))j++;out.push({t:'num',v:parseFloat(s.slice(i,j)),x:s.slice(i,j)});i=j;continue;}
+    if(c==="'"){let j=i+1,v='';while(j<s.length){if(s[j]==="'"){if(s[j+1]==="'"){v+="'";j+=2;continue;}break;}v+=s[j++];}out.push({t:'str',v,x:"'"+v+"'"});i=j+1;continue;}
+    if(/[A-Za-z_]/.test(c)){let j=i;while(j<s.length&&/[A-Za-z0-9_$#]/.test(s[j]))j++;const w=s.slice(i,j);out.push({t:'id',v:w,u:w.toUpperCase(),x:w});i=j;continue;}
+    const two=s.substr(i,2);
+    if(['<=','>=','<>','!=','||'].includes(two)){out.push({t:'op',v:two,x:two});i+=2;continue;}
+    out.push({t:'op',v:c,x:c});i++;
+  }
+  return out;
+}
+const AGG=['COUNT','SUM','AVG','MIN','MAX'];
+class P_{
+  constructor(t){this.t=t;this.i=0;}
+  peek(o=0){return this.t[this.i+o];}
+  next(){return this.t[this.i++];}
+  isK(u,o=0){const x=this.peek(o);return x&&x.t==='id'&&x.u===u;}
+  isOp(v,o=0){const x=this.peek(o);return x&&x.t==='op'&&x.v===v;}
+  acceptK(u){if(this.isK(u)){this.i++;return true;}return false;}
+  acceptOp(v){if(this.isOp(v)){this.i++;return true;}return false;}
+  expK(u){if(!this.acceptK(u))throw Error(`Expected ${u} near "${this.peek()?this.peek().x:'end'}"`);}
+  expOp(v){if(!this.acceptOp(v))throw Error(`Expected "${v}" near "${this.peek()?this.peek().x:'end of statement'}"`);}
+  ident(){const x=this.next();if(!x||x.t!=='id')throw Error('Expected a name near "'+(x?x.x:'end')+'"');return x.v;}
+  or(){let a=this.and();while(this.acceptK('OR'))a={k:'bin',op:'OR',a,b:this.and()};return a;}
+  and(){let a=this.not();while(this.acceptK('AND'))a={k:'bin',op:'AND',a,b:this.not()};return a;}
+  not(){if(this.acceptK('NOT'))return {k:'not',a:this.not()};return this.cmp();}
+  cmp(){
+    let a=this.add();
+    const x=this.peek();if(!x)return a;
+    if(x.t==='op'&&['=','<>','!=','<','>','<=','>='].includes(x.v)){this.i++;return {k:'bin',op:x.v==='!='?'<>':x.v,a,b:this.add()};}
+    let neg=false;
+    if(this.isK('NOT')&&(this.isK('LIKE',1)||this.isK('IN',1)||this.isK('BETWEEN',1))){this.i++;neg=true;}
+    if(this.acceptK('LIKE'))return {k:'like',a,p:this.add(),neg};
+    if(this.acceptK('IN')){this.expOp('(');const l=[this.or()];while(this.acceptOp(','))l.push(this.or());this.expOp(')');return {k:'in',a,l,neg};}
+    if(this.acceptK('BETWEEN')){const lo=this.add();this.expK('AND');const hi=this.add();return {k:'btw',a,lo,hi,neg};}
+    if(this.acceptK('IS')){const n=this.acceptK('NOT');this.expK('NULL');return {k:'isnull',a,neg:n};}
+    return a;
+  }
+  add(){let a=this.mul();for(;;){const x=this.peek();if(x&&x.t==='op'&&['+','-','||'].includes(x.v)){this.i++;a={k:'bin',op:x.v,a,b:this.mul()};}else break;}return a;}
+  mul(){let a=this.un();for(;;){const x=this.peek();if(x&&x.t==='op'&&['*','/'].includes(x.v)){this.i++;a={k:'bin',op:x.v,a,b:this.un()};}else break;}return a;}
+  un(){if(this.acceptOp('-'))return {k:'bin',op:'-',a:{k:'lit',v:0},b:this.un()};return this.prim();}
+  prim(){
+    const x=this.next();if(!x)throw Error('Unexpected end of statement');
+    if(x.t==='num'||x.t==='str')return {k:'lit',v:x.v};
+    if(x.t==='op'&&x.v==='('){const e=this.or();this.expOp(')');return e;}
+    if(x.t==='id'){
+      if(x.u==='NULL')return {k:'lit',v:null};
+      if(this.isOp('(')){this.i++;const fn={k:'fn',n:x.u,args:[],star:false,distinct:false};
+        if(this.acceptOp('*'))fn.star=true;else if(!this.isOp(')')){if(this.acceptK('DISTINCT'))fn.distinct=true;fn.args.push(this.or());while(this.acceptOp(','))fn.args.push(this.or());}
+        this.expOp(')');return fn;}
+      if(this.isOp('.')){this.i++;const c=this.next();if(c.t==='op'&&c.v==='*')return {k:'star',t:x.v};return {k:'col',t:x.v,n:c.v};}
+      return {k:'col',n:x.v};
+    }
+    throw Error(`Unexpected "${x.x}"`);
+  }
+}
+const hasAgg=n=>n&&typeof n==='object'&&(n.k==='fn'&&AGG.includes(n.n)||Object.values(n).some(v=>Array.isArray(v)?v.some(hasAgg):hasAgg(v)));
+const likeRe=p=>new RegExp('^'+String(p).replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/%/g,'.*').replace(/_/g,'.')+'$','i');
+const cmpV=(a,b)=>a===b?0:(typeof a==='number'&&typeof b==='number'?a-b:String(a)<String(b)?-1:1);
+function ev(n,row,grp){
+  switch(n.k){
+    case 'lit':return n.v;
+    case 'col':{const key=(n.t?n.t.toLowerCase()+'.':'')+n.n.toLowerCase();if(!(key in row))throw Error('Unknown column '+(n.t?n.t+'.':'')+n.n);return row[key];}
+    case 'not':{const v=ev(n.a,row,grp);return v===null?null:!v;}
+    case 'bin':{
+      if(n.op==='AND'){const a=ev(n.a,row,grp);if(a===false)return false;const b=ev(n.b,row,grp);return b===false?false:(a===null||b===null)?null:true;}
+      if(n.op==='OR'){const a=ev(n.a,row,grp);if(a===true)return true;const b=ev(n.b,row,grp);return b===true?true:(a===null||b===null)?null:false;}
+      const a=ev(n.a,row,grp),b=ev(n.b,row,grp);if(a===null||b===null)return null;
+      switch(n.op){case '=':return a==b;case '<>':return a!=b;case '<':return a<b;case '>':return a>b;case '<=':return a<=b;case '>=':return a>=b;case '+':return a+b;case '-':return a-b;case '*':return a*b;case '/':if(b===0)throw Error('divisor is equal to zero');return a/b;case '||':return String(a)+String(b);}
+    }
+    case 'like':{const a=ev(n.a,row,grp),p=ev(n.p,row,grp);if(a===null||p===null)return null;const r=likeRe(p).test(String(a));return n.neg?!r:r;}
+    case 'in':{const a=ev(n.a,row,grp);if(a===null)return null;const r=n.l.some(e=>ev(e,row,grp)==a);return n.neg?!r:r;}
+    case 'btw':{const a=ev(n.a,row,grp),lo=ev(n.lo,row,grp),hi=ev(n.hi,row,grp);if([a,lo,hi].includes(null))return null;const r=a>=lo&&a<=hi;return n.neg?!r:r;}
+    case 'isnull':{const a=ev(n.a,row,grp);return n.neg?a!==null:a===null;}
+    case 'fn':{
+      if(AGG.includes(n.n)){
+        if(!grp)throw Error('Aggregate '+n.n+' not allowed here');
+        if(n.star)return grp.length;
+        let vals=grp.map(r=>ev(n.args[0],r)).filter(v=>v!==null);if(n.distinct)vals=[...new Set(vals)];
+        if(n.n==='COUNT')return vals.length;if(!vals.length)return null;
+        if(n.n==='SUM')return vals.reduce((a,b)=>a+b,0);if(n.n==='AVG')return vals.reduce((a,b)=>a+b,0)/vals.length;
+        if(n.n==='MIN')return vals.reduce((a,b)=>cmpV(a,b)<=0?a:b);return vals.reduce((a,b)=>cmpV(a,b)>=0?a:b);
+      }
+      const a=n.args.map(x=>ev(x,row,grp));if(a.some(v=>v===null))return null;
+      switch(n.n){case 'UPPER':return String(a[0]).toUpperCase();case 'LOWER':return String(a[0]).toLowerCase();case 'LENGTH':return String(a[0]).length;
+        case 'ABS':return Math.abs(a[0]);case 'SQRT':return Math.sqrt(a[0]);case 'POWER':return Math.pow(a[0],a[1]);case 'ROUND':return +(+a[0]).toFixed(a[1]||0);
+        case 'LTRIM':return String(a[0]).replace(/^\s+/,'');case 'RTRIM':return String(a[0]).replace(/\s+$/,'');
+        case 'SUBSTR':{const s=String(a[0]);const st=a[1]>0?a[1]-1:a[1]<0?s.length+a[1]:0;return a[2]!==undefined?s.substr(st,a[2]):s.substr(st);}
+        case 'TO_CHAR':return String(a[0]);case 'TO_NUMBER':{const v=parseFloat(a[0]);if(isNaN(v))throw Error('invalid number');return v;}case 'TO_DATE':return String(a[0]);
+        case 'MONTHS_BETWEEN':return +(((new Date(a[0])-new Date(a[1]))/2629800000).toFixed(2));
+        case 'LAST_DAY':{const d=new Date(a[0]);return new Date(d.getFullYear(),d.getMonth()+1,0).toISOString().slice(0,10);}
+        case 'NEXT_DAY':{const d=new Date(a[0]);d.setDate(d.getDate()+1);return d.toISOString().slice(0,10);}
+      }
+      throw Error('Unknown function '+n.n);
+    }
+    case 'star':throw Error('* not allowed here');
+  }
+}
+class SQLDB{
+  constructor(){this.t={};this.committed={};this.saves={};}
+  clone(o){return JSON.parse(JSON.stringify(o));}
+  get(name){const t=this.t[name.toLowerCase()];if(!t)throw Error(`Table or view "${name}" does not exist`);return t;}
+  exec(src){
+    const toks=sqlTok(src),stmts=[];let cur=[];
+    toks.forEach(t=>{if(t.t==='op'&&t.v===';'){if(cur.length)stmts.push(cur);cur=[];}else cur.push(t);});if(cur.length)stmts.push(cur);
+    return stmts.map(s=>{try{return this.run(s);}catch(e){return {err:e.message,sql:s.map(x=>x.x).join(' ')};}});
+  }
+  run(tk){
+    const p=new P_(tk),w=tk[0]&&tk[0].u;
+    const done=()=>{if(p.peek())throw Error(`Unexpected "${p.peek().x}" at end of statement`);};
+    switch(w){
+      case 'CREATE':{p.i++;
+        if(p.acceptK('DATABASE')){const n=p.ident();return {msg:`Database ${n} created.`};}
+        p.expK('TABLE');const name=p.ident();if(this.t[name.toLowerCase()])throw Error(`Table ${name} already exists`);
+        p.expOp('(');const T={name,cols:[],pk:[],uniques:[],fks:[],checks:[],rows:[]};
+        do{this.tableItem(p,T);}while(p.acceptOp(','));p.expOp(')');done();
+        this.t[name.toLowerCase()]=T;return {msg:`Table ${name} created.`};}
+      case 'USE':{p.i++;const n=p.ident();return {msg:`Using database ${n}.`};}
+      case 'DESC':case 'DESCRIBE':{p.i++;const t=this.get(p.ident());
+        return {cols:['Name','Null?','Datatype'],rows:t.cols.map(c=>[c.name,(c.notnull||t.pk.includes(c.name))?'NOT NULL':'',c.type])};}
+      case 'DROP':{p.i++;p.expK('TABLE');let ifx=false;if(p.acceptK('IF')){p.expK('EXISTS');ifx=true;}const n=p.ident();if(ifx&&!this.t[n.toLowerCase()])return {msg:`Table ${n} does not exist — nothing dropped.`};const t=this.get(n);
+        for(const o of Object.values(this.t))if(o!==t&&o.fks.some(f=>f.ref.toLowerCase()===n.toLowerCase()))throw Error(`Cannot drop ${t.name}: it is referenced by a foreign key in ${o.name}`);
+        delete this.t[n.toLowerCase()];return {msg:`Table ${t.name} dropped (structure and data).`};}
+      case 'TRUNCATE':{p.i++;p.acceptK('TABLE');const t=this.get(p.ident());const n=t.rows.length;t.rows=[];return {msg:`Table ${t.name} truncated (${n} rows removed, structure kept).`};}
+      case 'ALTER':{p.i++;p.expK('TABLE');const t=this.get(p.ident());
+        if(p.acceptK('ADD')){const paren=p.acceptOp('(');do{const T2={cols:[],pk:[],uniques:[],fks:[],checks:[]};this.tableItem(p,T2);T2.cols.forEach(c=>{if(t.cols.some(x=>x.name.toLowerCase()===c.name.toLowerCase()))throw Error(`Column ${c.name} already exists`);t.cols.push(c);t.rows.forEach(r=>r.push(c.def!==undefined?c.def:null));});
+          t.pk.push(...T2.pk);t.uniques.push(...T2.uniques);t.fks.push(...T2.fks);t.checks.push(...T2.checks);}while(paren&&p.acceptOp(','));if(paren)p.expOp(')');done();return {msg:'Table altered: column(s) added.'};}
+        if(p.acceptK('MODIFY')){const paren=p.acceptOp('(');do{const n=p.ident(),ty=this.type(p);const c=t.cols.find(x=>x.name.toLowerCase()===n.toLowerCase());if(!c)throw Error('Unknown column '+n);c.type=ty;}while(paren&&p.acceptOp(','));if(paren)p.expOp(')');done();return {msg:'Table altered: column modified.'};}
+        if(p.acceptK('DROP')){p.acceptK('COLUMN');const paren=p.acceptOp('(');do{const n=p.ident();const i=t.cols.findIndex(x=>x.name.toLowerCase()===n.toLowerCase());if(i<0)throw Error('Unknown column '+n);t.cols.splice(i,1);t.rows.forEach(r=>r.splice(i,1));t.pk=t.pk.filter(x=>x.toLowerCase()!==n.toLowerCase());}while(paren&&p.acceptOp(','));if(paren)p.expOp(')');done();return {msg:'Table altered: column(s) dropped.'};}
+        if(p.acceptK('RENAME')){p.expK('TO');const n=p.ident();delete this.t[t.name.toLowerCase()];t.name=n;this.t[n.toLowerCase()]=t;done();return {msg:'Table renamed.'};}
+        throw Error('Unsupported ALTER form');}
+      case 'INSERT':{p.i++;p.expK('INTO');const t=this.get(p.ident());let cols=t.cols.map(c=>c.name);
+        if(p.isOp('(')&&!p.isK('VALUES',1)){p.i++;cols=[p.ident()];while(p.acceptOp(','))cols.push(p.ident());p.expOp(')');}
+        p.expK('VALUES');const rows=[];
+        do{p.expOp('(');const vs=[this.valexp(p)];while(p.acceptOp(','))vs.push(this.valexp(p));p.expOp(')');
+          if(vs.length!==cols.length)throw Error(vs.length<cols.length?'not enough values':'too many values');
+          const row=t.cols.map(c=>c.def!==undefined?c.def:null);
+          cols.forEach((cn,i)=>{const ix=t.cols.findIndex(c=>c.name.toLowerCase()===cn.toLowerCase());if(ix<0)throw Error('Unknown column '+cn);row[ix]=this.coerce(t.cols[ix],vs[i]);});
+          rows.push(row);}while(p.acceptOp(','));done();
+        const before=t.rows.length;rows.forEach(r=>{this.check(t,r,null);t.rows.push(r);});return {msg:`${rows.length} row(s) inserted.`};}
+      case 'UPDATE':{p.i++;const t=this.get(p.ident());p.expK('SET');const sets=[];
+        do{const n=p.ident();p.expOp('=');sets.push([n,p.or()]);}while(p.acceptOp(','));
+        const where=p.acceptK('WHERE')?p.or():null;done();
+        const nr=t.rows.map(r=>r.slice());let cnt=0;
+        nr.forEach((r,ri)=>{const env=this.env(t,r);if(!where||ev(where,env)===true){sets.forEach(([n,e])=>{const ix=t.cols.findIndex(c=>c.name.toLowerCase()===n.toLowerCase());if(ix<0)throw Error('Unknown column '+n);r[ix]=this.coerce(t.cols[ix],ev(e,env));});cnt++;this.check(t,r,ri,nr);}});
+        t.rows=nr;return {msg:`${cnt} row(s) updated.`};}
+      case 'DELETE':{p.i++;p.acceptK('FROM');const t=this.get(p.ident());const where=p.acceptK('WHERE')?p.or():null;done();
+        const del=t.rows.filter(r=>!where||ev(where,this.env(t,r))===true);
+        for(const o of Object.values(this.t))for(const f of o.fks)if(f.ref.toLowerCase()===t.name.toLowerCase())for(const d of del){
+          const vals=f.refcols.map(rc=>d[t.cols.findIndex(c=>c.name.toLowerCase()===rc.toLowerCase())]);
+          if(o.rows.some(r=>f.cols.every((fc,k)=>r[o.cols.findIndex(c=>c.name.toLowerCase()===fc.toLowerCase())]===vals[k])))throw Error(`integrity constraint violated — child record found in ${o.name}`);}
+        t.rows=t.rows.filter(r=>!del.includes(r));return {msg:`${del.length} row(s) deleted.`+(where?'':' (no WHERE clause: all rows)')};}
+      case 'SELECT':return this.select(p);
+      case 'COMMIT':this.committed=this.clone(this.t);this.saves={};return {msg:'Commit complete — changes are now permanent.'};
+      case 'ROLLBACK':{p.i++;if(p.acceptK('TO')){p.acceptK('SAVEPOINT');const n=p.ident().toLowerCase();if(!this.saves[n])throw Error('Savepoint '+n+' not found');this.t=this.clone(this.saves[n]);return {msg:`Rolled back to savepoint ${n}.`};}
+        this.t=this.clone(this.committed);this.saves={};return {msg:'Rollback complete — back to the last committed state.'};}
+      case 'SAVEPOINT':{p.i++;const n=p.ident().toLowerCase();this.saves[n]=this.clone(this.t);return {msg:`Savepoint ${n} created.`};}
+      case 'GRANT':return {msg:'Grant succeeded (simulated — permissions are not enforced in this playground).'};
+      case 'REVOKE':return {msg:'Revoke succeeded (simulated).'};
+    }
+    throw Error('Unsupported or unknown command "'+(tk[0]?tk[0].x:'')+'"');
+  }
+  valexp(p){return ev(p.or(),{});}
+  type(p){const n=p.ident().toUpperCase();let s=n;if(p.acceptOp('(')){const a=[p.next().x];while(p.acceptOp(','))a.push(p.next().x);p.expOp(')');s+='('+a.join(',')+')';}return s;}
+  tableItem(p,T){
+    if(p.isK('PRIMARY')){p.i++;p.expK('KEY');p.expOp('(');T.pk.push(p.ident());while(p.acceptOp(','))T.pk.push(p.ident());p.expOp(')');return;}
+    if(p.isK('UNIQUE')){p.i++;p.expOp('(');const u=[p.ident()];while(p.acceptOp(','))u.push(p.ident());p.expOp(')');T.uniques.push(u);return;}
+    if(p.isK('FOREIGN')){p.i++;p.expK('KEY');p.expOp('(');const c=[p.ident()];while(p.acceptOp(','))c.push(p.ident());p.expOp(')');p.expK('REFERENCES');const r=p.ident();let rc=c;if(p.acceptOp('(')){rc=[p.ident()];while(p.acceptOp(','))rc.push(p.ident());p.expOp(')');}T.fks.push({cols:c,ref:r,refcols:rc});return;}
+    if(p.isK('CHECK')){p.i++;p.expOp('(');T.checks.push(p.or());p.expOp(')');return;}
+    const col={name:p.ident(),type:this.type(p)};
+    for(;;){
+      if(p.isK('NOT')&&p.isK('NULL',1)){p.i+=2;col.notnull=true;}
+      else if(p.acceptK('NULL')){}
+      else if(p.acceptK('UNIQUE'))T.uniques.push([col.name]);
+      else if(p.isK('PRIMARY')){p.i++;p.expK('KEY');T.pk.push(col.name);}
+      else if(p.acceptK('DEFAULT'))col.def=ev(p.add(),{});
+      else if(p.acceptK('CHECK')){p.expOp('(');T.checks.push(p.or());p.expOp(')');}
+      else if(p.acceptK('REFERENCES')){const r=p.ident();let rc=[col.name];if(p.acceptOp('(')){rc=[p.ident()];p.expOp(')');}T.fks.push({cols:[col.name],ref:r,refcols:rc});}
+      else break;
+    }
+    T.cols.push(col);
+  }
+  coerce(c,v){
+    if(v===null)return null;const ty=c.type.toUpperCase();
+    if(/^(NUMBER|INT|INTEGER|FLOAT|DECIMAL|LONG)/.test(ty)&&!/^LONG$/.test(ty)){const n=typeof v==='number'?v:parseFloat(v);if(isNaN(n))throw Error(`invalid number "${v}" for column ${c.name}`);return n;}
+    const m=ty.match(/^(VARCHAR2?|CHAR)\((\d+)\)/);if(m&&String(v).length>+m[2])throw Error(`value too large for column ${c.name} (actual: ${String(v).length}, maximum: ${m[2]})`);
+    return typeof v==='number'?v:String(v);
+  }
+  env(t,r){const e={};t.cols.forEach((c,i)=>{e[c.name.toLowerCase()]=r[i];e[t.name.toLowerCase()+'.'+c.name.toLowerCase()]=r[i];});return e;}
+  check(t,r,self,all){
+    const idx=n=>t.cols.findIndex(c=>c.name.toLowerCase()===n.toLowerCase());
+    t.cols.forEach((c,i)=>{if((c.notnull||t.pk.some(x=>x.toLowerCase()===c.name.toLowerCase()))&&r[i]===null)throw Error(`cannot insert NULL into ${t.name}.${c.name} (NOT NULL / PRIMARY KEY constraint)`);});
+    const rows=all||t.rows;const others=rows.filter((_,k)=>k!==self);
+    const uniq=(cols,label)=>{const ix=cols.map(idx);if(ix.some(i=>r[i]===null))return;if(others.some(o=>ix.every(i=>o[i]===r[i])))throw Error(`unique constraint violated — duplicate value for ${label}(${cols.join(', ')})`);};
+    if(t.pk.length)uniq(t.pk,'PRIMARY KEY ');t.uniques.forEach(u=>uniq(u,'UNIQUE '));
+    t.checks.forEach(ck=>{const v=ev(ck,this.env(t,r));if(v===false)throw Error('check constraint violated');});
+    t.fks.forEach(f=>{const vals=f.cols.map(c=>r[idx(c)]);if(vals.some(v=>v===null))return;const pt=this.get(f.ref);
+      const ok=pt.rows.some(pr=>f.refcols.every((rc,k)=>pr[pt.cols.findIndex(c=>c.name.toLowerCase()===rc.toLowerCase())]===vals[k]));
+      if(!ok)throw Error(`integrity constraint violated — parent key not found in ${pt.name} (${f.cols.join(', ')} = ${vals.join(', ')})`);});
+  }
+  select(p){
+    p.i++;const distinct=p.acceptK('DISTINCT');const items=[];
+    do{const s=p.i;let e;if(p.isOp('*')){p.i++;e={k:'star'};}else e=p.or();let alias=null;
+      if(p.acceptK('AS'))alias=p.ident();else if(p.peek()&&p.peek().t==='id'&&!['FROM','WHERE','GROUP','ORDER','HAVING'].includes(p.peek().u))alias=p.ident();
+      items.push({e,alias,text:p.t.slice(s,p.i-(alias?(p.t[p.i-2]&&p.t[p.i-2].u==='AS'?2:1):0)).map(x=>x.x).join('').replace(/,/g,', ')||'?'});}while(p.acceptOp(','));
+    p.expK('FROM');
+    const baseName=p.ident();let base=this.get(baseName),alias=baseName;
+    if(p.peek()&&p.peek().t==='id'&&!['WHERE','GROUP','ORDER','HAVING','INNER','LEFT','RIGHT','FULL','NATURAL','JOIN'].includes(p.peek().u))alias=p.ident();
+    let cols=base.cols.map(c=>({n:c.name,keys:[c.name.toLowerCase(),alias.toLowerCase()+'.'+c.name.toLowerCase(),base.name.toLowerCase()+'.'+c.name.toLowerCase()],tab:alias}));
+    const mk=(t,r,a)=>{const e={};t.cols.forEach((c,i)=>{const v=r?r[i]:null;e[c.name.toLowerCase()]=v;e[a.toLowerCase()+'.'+c.name.toLowerCase()]=v;e[t.name.toLowerCase()+'.'+c.name.toLowerCase()]=v;});return e;};
+    let rows=base.rows.map(r=>mk(base,r,alias));
+    for(;;){
+      let type=null,nat=false;
+      if(p.acceptK('NATURAL')){nat=true;type='INNER';p.acceptK('INNER');p.expK('JOIN');}
+      else if(p.isK('INNER')){p.i++;p.expK('JOIN');type='INNER';}
+      else if(p.isK('LEFT')||p.isK('RIGHT')||p.isK('FULL')){type=p.next().u;p.acceptK('OUTER');p.expK('JOIN');}
+      else if(p.acceptK('JOIN'))type='INNER';
+      else break;
+      const tn=p.ident(),t2=this.get(tn);let a2=tn;
+      if(p.peek()&&p.peek().t==='id'&&!['ON','WHERE','GROUP','ORDER','INNER','LEFT','RIGHT','FULL','NATURAL','JOIN'].includes(p.peek().u))a2=p.ident();
+      let on=null,common=[];
+      if(nat){common=t2.cols.map(c=>c.name).filter(n=>cols.some(c=>c.n.toLowerCase()===n.toLowerCase()));}
+      else{p.expK('ON');on=p.or();}
+      const cols2=t2.cols.filter(c=>!(nat&&common.includes(c.name))).map(c=>({n:c.name,keys:[a2.toLowerCase()+'.'+c.name.toLowerCase(),t2.name.toLowerCase()+'.'+c.name.toLowerCase()].concat(cols.some(x=>x.n.toLowerCase()===c.name.toLowerCase())?[]:[c.name.toLowerCase()]),tab:a2}));
+      const test=(l,r)=>{const env=Object.assign({},l,mk(t2,r,a2));if(nat)return common.every(n=>l[n.toLowerCase()]===env[a2.toLowerCase()+'.'+n.toLowerCase()]&&l[n.toLowerCase()]!==null);return ev(on,env)===true;};
+      const out=[];const usedR=new Set();
+      rows.forEach(l=>{let hit=false;t2.rows.forEach((r,ri)=>{if(test(l,r)){hit=true;usedR.add(ri);out.push(Object.assign({},l,mk(t2,r,a2)));}});
+        if(!hit&&(type==='LEFT'||type==='FULL'))out.push(Object.assign({},l,mk(t2,null,a2)));});
+      if(type==='RIGHT'||type==='FULL')t2.rows.forEach((r,ri)=>{if(!usedR.has(ri)){const blank={};cols.forEach(c=>c.keys.forEach(k=>blank[k]=null));out.push(Object.assign(blank,mk(t2,r,a2)));}});
+      rows=out;cols=cols.concat(cols2);
+      if(nat)common.forEach(n=>{});
+    }
+    const where=p.acceptK('WHERE')?p.or():null;
+    if(where)rows=rows.filter(r=>ev(where,r)===true);
+    let gb=null;if(p.isK('GROUP')){p.i++;p.expK('BY');gb=[p.or()];while(p.acceptOp(','))gb.push(p.or());}
+    const having=p.acceptK('HAVING')?p.or():null;
+    let ob=null;if(p.isK('ORDER')){p.i++;p.expK('BY');ob=[];do{const e=p.or();let d=1;if(p.acceptK('DESC'))d=-1;else p.acceptK('ASC');ob.push({e,d});}while(p.acceptOp(','));}
+    if(p.peek())throw Error(`Unexpected "${p.peek().x}" in SELECT`);
+    const agg=items.some(i=>hasAgg(i.e))||(having&&hasAgg(having));
+    let units;
+    if(gb||agg){
+      const m=new Map();rows.forEach(r=>{const k=gb?JSON.stringify(gb.map(g=>ev(g,r))):'all';if(!m.has(k))m.set(k,[]);m.get(k).push(r);});
+      if(!gb&&!m.size)m.set('all',[]);
+      units=[...m.values()].map(g=>({row:g[0]||{},grp:g}));
+      if(having)units=units.filter(u=>ev(having,u.row,u.grp)===true);
+    }else units=rows.map(r=>({row:r,grp:null}));
+    const heads=[],fns=[];
+    items.forEach(it=>{
+      if(it.e.k==='star'){cols.forEach(c=>{heads.push(c.n);fns.push(u=>u.row[c.keys[0]]);});}
+      else if(it.e.k==='star'){}
+      else if(it.e.k==='col'&&!it.alias){const col=it.e;heads.push(col.n);fns.push(u=>ev(col,u.row,u.grp));}
+      else{heads.push(it.alias||it.text);fns.push(u=>ev(it.e,u.row,u.grp));}
+    });
+    let out=units.map(u=>({u,v:fns.map(f=>f(u))}));
+    if(distinct){const seen=new Set();out=out.filter(o=>{const k=JSON.stringify(o.v);if(seen.has(k))return false;seen.add(k);return true;});}
+    if(ob)out.sort((a,b)=>{for(const o of ob){let va,vb;
+      const hi=o.e.k==='col'&&!o.e.t?heads.findIndex(h=>h.toLowerCase()===o.e.n.toLowerCase()):-1;
+      if(hi>=0){va=a.v[hi];vb=b.v[hi];}else{va=ev(o.e,a.u.row,a.u.grp);vb=ev(o.e,b.u.row,b.u.grp);}
+      if(va===vb)continue;if(va===null)return 1;if(vb===null)return -1;const c=cmpV(va,vb);if(c)return c*o.d;}return 0;});
+    return {cols:heads,rows:out.map(o=>o.v)};
+  }
+}
+if(typeof module!=='undefined')module.exports={SQLDB};
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const SECTIONS=[];
+function section(id,title,html,init){SECTIONS.push({id,title,html,init});}
+function Tabs(el,names,cb,start=0){
+  el.classList.add('tabs');el.setAttribute('role','tablist');
+  const draw=i=>{el.innerHTML=names.map((n,k)=>`<button role="tab" aria-selected="${k===i}" data-k="${k}">${n}</button>`).join('');};
+  el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;draw(k);cb(k);};
+  draw(start);cb(start);
+}
+function Toggles(el,labels,init,cb){
+  let v=init.slice(),last=-1;
+  const draw=()=>{el.innerHTML=labels.map((l,i)=>`<button class="tg ${v[i]?'on':''}" data-i="${i}" aria-pressed="${!!v[i]}"><small>${l}</small><b>${v[i]}</b></button>`).join('');
+    if(last>=0){const b=el.querySelector(`[data-i="${last}"]`);b&&b.focus();}};
+  el.classList.add('bitrow');
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;const i=+b.dataset.i;v[i]^=1;last=i;draw();cb(v);};
+  draw();cb(v);return {get:()=>v,set:nv=>{v=nv.slice();draw();cb(v);}};
+}
+const cell=v=>v===null||v===undefined?'<span class="null">NULL</span>':esc(v);
+function htmlTable(cols,rows,o={}){
+  return `<div class="scroll"><table class="t"><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr class="${o.row&&o.row(r,i)||''}">${r.map((v,j)=>`<td class="${o.cell&&o.cell(v,i,j)||''}">${cell(v)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+}
+const gotoId=id=>{const e=document.getElementById(id);e&&e.scrollIntoView({behavior:'smooth'});};
+const svgBox=(x,y,w,h,label,on,sz=13)=>`<rect class="g" x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="${on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.6':''}"/><text class="pin" x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" style="font-size:${sz}px">${label}</text>`;
+const wire=(pts,on,dash)=>`<polyline class="w ${on?'on':''}" ${dash?'stroke-dasharray="5 4"':''} points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+const arrowHead=(x,y,dir,on)=>{const c=on?'#0a8f7b':'#9aa8a1';const p={d:`${x},${y} ${x-6},${y-9} ${x+6},${y-9}`,u:`${x},${y} ${x-6},${y+9} ${x+6},${y+9}`,r:`${x},${y} ${x-9},${y-6} ${x-9},${y+6}`,l:`${x},${y} ${x+9},${y-6} ${x+9},${y+6}`}[dir];return `<polygon points="${p}" fill="${c}"/>`;};
+const SQLT=(t)=>`<span class="m">${esc(t)}</span>`;
+
+/* ================= HERO ================= */
+const HERO=[['Data','Raw facts or figures that are in an unorganised form and have no proper meaning — text, numbers, audio … e.g. 72, 85, 90, 64.'],
+ ['Process','Various operations are performed on the data — sorting, calculating, organising.  e.g. add the numbers and divide by 4.'],
+ ['Information','Data that has become meaningfully processed.  e.g. “Average marks = 77.75” — a table is information.'],
+ ['Knowledge','Understanding drawn from information.  e.g. “The class is doing well, but one student is below 65.”'],
+ ['Wisdom','Using knowledge to decide well.  e.g. “Give extra help to the weak student before the exam.”']];
+function heroInit(){
+  const el=$('#heroSteps'),tx=$('#heroTxt');let cur=0;
+  const draw=()=>{el.innerHTML=HERO.map((h,i)=>`<button class="tg ${i===cur?'on':''}" data-i="${i}">${h[0]}</button>${i<4?'<span class="arrowx">→</span>':''}`).join('');tx.innerHTML=`<b>${HERO[cur][0]}.</b> ${HERO[cur][1]}`;};
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;cur=+b.dataset.i;draw();};draw();
+}
+
+/* ================= 1 DATA & DATABASE ================= */
+section('data','Data, information & DBMS',`
+<p class="lead">A <b>database</b> stores data; a <b>DBMS</b> is the software that manages it. Start with the idea of data itself.</p>
+<ul><li><b>Data</b> — raw facts or figures in an unorganised form that have no proper meaning (text, number, audio …).</li><li><b>Information</b> — what data becomes when various operations are performed on it and it is meaningfully processed. Example: a table.</li></ul>
+<div class="tool"><div class="th">Data → Process → Information → Knowledge → Wisdom</div><div class="tb">
+<div class="row"><label for="dwIn">Raw data (marks)</label><input type="text" id="dwIn" value="72, 85, 90, 64" size="22"><button class="btn pri" id="dwGo">Next step</button><button class="btn" id="dwReset">Start again</button></div>
+<div class="stepbar" id="dwBar"></div><div id="dwOut"></div></div></div>
+<h3>Database</h3>
+<ul><li>A database is a connection (collection) of <b>inter-related data</b>.</li><li>Types: <b>structured</b> and <b>unstructured</b>.</li></ul>
+<div class="fam"><ul><li><b>Database system</b><ul><li><b>Database</b> — collection of data<ul><li class="leaf"><b>Structured</b> — Banking, Railways (RDBMS) → <b>TABLE</b></li><li class="leaf"><b>Unstructured</b> — websites</li></ul></li>
+<li><b>DBMS</b> — a software used to manage database files; performs operations on the DB. e.g. Oracle, MySQL etc.</li></ul></li></ul></div>
+<h3>DBMS</h3>
+<ul><li>Acts as an <b>interface between the user and the DB file</b>.</li><li>Converts the user's request into a database query, sends it to the DB file, fetches the required data and returns the information to the user.</li><li>A collection of application software that enables communication between the user and the DB file.</li></ul>
+<div class="tool"><div class="th">Follow a request through the DBMS</div><div class="tb"><div class="row"><button class="btn pri" id="fbGo">Send request</button><span id="fbMsg" class="m"></span></div>
+<svg id="fbSvg" viewBox="0 0 560 250" width="560" role="img" aria-label="User, DBMS and DB file"></svg></div></div>
+`,root=>{
+  const ST=['Marks collected: <b>72, 85, 90, 64</b> — just numbers with no meaning yet. This is <b>data</b>.','<b>Process</b>: add the numbers, divide by how many there are, find the lowest.','<b>Information</b>: total = SUM, average = AVG, lowest = MIN — now it means something.','<b>Knowledge</b>: the class is doing well overall, but one student is far below the others.','<b>Wisdom</b>: arrange extra classes for the weak student before the exam.'];
+  let s=0;const names=['Data','Process','Information','Knowledge','Wisdom'];
+  const draw=()=>{$('#dwBar').innerHTML=names.map((n,i)=>`<span class="${i<=s?'on':''}">${n}</span>`).join('');
+    const nums=$('#dwIn').value.split(/[ ,]+/).map(Number).filter(x=>!isNaN(x)&&x!=='');let o='';
+    if(!nums.length){$('#dwOut').innerHTML='<p>Enter some numbers.</p>';return;}
+    const sum=nums.reduce((a,b)=>a+b,0),avg=sum/nums.length,mn=Math.min(...nums);
+    o+=`<p>${ST[Math.min(s,4)]}</p>`;
+    if(s===2)o+=htmlTable(['Count','Total','Average','Lowest'],[[nums.length,sum,+avg.toFixed(2),mn]]);
+    if(s===3)o+=`<p class="m">${avg>=75?'Class average is good':'Class average is low'}; ${nums.filter(x=>x<avg-10).length} student(s) are more than 10 marks below average.</p>`;
+    $('#dwOut').innerHTML=o;};
+  $('#dwGo').onclick=()=>{s=Math.min(4,s+1);draw();};$('#dwReset').onclick=()=>{s=0;draw();};$('#dwIn').oninput=draw;draw();
+  let step=-1,timer=null;
+  const fb=()=>{const on=i=>step>=i;let o='';
+    o+=svgBox(210,10,140,44,'User',step===0)+svgBox(210,100,140,50,'DBMS',step>=1&&step<=3)+svgBox(210,196,140,44,'DB file',step===2||step===3);
+    o+=wire([[280,54],[280,100]],step===0)+arrowHead(280,100,'d',step===0)+wire([[330,150],[330,196]],step===2)+arrowHead(330,196,'d',step===2)+wire([[300,196],[300,150]],step===3)+arrowHead(300,150,'u',step===3);
+    o+=wire([[350,125],[430,125]],step>=1)+arrowHead(430,125,'r',step>=1)+`<text class="pin" x="436" y="122">Provides interface</text>`+wire([[210,125],[130,125]],step>=1)+arrowHead(130,125,'l',step>=1)+`<text class="pin" x="126" y="122" text-anchor="end">Application</text><text class="pin" x="126" y="136" text-anchor="end">software</text>`;
+    o+=wire([[260,100],[260,54]],step===4)+arrowHead(260,54,'u',step===4);
+    $('#fbSvg').innerHTML=o;
+    const M=['1. The user asks for data.','2. The DBMS converts the request into a database query.','3. The query is sent to the DB file and the required data is fetched.','4. The data comes back to the DBMS.','5. The DBMS returns the information to the user.'];
+    $('#fbMsg').textContent=step>=0?M[step]:'Press “Send request”.';};
+  $('#fbGo').onclick=()=>{clearInterval(timer);step=0;fb();timer=setInterval(()=>{step++;fb();if(step>=4)clearInterval(timer);},950);};fb();
+});
+
+/* ================= 2 FILE SYSTEM vs DBMS ================= */
+section('fs','File system vs DBMS',`
+<h3>File system</h3>
+<ul><li>Manages the various files in a computer; managed by the OS. Used for small files.</li></ul>
+<div class="scroll"><table class="t"><tr><th class="l">Type</th><th class="l">Details</th></tr><tr><td class="l"><b>FAT</b> — File Allocation Table</td><td class="l">Basic.</td></tr><tr><td class="l"><b>NTFS</b> — New Technology File System</td><td class="l">Main file (Master File System); made for the Windows NT kernel (1993).</td></tr></table></div>
+<h3>Difference between file system and DBMS</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Point</th><th class="l">File system</th><th class="l">DBMS</th></tr>
+<tr><td class="l"><b>Data redundancy</b></td><td class="l">Same data gets repeated / duplicated in many files.</td><td class="l">No duplication.</td></tr>
+<tr><td class="l"><b>Data inconsistency</b></td><td class="l">If data in one file is updated, other files are not updated automatically, so data becomes inconsistent.</td><td class="l">Data remains consistent and accurate.</td></tr>
+<tr><td class="l"><b>Security</b></td><td class="l">Hard to give different users different types of access.</td><td class="l">Advanced security; different permissions for multiple users.</td></tr>
+<tr><td class="l"><b>Concurrency</b></td><td class="l">Multiple users cannot reliably access the same file at the same time.</td><td class="l">Multiple users can access the same data / file at the same time, safely.</td></tr></table></div>
+<h4>Redundancy and inconsistency — try it</h4>
+<div class="tool"><div class="th">Change a student's phone number</div><div class="tb"><div class="row"><label for="fiPh">New phone</label><input type="text" id="fiPh" value="9999" size="8"></div>
+<div class="cols2"><div><b>File system</b> — the same data copied into 3 files<div id="fsFiles"></div><p class="msg" id="fsMsg"></p></div>
+<div><b>DBMS</b> — one table, no copies<div id="dbTab"></div><div class="row"><button class="btn pri" id="dbUp">UPDATE phone</button><button class="btn" id="fiReset">Reset both</button></div><p id="dbMsg" class="m"></p></div></div></div></div>
+<h4>Concurrency level</h4>
+<ul><li><b>File system:</b> concurrency is at the <b>file / resource level</b> — while one user uses a file, nobody else can use it.</li><li><b>DBMS:</b> concurrency is at the <b>row / record level</b> — only the row being used is locked; every other row stays available.</li></ul>
+<div class="tool"><div class="th">Two users, one table</div><div class="tb"><div class="tabs" id="ccMode"></div>
+<div class="row"><label>User A works on row</label><span id="ccA"></span></div><div class="row"><label>User B works on row</label><span id="ccB"></span></div><div id="ccTab"></div><p id="ccMsg" class="msg" style="color:var(--ink)"></p></div></div>
+<h4>Different levels of access — views</h4>
+<ul><li><b>File system:</b> to give different access you need separate physical files.</li><li><b>DBMS:</b> different <b>views</b> are created. A VIEW = <b>virtual table</b>: it performs operations on the underlying master table, does <b>not physically store data</b>, and only looks like the original table.</li></ul>
+<div class="tool"><div class="th">One master table, different views</div><div class="tb"><div class="row"><label for="vwRole">Log in as</label><select id="vwRole"><option>Clerk</option><option>Manager</option><option>Auditor (CS dept only)</option></select></div>
+<p style="margin:0 0 4px"><b>Master table Employee</b> (stored once)</p><div id="vwMaster"></div><p style="margin:8px 0 4px"><b>What this user sees</b> (a view)</p><div id="vwView"></div><pre class="code" id="vwSql"></pre></div></div>
+<h4>Data access cost</h4>
+<ul><li><b>File system:</b> bringing data from secondary memory to primary memory is costly because the <b>entire file must be opened</b>.</li><li><b>DBMS:</b> <b>indexing</b> is used, so the cost is low.</li></ul>
+<div class="tool"><div class="th">Find a record among 1000</div><div class="tb"><div class="row"><label for="ixId">Record id</label><input type="text" id="ixId" value="737" size="6"><button class="btn pri" id="ixGo">Search</button></div><div id="ixOut"></div></div></div>
+<div class="key"><b>Remember.</b> In a DBMS a user can access data without knowing the internal details — only the specific row, table or column they need.</div>
+`,root=>{
+  /* redundancy */
+  let files,dbPhone;const reset=()=>{files={Library:'1111',Accounts:'1111',Exam:'1111'};dbPhone='1111';draw();};
+  const draw=()=>{
+    $('#fsFiles').innerHTML=Object.keys(files).map(f=>`<div class="row" style="margin:4px 0"><span class="pill">${f}.txt</span><span class="m">Asha, phone ${files[f]}</span><button class="btn" data-f="${f}">Update here</button></div>`).join('');
+    const vals=Object.values(files),bad=new Set(vals).size>1;$('#fsMsg').textContent=bad?'Inconsistent! The same student now has different phone numbers in different files.':'';
+    $('#dbTab').innerHTML=htmlTable(['Id','Name','Phone'],[[1,'Asha',dbPhone]]);
+  };
+  $('#fsFiles').onclick=e=>{const b=e.target.closest('button');if(!b)return;files[b.dataset.f]=$('#fiPh').value;draw();};
+  $('#dbUp').onclick=()=>{dbPhone=$('#fiPh').value;draw();$('#dbMsg').textContent='Updated in one place — every user and every view sees the new value.';};
+  $('#fiReset').onclick=()=>{$('#dbMsg').textContent='';reset();};reset();
+  /* concurrency */
+  let mode=0,a=-1,b=-1;
+  const rows=['Row 1  Asha','Row 2  Ravi','Row 3  Seeta','Row 4  Meena'];
+  const pick=(id,who)=>{$(id).innerHTML=['—',1,2,3,4].map((n,i)=>`<button class="btn" data-w="${who}" data-n="${i-1}" ${(who==='A'?a:b)===i-1?'style="background:var(--teal);color:#fff"':''}>${n}</button>`).join(' ');};
+  const cc=()=>{pick('#ccA','A');pick('#ccB','B');
+    let blockedB=false;if(a>=0&&b>=0)blockedB=mode===0||a===b;
+    $('#ccTab').innerHTML=htmlTable(['Row','A holds','B holds'],rows.map((r,i)=>[r,a===i?'LOCK':'',b===i?(blockedB?'WAITING':'LOCK'):'']),{cell:(v,i,j)=>(v==='LOCK'?'lock':v==='WAITING'?'bad':'')});
+    $('#ccMsg').innerHTML=a<0||b<0?'Choose a row for both users.':blockedB?(mode===0?`File system: the <b>whole file</b> is locked by A, so B must wait even though B wants a different row.`:`DBMS: both want <b>row ${a+1}</b>, so B waits for that row.`):`DBMS: A and B work on different rows at the same time — no waiting.`;};
+  Tabs($('#ccMode'),['File system (file-level lock)','DBMS (row-level lock)'],k=>{mode=k;cc();},0);
+  ['#ccA','#ccB'].forEach(id=>$(id).onclick=e=>{const x=e.target.closest('button');if(!x)return;if(x.dataset.w==='A')a=+x.dataset.n;else b=+x.dataset.n;cc();});cc();
+  /* views */
+  const EMP=[[1,'Anil','CS',52000],[2,'Bina','CS',61000],[3,'Chetan','HR',45000],[4,'Deepa','Sales',48000]];
+  const vw=()=>{const r=$('#vwRole').selectedIndex;$('#vwMaster').innerHTML=htmlTable(['Eid','EName','Dept','Salary'],EMP);
+    const V=[[['EName','Dept'],EMP.map(x=>[x[1],x[2]]),'CREATE VIEW clerk_view AS\n  SELECT EName, Dept FROM Employee;'],[['Eid','EName','Dept','Salary'],EMP,'CREATE VIEW manager_view AS\n  SELECT * FROM Employee;'],[['EName','Salary'],EMP.filter(x=>x[2]==='CS').map(x=>[x[1],x[3]]),"CREATE VIEW auditor_view AS\n  SELECT EName, Salary FROM Employee\n  WHERE Dept = 'CS';"]][r];
+    $('#vwView').innerHTML=htmlTable(V[0],V[1]);$('#vwSql').textContent=V[2];};
+  $('#vwRole').onchange=vw;vw();
+  /* index */
+  $('#ixGo').onclick=()=>{const id=+$('#ixId').value;if(!(id>=1&&id<=1000)){$('#ixOut').innerHTML='<p class="msg">Enter a number from 1 to 1000.</p>';return;}
+    let lo=1,hi=1000,steps=0;while(lo<=hi){steps++;const m=(lo+hi)>>1;if(m===id)break;if(m<id)lo=m+1;else hi=m-1;}
+    $('#ixOut').innerHTML=`<div class="cols2"><div><b>File system</b> (open the whole file, read until found)<div class="big">${id} records read</div></div><div><b>DBMS with an index</b> (jump straight to it)<div class="big">${steps} index steps</div></div></div>`;};
+  $('#ixGo').click();
+});
+
+/* ================= 3 ARCHITECTURE ================= */
+section('arch','DBMS architecture',`
+<p class="lead">How do clients reach the database? Either directly (two-tier) or through an application layer (three-tier).</p>
+<div class="tool"><div class="th">Architecture explorer</div><div class="tb"><div id="arTabs"></div><div class="row"><button class="btn pri" id="arGo">Send a request</button><span class="m" id="arMsg"></span></div>
+<svg id="arSvg" viewBox="0 0 560 270" width="560" role="img" aria-label="Architecture diagram"></svg><div id="arNotes"></div></div></div>
+<div class="scroll"><table class="t"><tr><th></th><th class="l">Two-tier</th><th class="l">Three-tier</th></tr><tr><td class="l">Client connects to</td><td class="l">The database server directly</td><td class="l">The application / business layer</td></tr><tr><td class="l">Users</td><td class="l">Limited number</td><td class="l">Many (most web apps)</td></tr><tr><td class="l">Security</td><td class="l">Less secure</td><td class="l">Better security</td></tr><tr><td class="l">Maintenance</td><td class="l">Easy to maintain</td><td class="l">—</td></tr></table></div>
+`,root=>{
+  let tier=0,step=-1,timer=null;
+  const draw=()=>{let o='';const on=i=>step===i;
+    const cl=[60,220,380];
+    if(tier===0){
+      cl.forEach((x,i)=>{o+=svgBox(x,10,100,40,'Client-'+(i+1),step===0&&i===0)+wire([[x+50,50],[280,150]],step===0&&i===0||step===2&&i===0);});
+      o+=svgBox(185,150,190,46,'Database file / server',step===1||step===2);
+      $('#arMsg').textContent=['1. Client-1 builds a database query itself and sends it straight to the server.','2. The server runs the query on the database file.','3. The result goes straight back to the client.'][Math.max(step,0)]||'Press “Send a request”.';
+      if(step<0)$('#arMsg').textContent='Press “Send a request”.';
+      $('#arNotes').innerHTML='<ul><li>The client connects <b>directly</b> to the database server — a <b>client–server</b> architecture.</li><li>Limited number of users; less secure, easy to maintain.</li><li>The process on the client is converted into a database query (often called a low-level language query) and sent to the server.</li></ul>';
+    }else{
+      cl.forEach((x,i)=>{o+=svgBox(x,10,100,40,'Client-'+(i+1),step===0&&i===0)+wire([[x+50,50],[280,110]],step===0&&i===0||step===3&&i===0);});
+      o+=svgBox(170,110,220,44,'Application / Business layer',step===1||step===3)+wire([[280,154],[280,210]],step===2||step===3)+svgBox(210,210,140,46,'Database file',step===2);
+      const M=['1. The client\'s request first goes to the application / business layer — never to the DB server.','2. The application layer converts the request into a low-level database query.','3. The application layer interacts with the DB server and fetches the data.','4. The result returns to the client through the application layer.'];
+      $('#arMsg').textContent=step<0?'Press “Send a request”.':M[step];
+      $('#arNotes').innerHTML='<ul><li>The client is <b>not directly connected</b> to the DB server.</li><li>The application layer acts as an <b>interface between client and server</b>, so clients never talk to the server directly → <b>better security</b>.</li><li>Used by most web apps (e.g. Facebook, Instagram, Amazon).</li></ul>';
+    }
+    $('#arSvg').innerHTML=o;};
+  Tabs($('#arTabs'),['Two-tier (two-level)','Three-tier (three-level)'],k=>{tier=k;step=-1;clearInterval(timer);draw();});
+  $('#arGo').onclick=()=>{clearInterval(timer);step=0;draw();const max=tier===0?2:3;timer=setInterval(()=>{step++;draw();if(step>=max)clearInterval(timer);},1100);};
+});
+
+/* ================= 4 SCHEMAS ================= */
+section('schema','Three-level abstraction',`
+<p class="lead">The database is described at three levels. Each level hides the details of the one below it.</p>
+<div class="tool"><div class="th">Click a level</div><div class="tb"><div id="scTabs"></div><div id="scInfo"></div></div></div>
+<div class="key"><b>Summary.</b> Physical schema = deals in storage of DB · Conceptual schema = deals in tables and their relationship · External schema = deals in the requirement of the user.</div>
+<h3>Data independence</h3>
+<ul><li><b>Logical data independence:</b> adding a column or changing relationships between tables does not change the end-user interface (view). It is independence between the view level and the conceptual level.</li><li><b>Physical data independence:</b> adding a new disk or moving data to another disk does not affect the tables and their relationships — independence between the conceptual and physical levels.</li></ul>
+<div class="tool"><div class="th">Change one level, watch the others</div><div class="tb"><div class="row"><button class="btn pri" id="diCol">Add column Email (logical change)</button><button class="btn pri" id="diDisk">Move data to Disk 2 (physical change)</button><button class="btn" id="diReset">Reset</button></div>
+<div class="cols2"><div><span class="pill g">External · view level</span><div id="diView"></div></div><div><span class="pill a">Conceptual · logical level</span><div id="diConc"></div></div><div><span class="pill">Physical · internal level</span><div id="diPhys"></div></div></div><p class="m" id="diMsg"></p></div></div>
+<p style="font-size:14px;color:var(--ink2)">The notes' heading says “Data Dependence” but the content describes data <i>independence</i>.</p>
+`,root=>{
+  const L=[['External schema / view level',['Users are connected to the DB.','Each user gets a <b>different view / schema</b> according to need.','Conceptual and physical details are <b>hidden</b> from the user — which table stores the data, how it is related to other tables, and on which disk it lives.']],
+    ['Conceptual schema / logical level',['Describes <b>what data</b> is stored in the database.','The overall design of the DB is made with this schema.','Based on it, tables are created and relationships between tables are defined.']],
+    ['Physical schema / internal schema',['Shows <b>how the actual database files are stored</b> on storage devices.','Managed by the <b>DBA</b>; controls how data is placed on and retrieved from the disk.','Maintains the <b>data dictionary</b>; controls the internal working of the database.']]];
+  Tabs($('#scTabs'),['External (view)','Conceptual (logical)','Physical (internal)'],k=>{$('#scInfo').innerHTML=`<h4 style="margin-top:4px">${L[k][0]}</h4><ul>${L[k][1].map(x=>`<li>${x}</li>`).join('')}</ul>`;});
+  let conc,disk,msg;const rs=()=>{conc=['Id','Name','Phone'];disk=1;msg='';dr();};
+  const dr=()=>{$('#diView').innerHTML=htmlTable(['Name','Phone'],[['Asha','90011'],['Ravi','90022']]);
+    $('#diConc').innerHTML=htmlTable(conc,[['1','Asha','90011',...(conc.length>3?['asha@x.in']:[])],['2','Ravi','90022',...(conc.length>3?['ravi@x.in']:[])]]);
+    $('#diPhys').innerHTML=`<div class="big" style="font-size:17px">Student.dat on Disk ${disk}</div>`;$('#diMsg').textContent=msg;};
+  $('#diCol').onclick=()=>{if(conc.length<4)conc.push('Email');msg='Logical change: the conceptual schema gained a column, but the external view (what users see) did not change.';dr();};
+  $('#diDisk').onclick=()=>{disk=disk===1?2:1;msg='Physical change: the data moved disks, but the tables (conceptual) and the view are untouched.';dr();};
+  $('#diReset').onclick=rs;rs();
+});
+/* ================= 5 DATA MODELS ================= */
+section('models','Data models',`
+<h3>Units of data</h3>
+<div class="scroll"><table class="t"><tr><th>#</th><th class="l">Term</th><th class="l">Meaning</th></tr><tr><td>1</td><td class="l">Bit</td><td class="l">Smallest unit to represent data</td></tr><tr><td>2</td><td class="l">Character</td><td class="l">Collection of bits</td></tr><tr><td>3</td><td class="l">Field</td><td class="l">Collection of characters</td></tr><tr><td>4</td><td class="l">Record</td><td class="l">Collection of fields</td></tr><tr><td>5</td><td class="l">File</td><td class="l">Collection of records</td></tr><tr><td>6</td><td class="l">Database</td><td class="l">Collection of fields as written in the notes (strictly: a collection of related files / tables)</td></tr></table></div>
+<div class="tool"><div class="th">Anatomy of a table — click a cell</div><div class="tb"><div id="anTabs"></div><div id="anTab"></div><p class="big" id="anMsg" style="font-size:16px"></p></div></div>
+<h3>Data model</h3>
+<p>A data model is a <b>data representation in a structural way</b>.</p>
+<div class="tool"><div class="th">Types of data model</div><div class="tb"><div id="dmTabs"></div><div id="dmBody"></div></div></div>
+`,root=>{
+  const T=[['Id','Name','Add'],['101','Zosh','Chandigarh'],['102','Kartik','Delhi'],['107','Dev','Pune']];
+  let kind=0,sel=[1,1];
+  const D=[['Column / attribute / domain','one property of the entity (e.g. every Name).'],['Row / tuple / record','one entity — a collection of fields (e.g. all about Kartik).'],['Field','a collection of characters — one value in one cell.'],['File / table','a collection of records — the whole table.']];
+  const an=()=>{const [r,c]=sel;
+    $('#anTab').innerHTML=`<div class="scroll"><table class="t sel">${T.map((row,i)=>`<tr>${row.map((v,j)=>{let on=false;if(kind===0)on=j===c;if(kind===1)on=i===r&&i>0;if(kind===2)on=i===r&&j===c;if(kind===3)on=true;return `<${i?'td':'th'} data-r="${i}" data-c="${j}" class="${on?'lock':''}">${v}</${i?'td':'th'}>`;}).join('')}</tr>`).join('')}</table></div>`;
+    $('#anMsg').innerHTML=`<b>${D[kind][0]}</b> — ${D[kind][1]}`;};
+  Tabs($('#anTabs'),['Column','Row','Field','Whole table'],k=>{kind=k;an();});
+  $('#anTab').onclick=e=>{const t=e.target.closest('[data-r]');if(!t)return;sel=[+t.dataset.r||1,+t.dataset.c];an();};
+  const body=$('#dmBody');
+  const nodeSvg=(nodes,edges,hl,w,h,info)=>{let o='';edges.forEach(([a,b])=>{const A=nodes[a],B=nodes[b];const on=hl&&hl.edges.has(a+'>'+b);o+=wire([[A.x+A.w/2,A.y+A.h],[B.x+B.w/2,B.y]],on);});
+    Object.entries(nodes).forEach(([k,n])=>{const on=hl&&hl.nodes.has(k);o+=`<g data-n="${k}" style="cursor:pointer">${svgBox(n.x,n.y,n.w,n.h,n.t,on,12)}</g>`;});return `<svg viewBox="0 0 ${w} ${h}" width="${w}" role="img" aria-label="${info}">${o}</svg>`;};
+  function hier(){
+    const nodes={r:{x:210,y:8,w:100,h:34,t:'School'},a:{x:90,y:90,w:100,h:34,t:'Class 11'},b:{x:330,y:90,w:100,h:34,t:'Class 12'},a1:{x:20,y:175,w:80,h:32,t:'Asha'},a2:{x:120,y:175,w:80,h:32,t:'Ravi'},b1:{x:300,y:175,w:80,h:32,t:'Seeta'},b2:{x:400,y:175,w:80,h:32,t:'Meena'}};
+    const par={a:'r',b:'r',a1:'a',a2:'a',b1:'b',b2:'b'};const edges=Object.entries(par).map(([c,p])=>[p,c]);
+    let hl=null;const draw=()=>{body.innerHTML=`<ul><li>Developed by <b>IBM (1968)</b> for <b>IMS</b> (Information Management System).</li><li>Represents <b>parent–child / one-to-many</b>; a <b>tree</b> data model; <b>single-parent</b>; each record is a <b>node / segment</b>; <b>top-down</b> approach.</li><li>One child of a parent cannot see another child's information.</li></ul><p class="m">Click a node.</p>${nodeSvg(nodes,edges,hl,520,230,'Hierarchical tree')}<p id="hMsg" class="big" style="font-size:15px">${hl?hl.msg:'Select a node to see what it is connected to.'}</p>`;
+      $$('#dmBody [data-n]').forEach(g=>g.onclick=()=>{const k=g.dataset.n;const ns=new Set([k]),es=new Set();let c=k;while(par[c]){es.add(par[c]+'>'+c);ns.add(par[c]);c=par[c];}
+        hl={nodes:ns,edges:es,msg:`${nodes[k].t} has exactly <b>one parent</b>${par[k]?' ('+nodes[par[k]].t+')':' (it is the root)'}. It cannot see its siblings' information.`};draw();});};draw();}
+  function net(){
+    const nodes={c:{x:210,y:8,w:100,h:34,t:'Courses'},os:{x:60,y:90,w:90,h:34,t:'OS'},db:{x:215,y:90,w:90,h:34,t:'DBMS'},py:{x:370,y:90,w:90,h:34,t:'Python'},s1:{x:110,y:185,w:90,h:34,t:'Slot 1'},s2:{x:320,y:185,w:90,h:34,t:'Slot 2'}};
+    const edges=[['c','os'],['c','db'],['c','py'],['os','s1'],['db','s1'],['db','s2'],['py','s1'],['py','s2']];let hl=null;
+    const draw=()=>{body.innerHTML=`<ul><li>Extension of the hierarchical model, still parent–child based — but <b>one child can have more than one parent</b>.</li><li>Uses a <b>graph</b> data structure; supports <b>many-to-many</b>; data elements are <b>nodes</b> and relationships are <b>edges</b>.</li></ul><p class="m">Click a node.</p>${nodeSvg(nodes,edges,hl,520,235,'Network graph')}<p class="big" style="font-size:15px">${hl?hl.msg:'Select a node.'}</p>`;
+      $$('#dmBody [data-n]').forEach(g=>g.onclick=()=>{const k=g.dataset.n,ns=new Set([k]),es=new Set();const parents=edges.filter(e=>e[1]===k).map(e=>e[0]);edges.filter(e=>e[1]===k||e[0]===k).forEach(e=>es.add(e[0]+'>'+e[1]));parents.forEach(p=>ns.add(p));edges.filter(e=>e[0]===k).forEach(e=>ns.add(e[1]));
+        hl={nodes:ns,edges:es,msg:`${nodes[k].t} has <b>${parents.length} parent${parents.length===1?'':'s'}</b>${parents.length?': '+parents.map(p=>nodes[p].t).join(', '):''}.`};draw();});};draw();}
+  function rel(){
+    let rows=[['101','Asha','11'],['102','Ravi','12']];let msg='';
+    const draw=()=>{body.innerHTML=`<ul><li>Considered the <b>best</b> data model because data is represented in <b>table format</b>: a table = row + column, and a table is called a <b>relation</b>.</li><li>A column represents a property of one entity; a row (record / tuple) represents an entity; <b>each record should not be repeated</b>.</li><li>Follows <b>E.F. Codd's first rule</b>: data is arranged in rows and columns. Codd defined <b>12 rules</b> for the relational model.</li></ul>${htmlTable(['Rollno','Name','Class'],rows)}<div class="row"><button class="btn" id="rdA">Insert new row</button><button class="btn" id="rdB">Insert a duplicate of row 1</button></div><p class="msg" id="rdM">${msg}</p>`;
+      $('#rdA').onclick=()=>{rows.push([String(100+rows.length+1),'New'+rows.length,'11']);msg='';draw();};
+      $('#rdB').onclick=()=>{msg='Rejected: a record in a table must not be repeated (Codd Rule 1 / keys).';draw();};};draw();}
+  const PRE=(t,l)=>body.innerHTML=l+`<pre class="code">${esc(t)}</pre>`;
+  const M=[['Hierarchical',hier],['Network',net],['Relational',rel],['Object-oriented',()=>PRE(`class Student {\n  int id;  String name;\n  void enroll(Course c) { ... }\n}\nStudent s = new Student();   // stored as an object`,`<ul><li>Data is stored in the form of <b>objects</b>; values are stored in objects instead of variables.</li><li>Used with high-level languages; supports <b>complex data types</b> and <b>inheritance</b>.</li></ul>`)],
+    ['Document',()=>PRE(`{ "id": 101,\n  "name": "Asha",\n  "marks": { "math": 90, "cs": 85 },\n  "phones": ["9001", "9002"] }`,`<ul><li>A subset of the other data models; <b>NoSQL</b> (no SQL used).</li><li>Used to map objects in programming. Stored as JSON documents.</li></ul>`)],
+    ['Key-value',()=>PRE(`"student:101"  →  "Asha"\n"student:102"  →  "Ravi"\n"session:77a"  →  "logged-in"`,`<ul><li><b>NoSQL</b> (no SQL used); <b>simple and fast</b> — you give a key and get its value.</li></ul>`)]];
+  Tabs($('#dmTabs'),M.map(m=>m[0]),k=>M[k][1]());
+});
+
+/* ================= 6 ER MODEL ================= */
+const ER_INFO={Student:'<b>Student</b> — a rectangle = <b>entity</b>. Each individual student is an entity; together they form the Student entity set.',Course:'<b>Course</b> — a rectangle = <b>entity</b>.',Enroll:'<b>Enroll</b> — a diamond = <b>relationship</b>: the connection between 2 entities.',
+ Id:'<b>Id</b> — underlined ellipse = <b>key attribute</b> (identifies the entity uniquely).',Name:'<b>Name</b> — ellipse = ordinary <b>attribute</b> (a characteristic of the entity).',DoB:'<b>DoB</b> — ellipse = ordinary <b>attribute</b>.',Mobile:'<b>Mobile</b> — double ellipse = <b>multivalued attribute</b> (a student can have several numbers).',Age:'<b>Age</b> — dashed ellipse = <b>derived attribute</b> (calculated from DoB, not stored).',
+ 'C-id':'<b>C-id</b> — underlined ellipse = <b>key attribute</b>.','C-Name':'<b>C-Name</b> — ellipse = attribute.','S-date':'<b>S-date</b> — ellipse = attribute (start date).',Duration:'<b>Duration</b> — dashed ellipse = <b>derived attribute</b> (end date − start date).','End date':'<b>End date</b> — ellipse = attribute.'};
+function erSvg(sel){
+  const el=(k,cx,cy,rx,o={})=>{const on=sel===k;return `<g data-k="${k}" style="cursor:pointer"><ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="15" class="g" ${o.dash?'stroke-dasharray="4 3"':''} style="${on?'fill:#fff0c9;stroke:#d98e04;stroke-width:3':''}"/>${o.dbl?`<ellipse cx="${cx}" cy="${cy}" rx="${rx+4}" ry="19" class="g" style="fill:none;${on?'stroke:#d98e04;stroke-width:3':''}"/>`:''}<text class="pin" x="${cx}" y="${cy+4}" text-anchor="middle" ${o.u?'text-decoration="underline"':''}>${k}</text></g>`;};
+  const ln=(a,b,c,d)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="#15233b" stroke-width="1.5"/>`;
+  let o=ln(60,150,200,150)+ln(320,150,460,150);
+  [['Id',50,40,80],['Name',130,25,95],['DoB',215,40,115]].forEach(([k,x,y,tx])=>o+=ln(x,y+15,tx+(k==='Id'?20:k==='Name'?10:0),135));
+  o+=ln(55,255,95,165)+ln(160,255,150,165);
+  [['C-id',390,40],['C-Name',480,40]].forEach(([k,x,y])=>o+=ln(x,y+15,x<440?400:430,135));
+  [[335,255],[410,265],[490,255]].forEach(([x,y])=>o+=ln(x,y-15,420,165));
+  const rect=(k,x,y)=>`<g data-k="${k}" style="cursor:pointer"><rect x="${x}" y="${y}" width="110" height="36" class="g" style="${sel===k?'fill:#fff0c9;stroke:#d98e04;stroke-width:3':''}"/><text class="pin" x="${x+55}" y="${y+23}" text-anchor="middle" font-size="14">${k}</text></g>`;
+  o+=rect('Student',30,135)+rect('Course',385,135)+`<g data-k="Enroll" style="cursor:pointer"><polygon points="260,110 315,150 260,190 205,150" class="g" style="${sel==='Enroll'?'fill:#fff0c9;stroke:#d98e04;stroke-width:3':''}"/><text class="pin" x="260" y="154" text-anchor="middle">Enroll</text></g>`;
+  o+=el('Id',50,40,26,{u:1})+el('Name',130,25,34)+el('DoB',215,40,28)+el('Mobile',55,265,36,{dbl:1})+el('Age',160,265,26,{dash:1})+el('C-id',390,40,32,{u:1})+el('C-Name',480,40,36)+el('S-date',335,265,34)+el('Duration',410,275,38,{dash:1})+el('End date',495,265,38);
+  return `<svg viewBox="0 0 540 300" width="540" role="img" aria-label="ER diagram of Student enrolling in Course">${o}</svg>`;
+}
+section('er','ER model & attributes',`
+<p class="lead">In the entity–relationship model the database is drawn as a picture, showing its complete logical structure.</p>
+<ul><li><b>Entity</b> — any object that has a physical appearance or exists physically. In a Student table, attributes like Rollno and Name describe the <b>Student entity set</b>; each individual student is an entity.</li><li><b>Relation</b> — connection of 2 entities. <b>Attributes</b> — characteristics of an entity.</li>
+<li>The logical representation of data is the <b>schema</b>, e.g. <b>Student (Id, Name, Class, Phone)</b>; it shows things like table, primary key, foreign key, view.</li><li>The <b>instance</b> of a DB is the <b>snapshot</b> of the data at a particular moment.</li></ul>
+<div class="tool"><div class="th">Schema stays, instance changes</div><div class="tb"><p class="m" style="margin:0">Schema: <b>Student (Id, Name, Class, Phone)</b></p><div class="row"><button class="btn pri" id="siAdd">Insert a student</button><button class="btn" id="siDel">Delete last student</button></div><p class="m" id="siSnap" style="margin:4px 0"></p><div id="siTab"></div></div></div>
+<h3>Symbols</h3>
+<div class="scroll"><table class="t" id="erSym"><tr><th>Symbol</th><th class="l">Shape</th><th class="l">Meaning</th></tr></table></div>
+<div class="tool"><div class="th">ER diagram — click any part</div><div class="tb"><div class="scroll" id="erFig"></div><p class="big" id="erMsg" style="font-size:15.5px"></p></div></div>
+<h3>Data dictionary</h3>
+<ul><li>Data about data = <b>metadata</b>; stores additional information about data including storage and physical details.</li><li>Managed by the <b>DBMS itself</b>; stored in the DB's <b>table space</b> (the internal storage area where all tables are stored).</li></ul>
+<h3>Types of attributes</h3>
+<div class="scroll"><table class="t"><tr><th>#</th><th class="l">Type</th><th class="l">Meaning</th><th class="l">Example</th></tr>
+<tr><td>1</td><td class="l"><b>Single-valued</b></td><td class="l">Carries a single value</td><td class="l">Roll no.</td></tr><tr><td>2</td><td class="l"><b>Multi-valued</b></td><td class="l">Carries multiple values</td><td class="l">Mobile no.</td></tr><tr><td>3</td><td class="l"><b>Simple</b></td><td class="l">Cannot be divided</td><td class="l">Registration no.</td></tr><tr><td>4</td><td class="l"><b>Composite</b></td><td class="l">Made of sub-parts</td><td class="l">Name (F-name, Last name)</td></tr>
+<tr><td>5</td><td class="l"><b>Stored</b></td><td class="l">Attribute given to the table</td><td class="l">—</td></tr><tr><td>6</td><td class="l"><b>Derived</b></td><td class="l">Not kept in the table; calculated</td><td class="l">Age</td></tr><tr><td>7</td><td class="l"><b>Key</b></td><td class="l">Identifies a record uniquely</td><td class="l">Primary key</td></tr><tr><td>8</td><td class="l"><b>Non-key</b></td><td class="l">Does not identify uniquely</td><td class="l">Name, DoB</td></tr>
+<tr><td>9</td><td class="l"><b>Complex</b></td><td class="l">Multivalued + composite</td><td class="l">Address</td></tr><tr><td>10</td><td class="l"><b>Required</b></td><td class="l">Compulsory (NOT NULL)</td><td class="l">—</td></tr><tr><td>11</td><td class="l"><b>Optional</b></td><td class="l">Not compulsory</td><td class="l">—</td></tr></table></div>
+<div class="tool"><div class="th">Quiz — name the attribute type</div><div class="tb"><div id="qzList"></div><div class="row"><button class="btn pri" id="qzCheck">Check answers</button></div><p class="big" id="qzOut" style="font-size:16px"></p></div></div>
+`,root=>{
+  const sym=(k)=>{const g={rect:'<rect x="8" y="6" width="64" height="24" class="g"/>',ell:'<ellipse cx="40" cy="18" rx="32" ry="12" class="g"/>',dia:'<polygon points="40,3 70,18 40,33 10,18" class="g"/>',line:'<line x1="8" y1="18" x2="72" y2="18" stroke="#15233b" stroke-width="2"/>',dell:'<ellipse cx="40" cy="18" rx="32" ry="13" class="g"/><ellipse cx="40" cy="18" rx="27" ry="9" class="g" style="fill:none"/>',dash:'<ellipse cx="40" cy="18" rx="32" ry="12" class="g" stroke-dasharray="4 3"/>',drect:'<rect x="6" y="4" width="68" height="28" class="g"/><rect x="11" y="9" width="58" height="18" class="g" style="fill:none"/>',ddia:'<polygon points="40,2 72,18 40,34 8,18" class="g"/><polygon points="40,8 62,18 40,28 18,18" class="g" style="fill:none"/>',key:'<ellipse cx="40" cy="18" rx="32" ry="12" class="g"/><line x1="26" y1="23" x2="54" y2="23" stroke="#15233b" stroke-width="1.5"/>'}[k];return `<svg viewBox="0 0 80 36" width="80">${g}</svg>`;};
+  $('#erSym').insertAdjacentHTML('beforeend',[['rect','Rectangle','Entity'],['ell','Ellipse','Attribute'],['dia','Diamond','Relationship'],['line','Lines','Entity–relationship, entity–attribute'],['dell','Double ellipse','Multivalued attribute'],['dash','Dashed ellipse','Derived attribute'],['drect','Double rectangle','Weak entity'],['ddia','Double diamond','Weak-entity relationship'],['key','Ellipse with line','Key attribute']].map(([k,a,b])=>`<tr><td>${sym(k)}</td><td class="l">${a}</td><td class="l">${b}</td></tr>`).join(''));
+  let sel='';const er=()=>{$('#erFig').innerHTML=erSvg(sel);$('#erMsg').innerHTML=ER_INFO[sel]||'Click an entity, a relationship or an attribute.';$$('#erFig [data-k]').forEach(g=>g.onclick=()=>{sel=g.dataset.k;er();});};er();
+  let rows=[[101,'Asha',11,'90011'],[102,'Ravi',11,'90022']],snap=1;const names=['Seeta','Meena','Kiran','Dev','Isha'];
+  const si=()=>{$('#siTab').innerHTML=htmlTable(['Id','Name','Class','Phone'],rows);$('#siSnap').textContent=`Instance — snapshot #${snap} (${rows.length} row${rows.length===1?'':'s'}). The schema above has not changed.`;};
+  $('#siAdd').onclick=()=>{const n=100+rows.length+1;rows.push([n,names[(n)%5],11+(n%2),'900'+n]);snap++;si();};$('#siDel').onclick=()=>{rows.pop();snap++;si();};si();
+  const Q=[['Roll no.','Single-valued'],['Mobile no.','Multi-valued'],['Name (first + last)','Composite'],['Age (calculated from DoB)','Derived'],['Address (multivalued + composite)','Complex'],['Registration no.','Simple'],['Sid (identifies each record)','Key'],['Phone (compulsory, NOT NULL)','Required']];
+  const OPT=['Single-valued','Multi-valued','Simple','Composite','Stored','Derived','Key','Non-key','Complex','Required','Optional'];
+  $('#qzList').innerHTML=Q.map((q,i)=>`<div class="row"><span style="min-width:230px">${q[0]}</span><select data-i="${i}"><option value="">choose…</option>${OPT.map(o=>`<option>${o}</option>`).join('')}</select><span id="qr${i}"></span></div>`).join('');
+  $('#qzCheck').onclick=()=>{let ok=0;Q.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,$('#qzList')).value,r=$('#qr'+i);if(v===q[1]){ok++;r.innerHTML='<span class="pill g">✓</span>';}else r.innerHTML=v?'<span class="pill r">✗</span>':'';});$('#qzOut').textContent=`Score: ${ok} / ${Q.length}`;};
+});
+
+/* ================= 7 KEYS ================= */
+const KEYDATA={attrs:['Sid','Name','Class','Phone','Email'],rows:[[1,'Asha',11,'9001','asha@x.in'],[2,'Ravi',11,'9002','ravi@x.in'],[3,'Asha',12,'9003','asha2@x.in'],[4,'Meena',12,'9004','meena@x.in'],[5,'Ravi',12,'9005','ravi2@x.in'],[6,'Kiran',11,'9006','kiran@x.in']]};
+function isUnique(idx,rows){return new Set(rows.map(r=>idx.map(i=>r[i]).join('\u0001'))).size===rows.length;}
+section('keys','Keys',`
+<ul><li>Keys <b>uniquely identify</b> each record / table. According to <b>E.F. Codd's Rule 1</b> two records of a table cannot be identical.</li><li>A key can be formed from <b>one or more attributes</b>.</li></ul>
+<h3>Candidate, primary, alternate and super keys</h3>
+<ul><li><b>Super key</b> — a set of attributes that can uniquely identify a record. Every candidate key is a super key, but not every super key is a candidate key (it may carry extra, unnecessary attributes).</li>
+<li><b>Candidate key</b> — the <b>minimum</b> super key; values always unique and NOT NULL; can be simple or composite. A table can have several.</li>
+<li><b>Primary key</b> — the one candidate key chosen; unique and not null; a table has <b>only one</b>.</li><li><b>Alternate (secondary) key</b> — every candidate key except the chosen primary key.</li>
+<li><b>Prime / key attributes</b> — attributes that appear in some candidate key; the rest are non-prime.  e.g. R(A,B,C,D,E) with candidate keys (A, BC, E) → prime attributes A, B, C, E; D is non-prime.</li><li><b>Composite key</b> — a key that uses more than one column.</li></ul>
+<div class="tool"><div class="th">Key finder — pick attributes, test the key</div><div class="tb"><div id="kfTab"></div><p style="margin:8px 0 4px">Tick the attributes to test:</p><div id="kfT"></div><div id="kfOut"></div>
+<div class="row"><label for="kfPk">Choose the primary key</label><select id="kfPk"></select></div><div id="kfRes"></div></div></div>
+<p>Super key ⊃ candidate key ⊃ primary key (the circles in the notes' diagram).</p>
+<h3>Master capsule — counting super keys</h3>
+<p>n = number of attributes in the relation.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Case</th><th class="l">Number of super keys</th></tr><tr><td class="l">One candidate key, a single attribute (A)</td><td class="l">2<sup>n−1</sup></td></tr><tr><td class="l">Two candidate keys, each a single attribute (A and B)</td><td class="l">2<sup>n−1</sup> + 2<sup>n−1</sup> − 2<sup>n−2</sup></td></tr><tr><td class="l">One candidate key made of two attributes (AB)</td><td class="l">2<sup>n−2</sup></td></tr></table></div>
+<div class="tool"><div class="th">Super-key counter (formula and brute force)</div><div class="tb"><div class="row"><label for="scN">n</label><select id="scN">${[3,4,5,6,7,8].map(n=>`<option ${n===4?'selected':''}>${n}</option>`).join('')}</select><label for="scC">Candidate key(s)</label><select id="scC"><option value="1">A</option><option value="2">A and B</option><option value="3">AB (one composite key)</option><option value="4">all attributes (ABCD…)</option></select></div><div id="scOut"></div>
+<p class="m" style="font-size:13.5px">Notes' questions: R(A,B,C,D) with CK = A → 8;  CK = A and B → 12;  CK = ABCD → 1.</p></div></div>
+<div class="fix"><b>Correction.</b> In the handwritten Question 2 the middle sign looks like “+”. The formula needs a minus: 8 + 8 − 4 = 12.</div>
+<h3>Foreign / reference key</h3>
+<ul><li>The <b>primary key of one table used as a column in another table</b>. It can be NULL and need not be unique. The <b>referenced (parent)</b> table holds the primary key; the <b>referencing (child)</b> table holds the foreign key.</li></ul>
+<div class="scroll"><table class="t"><tr><th class="l">Table</th><th>Insert</th><th>Delete</th><th>Update</th></tr><tr><td class="l">Referenced / parent</td><td>No violation</td><td>May cause violation</td><td>May cause violation</td></tr><tr><td class="l">Referencing / child</td><td>May cause violation</td><td>No violation</td><td>May cause violation</td></tr></table></div>
+<p>Solutions for the parent table: <b>ON DELETE SET NULL</b>, <b>ON DELETE CASCADE</b>, <b>NO ACTION</b> (and the same for UPDATE).</p>
+<div class="tool"><div class="th">Referential integrity lab</div><div class="tb">
+<div class="row"><label for="riD">ON DELETE / UPDATE of a parent row</label><select id="riD"><option>NO ACTION</option><option>CASCADE</option><option>SET NULL</option></select></div>
+<div class="row"><button class="btn pri" id="ri1">Delete department 10</button><button class="btn pri" id="ri2">Change department 20 → 25</button><button class="btn pri" id="ri3">Insert employee in dept 99</button><button class="btn pri" id="ri4">Delete employee 1</button><button class="btn" id="riR">Reset</button></div>
+<div id="riMsg"></div><div class="cols2"><div><b>Dept</b> (referenced / parent)<div id="riP"></div></div><div><b>Emp</b> (referencing / child, DeptId = foreign key)<div id="riC"></div></div></div></div></div>
+`,root=>{
+  const A=KEYDATA.attrs,R=KEYDATA.rows;
+  $('#kfTab').innerHTML=htmlTable(A,R);
+  const uniq=[];for(let m=1;m<32;m++){const idx=A.map((_,i)=>i).filter(i=>m>>i&1);if(isUnique(idx,R))uniq.push(idx);}
+  const CK=uniq.filter(c=>!uniq.some(o=>o!==c&&o.length<c.length&&o.every(i=>c.includes(i))));
+  const nm=idx=>idx.map(i=>A[i]).join(' + ');
+  $('#kfPk').innerHTML=CK.map((c,i)=>`<option value="${i}">${nm(c)}</option>`).join('');
+  let tog;const upd=v=>{const idx=A.map((_,i)=>i).filter(i=>v[i]);let o='';
+    if(!idx.length)o='<p class="msg" style="color:var(--ink2)">Tick at least one attribute.</p>';
+    else{const sup=isUnique(idx,R);const minimal=idx.length===1||!idx.some(i=>isUnique(idx.filter(j=>j!==i),R));
+      o=`<p><b>${nm(idx)}</b>: `+(sup?`<span class="pill g">super key</span>${minimal?'<span class="pill g">candidate key (minimal)</span>':`<span class="pill a">not minimal</span> — drop an attribute and it is still unique`}`:`<span class="pill r">not a key</span> — two rows share the same value${R.length?'':''}`)+'</p>';
+      if(!sup){const seen={};for(const r of R){const k=idx.map(i=>r[i]).join('|');if(seen[k]){o+=`<p class="m">Duplicate value: ${k} (rows ${seen[k]} and ${r[0]})</p>`;break;}seen[k]=r[0];}}}
+    $('#kfOut').innerHTML=o;};
+  tog=Toggles($('#kfT'),A,[0,0,0,0,0],upd);
+  const res=()=>{const pk=CK[+$('#kfPk').value],alt=CK.filter(c=>c!==pk),prime=[...new Set(CK.flat())].map(i=>A[i]),non=A.filter(a=>!prime.includes(a));
+    $('#kfRes').innerHTML=`<p><b>All candidate keys in this data:</b> ${CK.map(c=>`<span class="pill g">${nm(c)}</span>`).join('')}</p><p><b>Primary key:</b> <span class="pill">${nm(pk)}</span> &nbsp; <b>Alternate keys:</b> ${alt.map(c=>`<span class="pill a">${nm(c)}</span>`).join('')||'—'}</p><p><b>Prime attributes:</b> ${prime.join(', ')} &nbsp; <b>Non-prime:</b> ${non.join(', ')||'—'}</p><p style="font-size:13.5px;color:var(--ink2)">Candidate keys are worked out from the sample rows above (a real design uses the meaning of the data).</p>`;};
+  $('#kfPk').onchange=res;res();
+  const sc=()=>{const n=+$('#scN').value,c=+$('#scC').value;const names=[...Array(n).keys()];
+    const CKs={1:[[0]],2:[[0],[1]],3:[[0,1]],4:[names]}[c];let cnt=0;for(let m=1;m<1<<n;m++)if(CKs.some(k=>k.every(i=>m>>i&1)))cnt++;
+    const f={1:`2<sup>n−1</sup> = 2<sup>${n-1}</sup>`,2:`2<sup>n−1</sup> + 2<sup>n−1</sup> − 2<sup>n−2</sup> = ${2**(n-1)} + ${2**(n-1)} − ${2**(n-2)}`,3:`2<sup>n−2</sup> = 2<sup>${n-2}</sup>`,4:'only the full set of attributes'}[c];
+    const fv={1:2**(n-1),2:2**n-2**(n-2),3:2**(n-2),4:1}[c];
+    $('#scOut').innerHTML=`<p>Formula: ${f} = <b>${fv}</b></p><p>Brute force (counted all ${2**n-1} non-empty attribute sets that contain a candidate key): <b>${cnt}</b> ${cnt===fv?'<span class="pill g">match</span>':'<span class="pill r">differ</span>'}</p>`;};
+  $('#scN').onchange=sc;$('#scC').onchange=sc;sc();
+  /* RI */
+  let P,C,msg;const rs=()=>{P=[[10,'IT'],[20,'HR'],[30,'Sales']];C=[[1,'Anil',10],[2,'Bina',10],[3,'Chetan',20],[4,'Deepa',null]];msg='';ri();};
+  const ri=()=>{$('#riP').innerHTML=htmlTable(['DeptId','DName'],P);$('#riC').innerHTML=htmlTable(['Eid','EName','DeptId (FK)'],C);$('#riMsg').innerHTML=msg;};
+  const opt=()=>$('#riD').value;
+  $('#ri1').onclick=()=>{const kids=C.filter(c=>c[2]===10);if(!kids.length||opt()==='CASCADE'||opt()==='SET NULL'){if(opt()==='CASCADE')C=C.filter(c=>c[2]!==10);else if(opt()==='SET NULL')C.forEach(c=>{if(c[2]===10)c[2]=null;});P=P.filter(p=>p[0]!==10);msg=`<div class="okm">Department 10 deleted. ${opt()==='CASCADE'?'Its employees were deleted too (ON DELETE CASCADE).':opt()==='SET NULL'?'Its employees now have DeptId = NULL (ON DELETE SET NULL).':''}</div>`;}else msg='<div class="err">Violation: employees still refer to department 10 (ON DELETE NO ACTION).</div>';ri();};
+  $('#ri2').onclick=()=>{const kids=C.filter(c=>c[2]===20);if(!P.some(p=>p[0]===20)){msg='<div class="err">Department 20 no longer exists.</div>';ri();return;}
+    if(!kids.length||opt()!=='NO ACTION'){P.find(p=>p[0]===20)[0]=25;C.forEach(c=>{if(c[2]===20)c[2]=opt()==='CASCADE'?25:null;});msg=`<div class="okm">Department id changed to 25. ${kids.length?(opt()==='CASCADE'?'Employee rows followed the new id (ON UPDATE CASCADE).':'Employee rows set to NULL.'):''}</div>`;}else msg='<div class="err">Violation: an employee refers to department 20 (ON UPDATE NO ACTION).</div>';ri();};
+  $('#ri3').onclick=()=>{msg='<div class="err">Violation: department 99 does not exist in the parent table (child INSERT may cause a violation).</div>';ri();};
+  $('#ri4').onclick=()=>{const b=C.length;C=C.filter(c=>c[0]!==1);msg=b>C.length?'<div class="okm">Employee 1 deleted — deleting from the child table never causes a violation.</div>':'';ri();};
+  $('#riR').onclick=rs;rs();
+});
+
+/* ================= 8 CARDINALITY ================= */
+section('card','Mapping cardinality',`
+<p class="lead">How many rows of one table can relate to rows of another? Click a row to trace its relationships.</p>
+<div class="tool"><div class="th">Cardinality explorer</div><div class="tb"><div id="cdTabs"></div><div id="cdNotes"></div><div id="cdBody" class="cols2"></div><p class="m" id="cdMsg"></p></div></div>
+`,root=>{
+  const E=[['E1','N1',22],['E2','N2',20],['E3','N3',18]];
+  const defs=[
+   {n:'One-to-one',notes:'<ul><li>The relationship table has at least two attributes — the <b>primary keys of the two tables</b>.</li><li>Any attribute can be chosen as the primary key. Minimum two tables.</li></ul>',
+    T:[{t:'Employee',c:['Eid','Name','Age'],r:E},{t:'Work (relationship)',c:['Eid','Did'],r:[['E1','D1'],['E2','D2'],['E3','D3']]},{t:'Department',c:['Did','Dname','Loc'],r:[['D1','DN1','L1'],['D2','DN2','L2'],['D3','DN3','L3']]}],
+    rel:(t,i)=>t===0?[[1,i],[2,i]]:t===1?[[0,i],[2,i]]:[[1,i],[0,i]]},
+   {n:'One-to-many',notes:'<ul><li>The relationship table uses the <b>primary keys of both tables as foreign keys</b>. One employee (P.K) appears against many projects (F.K).</li></ul>',
+    T:[{t:'Employee (Eid = PK)',c:['Eid','Name','Dept'],r:[['E1','A','IT'],['E2','B','ME'],['E3','C','Civil']]},{t:'Project (Eid = FK)',c:['Project','Eid','Start_Date'],r:[['P1','E1','Feb'],['P2','E1','Mar'],['P3','E1','Apr'],['P4','E2','May'],['P5','E2','June'],['P6','E3','July']]}],
+    rel:(t,i,T)=>t===0?T[1].r.map((r,j)=>r[1]===T[0].r[i][0]?[1,j]:null).filter(Boolean):T[0].r.map((r,j)=>r[0]===T[1].r[i][1]?[0,j]:null).filter(Boolean)},
+   {n:'Many-to-one',notes:'<ul><li>Many rows of R1 point to the same row of R2.</li></ul>',
+    T:[{t:'R1',c:['Element'],r:[['K'],['L'],['M'],['N'],['O']]},{t:'R2',c:['Element'],r:[['A'],['B'],['C'],['D'],['E']]}],
+    rel:(t,i)=>{const M=[0,0,2,2,4];return t===0?[[1,M[i]]]:M.map((m,j)=>m===i?[0,j]:null).filter(Boolean);}},
+   {n:'Many-to-many (extra)',notes:'<ul><li><span class="pill a">not in the notes</span> Needs a separate relationship table that holds the primary keys of both tables as foreign keys.</li></ul>',
+    T:[{t:'Student',c:['Sid','Name'],r:[['S1','Asha'],['S2','Ravi']]},{t:'Enroll (relationship)',c:['Sid','Cid'],r:[['S1','C1'],['S1','C2'],['S2','C1']]},{t:'Course',c:['Cid','CName'],r:[['C1','DBMS'],['C2','OS']]}],
+    rel:(t,i,T)=>{if(t===0)return T[1].r.map((r,j)=>r[0]===T[0].r[i][0]?[1,j]:null).filter(Boolean).concat(T[1].r.filter(r=>r[0]===T[0].r[i][0]).map(r=>[2,T[2].r.findIndex(c=>c[0]===r[1])]));
+      if(t===2)return T[1].r.map((r,j)=>r[1]===T[2].r[i][0]?[1,j]:null).filter(Boolean).concat(T[1].r.filter(r=>r[1]===T[2].r[i][0]).map(r=>[0,T[0].r.findIndex(s=>s[0]===r[0])]));
+      return [[0,T[0].r.findIndex(s=>s[0]===T[1].r[i][0])],[2,T[2].r.findIndex(c=>c[0]===T[1].r[i][1])]];}}];
+  let k=0,pick=null;
+  const draw=()=>{const d=defs[k];$('#cdNotes').innerHTML=d.notes;const hits=pick?d.rel(pick[0],pick[1],d.T):[];
+    $('#cdBody').innerHTML=d.T.map((t,ti)=>`<div><b>${t.t}</b><div class="scroll"><table class="t sel"><tr>${t.c.map(c=>`<th>${c}</th>`).join('')}</tr>${t.r.map((r,ri)=>`<tr data-t="${ti}" data-r="${ri}" class="${pick&&pick[0]===ti&&pick[1]===ri?'pick':''}">${r.map((v,ci)=>`<td class="${hits.some(h=>h[0]===ti&&h[1]===ri)?'lock':''}">${v}</td>`).join('')}</tr>`).join('')}</table></div></div>`).join('');
+    $('#cdMsg').textContent=pick?`Selected row → ${hits.length} related row${hits.length===1?'':'s'} highlighted.`:'Click a row.';};
+  Tabs($('#cdTabs'),defs.map(d=>d.n),i=>{k=i;pick=null;draw();});
+  $('#cdBody').onclick=e=>{const tr=e.target.closest('tr[data-t]');if(!tr)return;pick=[+tr.dataset.t,+tr.dataset.r];draw();};
+});
+
+/* ================= 9 CODD ================= */
+const CODD=[['Rule Zero — Foundation / base rule',['For a system to be called an <b>RDBMS</b>, it must qualify as a relational database management system.','It must use its relational capabilities to manage the database.']],
+ ['Rule One — Information rule',['All information in a database must be represented in <b>one and only one way</b>, as values in a table (rows and columns).']],
+ ['Rule Two — Guaranteed access rule',['The entire data in a database must be accessible.','Every table must have a <b>primary key</b>; data is logically reachable using it.']],
+ ['Rule Three — Systematic treatment of NULL values',['Every field must be allowed to be null / empty.','NULL represents <b>missing, unknown or not-applicable</b> data.']],
+ ['Rule Four — Active online catalogue based on the relational model',['Each system must have an online relational catalog.','It must be accessible to authorised users with the same regular query language they use for data.']],
+ ['Rule Five — Data sublanguage rule',['Must provide at least one relational language to access data.','The language should support linear syntax, e.g. DDL, DML.']],
+ ['Rule Six — View updating rule',['A view must be updatable.']],
+ ['Rule Seven — High-level insert, delete and update rule',['Must support insert, delete and update through a high-level relational language.','Operations work on a <b>set of rows</b> (a retrieval set), not only a single row at a time.']],
+ ['Rule Eight — Physical data independence',['A change in storage / disk must not affect the database tables or their relationships.']],
+ ['Rule Nine — Logical data independence',['Modifications at the logical level must not affect the end-user\'s view.','Achieving logical data independence is difficult.']],
+ ['Rule Ten — Integrity independence rule',['Integrity constraints must be stored in the <b>database catalog</b>, not inside the application program.','e.g. “phone is NOT NULL” is defined in the DB, so every inserted record must have a non-null phone.']],
+ ['Rule Eleven — Distribution independence rule',['If data is distributed at various locations, this must be invisible to the DB user.']],
+ ['Rule Twelve — Non-subversion rule',['Using any lower-level language you must not be able to ignore the integrity rules imposed by the DB language.','Constraints enforced by the DB language cannot be bypassed.']]];
+section('codd','Codd\'s rules',`
+<p class="lead">E.F. Codd defined <b>12 rules</b> (plus a base “Rule Zero”) that a database must follow to be called a relational DBMS.</p>
+<div class="row"><label for="cdF">Filter</label><input type="text" id="cdF" placeholder="e.g. null, view, independence" size="30"></div>
+<div id="cdAcc"></div>
+<div class="tool"><div class="th">Which rule is it?</div><div class="tb"><div id="cqList"></div><div class="row"><button class="btn pri" id="cqCheck">Check</button></div><p class="big" id="cqOut" style="font-size:16px"></p></div></div>
+<div class="note"><b>Note.</b> The handwritten pages number the rules (1)–(13) and cross out one duplicate “Rule Seven”; here they run Rule 0 to Rule 12.</div>
+`,root=>{
+  const draw=f=>{$('#cdAcc').innerHTML=CODD.filter(r=>!f||(r[0]+r[1].join(' ')).toLowerCase().includes(f.toLowerCase())).map(r=>`<details class="acc" ${f?'open':''}><summary>${r[0]}</summary><div><ul>${r[1].map(x=>`<li>${x}</li>`).join('')}</ul></div></details>`).join('')||'<p>No rule matches.</p>';};
+  $('#cdF').oninput=e=>draw(e.target.value);draw('');
+  const Q=[['The “phone must not be NULL” constraint lives in the database, not in the app',10],['Moving the tables to a new disk must not change them or their relationships',8],['Unknown or missing values are stored as NULL',3],['One UPDATE statement must be able to change many rows at once',7],['Low-level code must not be able to bypass the database\'s constraints',12],['Every table has a primary key so any value can be reached',2],['If the DB is spread over several sites, the user must not notice',11]];
+  $('#cqList').innerHTML=Q.map((q,i)=>`<div class="row"><span style="flex:1 1 300px">${q[0]}</span><select data-i="${i}"><option value="">choose…</option>${CODD.map((r,n)=>`<option value="${n}">Rule ${n} — ${r[0].split('— ')[1]}</option>`).join('')}</select><span id="cq${i}"></span></div>`).join('');
+  $('#cqCheck').onclick=()=>{let ok=0;Q.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,$('#cqList')).value;if(v!==''&&+v===q[1]){ok++;$('#cq'+i).innerHTML='<span class="pill g">✓</span>';}else $('#cq'+i).innerHTML=v!==''?'<span class="pill r">✗</span>':'';});$('#cqOut').textContent=`Score: ${ok} / ${Q.length}`;};
+});
+/* ================= 10 NORMALIZATION ================= */
+function parseFDs(txt){return txt.split(/[\n;,]+/).map(s=>s.trim()).filter(Boolean).map(s=>{const m=s.split(/->|→/);if(m.length!==2)throw Error(`Cannot read "${s}" — write it as  A -> B`);const L=[...new Set(m[0].toUpperCase().replace(/[^A-Z]/g,''))],R=[...new Set(m[1].toUpperCase().replace(/[^A-Z]/g,''))];if(!L.length||!R.length)throw Error(`Cannot read "${s}"`);return {L,R};});}
+function closure(set,fds){const c=new Set(set);let ch=true;while(ch){ch=false;fds.forEach(f=>{if(f.L.every(x=>c.has(x))&&f.R.some(x=>!c.has(x))){f.R.forEach(x=>c.add(x));ch=true;}});}return c;}
+function analyze(attrs,fds){
+  const n=attrs.length,all=new Set(attrs),sup=[];
+  for(let m=1;m<1<<n;m++){const s=attrs.filter((_,i)=>m>>i&1);if(closure(s,fds).size===n)sup.push(s);}
+  const CK=sup.filter(c=>!sup.some(o=>o!==c&&o.length<c.length&&o.every(x=>c.includes(x))));
+  const prime=new Set(CK.flat()),non=attrs.filter(a=>!prime.has(a));
+  const isSuper=X=>closure(X,fds).size===n;
+  const rows=[];let partial=false,trans=false,bcnf=true,nf3=true;
+  fds.forEach(f=>{f.R.filter(a=>!f.L.includes(a)).forEach(a=>{
+    const sp=isSuper(f.L),isPr=prime.has(a);
+    const part=!sp&&!isPr&&CK.some(k=>f.L.every(x=>k.includes(x))&&f.L.length<k.length);
+    const tr=!sp&&!isPr&&!part&&f.L.every(x=>!prime.has(x));
+    if(part)partial=true;if(tr)trans=true;if(!sp)bcnf=false;if(!sp&&!isPr)nf3=false;
+    rows.push({fd:f.L.join('')+' → '+a,lhsSuper:sp,rhsPrime:isPr,kind:part?'Partial dependency (part of a key → non-prime)':tr?'Transitive dependency (non-prime → non-prime)':sp?'LHS is a super key':'RHS is prime',ok2:!part,ok3:sp||isPr,okB:sp});});});
+  const nf=partial?'1NF':!nf3?'2NF':!bcnf?'3NF':'BCNF';
+  return {CK,prime:[...prime],non,rows,nf,partial,trans};
+}
+section('norm','Normalization',`
+<p class="lead">Normalization <b>minimises data duplication / redundancy</b> in a table. Redundancy causes three kinds of problems — <b>anomalies</b> — and the cure is <b>decomposition</b> of the table.</p>
+<div class="tool"><div class="th">Anomaly lab</div><div class="tb">
+<div class="row"><button class="btn pri" id="anI">Insert: new course C4 with no student</button><button class="btn pri" id="anD">Delete student S4</button><button class="btn pri" id="anU1">Update teacher of C1 (one row only)</button><button class="btn pri" id="anU2">Update teacher of C1 (all rows)</button><button class="btn" id="anDec">Decompose the table</button><button class="btn" id="anR">Reset</button></div>
+<div id="anMsg"></div><div id="anTab"></div></div></div>
+<ul><li><b>Insert anomaly:</b> to record a course, Sid and Name must be filled with NULL or dummy values — more null / dummy data in the DB.</li><li><b>Delete anomaly:</b> deleting a record also deletes other related data (the course disappears with its last student).</li><li><b>Update anomaly:</b> updating a column means more than one related field has to be updated — miss one and the data is inconsistent.</li></ul>
+<h3>1NF — First Normal Form</h3>
+<ul><li>Every table should be in 1NF: each attribute holds only a <b>single value in each row</b> (no multivalued fields).</li><li>Three ways to convert: <b>repeat Rollno</b> (repeat the row), <b>repeat the column</b>, or <b>split the table</b>.</li></ul>
+<div class="tool"><div class="th">Make this table 1NF</div><div class="tb"><div id="nfTabs"></div><div id="nfOut"></div></div></div>
+<h4>1NF questions — the common-attribute rule</h4>
+<p>If some attribute is <b>common to all candidate keys</b>, that attribute is multivalued and the relation is <b>not</b> in 1NF.</p>
+<div class="tool"><div class="th">Common-attribute checker</div><div class="tb"><div class="row"><label for="ckIn">Candidate keys</label><input type="text" id="ckIn" value="PQ, PR, RST" size="26"><button class="btn" data-ck="PQ, PR, RST">Q1</button><button class="btn" data-ck="UV, VWX, VX, VY">Q2</button><button class="btn" data-ck="PR, PQ, RQ, ST, PST">Q3</button></div><div id="ckOut"></div></div></div>
+<h3>2NF, 3NF and BCNF analyzer</h3>
+<ul><li><b>2NF:</b> in 1NF and no <b>partial dependency</b> — a part of a candidate key (prime attribute) must not alone determine a non-prime attribute.</li><li><b>3NF:</b> in 2NF and no <b>transitive dependency</b> — a non-prime attribute must not determine another non-prime attribute.</li><li><b>BCNF:</b> in 3NF and the left side of every FD is a super key.</li></ul>
+<div class="tool"><div class="th">Enter a relation and its functional dependencies</div><div class="tb">
+<div class="row"><label for="nzA">Attributes</label><input type="text" id="nzA" size="14" value="ABCDEF"></div>
+<div class="row"><label for="nzF" style="align-self:flex-start">FDs</label><textarea class="sql" id="nzF" style="min-height:70px;max-width:380px">C -> F
+E -> A
+EC -> D
+A -> B</textarea></div>
+<div class="row"><b style="font-size:13px">Load:</b><button class="btn" data-n="1">Notes: 2NF Q1</button><button class="btn" data-n="2">Notes: 2NF Q2</button><button class="btn" data-n="3">Notes: 3NF Q1</button><button class="btn" data-n="4">Notes: BCNF Q</button><button class="btn" data-n="5">Student–Course</button></div>
+<div class="msg" id="nzE" role="alert"></div><div id="nzOut"></div></div></div>
+<div class="fix" id="nzWarn"><b>Check against the notes.</b> The analyzer works out candidate keys <i>from the FDs</i>. For the three “as written” loads (2NF Q2, 3NF Q1, BCNF Q) the keys listed in the handwritten notes do not follow from the FDs shown — so the analyzer's verdict can differ from the notes' answer. Question 2NF Q1 agrees with the notes (not 2NF). If a result surprises you, compare the keys and ask your teacher which relation was intended. <i>(The PDF notes copied those keys as written — they should have carried the same warning.)</i></div>
+<div class="fam"><ul><li><b>Prime → non-prime</b> = partial dependency (breaks 2NF)</li><li><b>Non-prime → non-prime</b> = transitive dependency (breaks 3NF)</li></ul></div>
+<h3>4NF and 5NF</h3>
+<ul><li>4NF and 5NF are the highest levels of normalization. <b>4NF</b> controls <b>multivalued dependency</b>: a table has more than one independent multivalued attribute — you need at least three attributes, two independent ones that both depend on a third. Must be in BCNF; no multivalued dependency.</li><li><b>5NF (PJNF — Project-Join Normal Form):</b> already 4NF and no join dependencies. Decomposition must be <b>non-loss</b>: joining the split tables back must lose no data.</li></ul>
+<div class="tool"><div class="th">Decompose, then join back</div><div class="tb"><div id="mvTabs"></div><div id="mvOut"></div></div></div>
+<div class="scroll"><table class="t"><tr><th>Normal form</th><th class="l">Requirement</th></tr><tr><td>1NF</td><td class="l">Atomic (single) value in every column of every row</td></tr><tr><td>2NF</td><td class="l">1NF + no partial dependency</td></tr><tr><td>3NF</td><td class="l">2NF + no transitive dependency</td></tr><tr><td>BCNF</td><td class="l">3NF + LHS of every FD is a super key</td></tr><tr><td>4NF</td><td class="l">BCNF + no multivalued dependency</td></tr><tr><td>5NF</td><td class="l">4NF + no join dependency (lossless decomposition)</td></tr></table></div>
+<p style="font-size:14px;color:var(--ink2)">BCNF ⊂ 3NF ⊂ 2NF ⊂ 1NF — every BCNF relation is also in 3NF, 2NF and 1NF.</p>
+`,root=>{
+  /* anomaly lab */
+  let T;const H=['Sid','Name','Cid','CName','Teacher','Fee'];
+  const reset=()=>{T=[['S1','N1','C1','C','T1','10k'],['S2','N2','C1','C','T1','10k'],['S3','N3','C2','C++','T2','15k'],['S4','N4','C3','DS','T3','12k']];msg='';dec=false;draw();};let msg='',dec=false;
+  const draw=()=>{
+    if(dec){const st=[...new Map(T.filter(r=>r[0]).map(r=>[r[0],[r[0],r[1]]])).values()],co=[...new Map(T.filter(r=>r[2]).map(r=>[r[2],[r[2],r[3],r[4],r[5]]])).values()],en=T.filter(r=>r[0]&&r[2]).map(r=>[r[0],r[2]]);
+      $('#anTab').innerHTML=`<div class="cols2"><div><b>Student</b>${htmlTable(['Sid','Name'],st)}</div><div><b>Course</b>${htmlTable(['Cid','CName','Teacher','Fee'],co)}</div><div><b>Enrolled</b>${htmlTable(['Sid','Cid'],en)}</div></div>`;
+      $('#anMsg').innerHTML='<div class="okm">Decomposed: each fact is stored once. A course can exist without students; deleting a student no longer erases a course; a teacher change is one update.</div>';return;}
+    const teach={};T.forEach(r=>{if(r[2]){(teach[r[2]]=teach[r[2]]||new Set()).add(r[4]);}});
+    $('#anTab').innerHTML=htmlTable(H,T,{cell:(v,i,j)=>(j===4&&T[i][2]&&teach[T[i][2]].size>1)?'bad':(v===null?'lock':'')});$('#anMsg').innerHTML=msg;};
+  $('#anI').onclick=()=>{dec=false;T.push([null,null,'C4','Java','T4','9k']);msg='<div class="err">Insert anomaly: to store course C4 we had to put NULL in Sid and Name. Every such row adds NULL / dummy values.</div>';draw();};
+  $('#anD').onclick=()=>{dec=false;T=T.filter(r=>r[0]!=='S4');msg='<div class="err">Delete anomaly: S4 was the only student of course C3 — deleting S4 also erased course C3 / DS / T3 from the database.</div>';draw();};
+  $('#anU1').onclick=()=>{dec=false;const r=T.find(r=>r[2]==='C1');if(r)r[4]='T9';msg='<div class="err">Update anomaly: only one row of C1 was changed — the teacher of C1 is now both T1 and T9 (inconsistent, shown in red).</div>';draw();};
+  $('#anU2').onclick=()=>{dec=false;T.forEach(r=>{if(r[2]==='C1')r[4]='T9';});msg='<div class="okm">All rows containing C1 were updated — consistent, but several rows had to be changed.</div>';draw();};
+  $('#anDec').onclick=()=>{dec=true;draw();};$('#anR').onclick=reset;reset();
+  /* 1NF */
+  const base=[['101','A','11/12/…',['C++']],['102','B','17/11/…',['Java']],['103','C','—',['Py','C++','DS']]];
+  Tabs($('#nfTabs'),['Original (not 1NF)','① Repeat Rollno','② Repeat column','③ Split table'],k=>{let o='';
+    if(k===0)o=htmlTable(['R.No','Name','DoB','C-Name'],base.map(r=>[r[0],r[1],r[2],r[3].join(', ')]))+'<p class="msg">C-Name holds several values in row 103 → not in 1NF.</p>';
+    if(k===1)o=htmlTable(['R.No','Name','DoB','C-Name'],base.flatMap(r=>r[3].map(c=>[r[0],r[1],r[2],c])))+'<p>Row 103 is repeated once per course. Simple, but Name and DoB are now duplicated (high redundancy).</p>';
+    if(k===2)o=htmlTable(['R.No','Name','DoB','C-Name1','C-Name2','C-Name3'],base.map(r=>[r[0],r[1],r[2],r[3][0]||null,r[3][1]||null,r[3][2]||null]))+'<p>One column per course. Wastes space (NULLs) and limits courses to 3.</p>';
+    if(k===3)o=`<div class="cols2"><div><b>Student</b>${htmlTable(['Roll','Name','DoB'],base.map(r=>[r[0],r[1],r[2]]))}</div><div><b>Course taken</b>${htmlTable(['Rollno','C-Name'],base.flatMap(r=>r[3].map(c=>[r[0],c])))}</div></div><p>Best method: no repetition of Name / DoB and no limit on courses. (The handwritten split table also lists a stray extra row for 101; here the rows match the original table.)</p>`;
+    $('#nfOut').innerHTML=o;});
+  /* common attr */
+  const ck=()=>{const keys=$('#ckIn').value.split(/[,;\s]+/).map(s=>s.toUpperCase().replace(/[^A-Z]/g,'')).filter(Boolean);if(!keys.length){$('#ckOut').innerHTML='';return;}
+    const common=[...new Set(keys[0])].filter(a=>keys.every(k=>k.includes(a)));
+    $('#ckOut').innerHTML=`<p>Attributes common to <b>all</b> candidate keys: <b>${common.join(', ')||'none'}</b></p><p>Multivalued attributes: <b>${common.length}</b> → relation is ${common.length?'<span class="pill r">NOT in 1NF</span>':'<span class="pill g">in 1NF</span>'}</p>`;};
+  $('#ckIn').oninput=ck;$$('[data-ck]',root).forEach(b=>b.onclick=()=>{$('#ckIn').value=b.dataset.ck;ck();});ck();
+  /* analyzer */
+  const LO={1:['ABCDEF','C -> F\nE -> A\nEC -> D\nA -> B'],2:['KLMNOP','MN -> P\nP -> L\nO -> N'],3:['KLMNOP','K -> M\nMN -> O\nO -> K\nP -> L'],4:['ABCDEF','C -> D\nF -> E\nA -> E\nD -> F'],5:['SCNMG','S -> N\nC -> M\nSC -> G']};
+  const nz=()=>{try{const at=[...new Set($('#nzA').value.toUpperCase().replace(/[^A-Z]/g,''))];if(at.length<2||at.length>10)throw Error('Use 2 to 10 attributes (letters).');
+      const fds=parseFDs($('#nzF').value);fds.forEach(f=>[...f.L,...f.R].forEach(x=>{if(!at.includes(x))throw Error(`Attribute ${x} is not in the relation.`);}));
+      $('#nzE').textContent='';const r=analyze(at,fds);
+      let o=`<p>Candidate key(s): ${r.CK.map(c=>`<span class="pill g">${c.join('')}</span>`).join('')} &nbsp; Prime: <b>${r.prime.join(', ')||'—'}</b> &nbsp; Non-prime: <b>${r.non.join(', ')||'—'}</b></p>`;
+      o+=htmlTable(['FD (one RHS attribute)','Why it matters','2NF ok?','3NF ok?','BCNF ok?'],r.rows.map(x=>[x.fd,x.kind,x.ok2?'✓':'✗',x.ok3?'✓':'✗',x.okB?'✓':'✗']),{cell:v=>v==='✗'?'bad':v==='✓'?'good':''});
+      o+=`<p class="big">Highest normal form: ${r.nf}</p>`;
+      o+='<h4>Attribute closures</h4>'+htmlTable(['X','X⁺ (everything X determines)'],fds.map(f=>[f.L.join(''),[...closure(f.L,fds)].sort().join('')]));
+      $('#nzOut').innerHTML=o;}catch(e){$('#nzE').textContent=e.message;$('#nzOut').innerHTML='';}};
+  $('#nzA').oninput=nz;$('#nzF').oninput=nz;$$('[data-n]',root).forEach(b=>b.onclick=()=>{const l=LO[b.dataset.n];$('#nzA').value=l[0];$('#nzF').value=l[1];nz();});nz();
+  /* 4NF */
+  const MV=[{n:'Student – Course – Hobby (added)',cols:['SID','Course','Hobby'],rows:[['S1','C','Chess'],['S1','C','Music'],['S1','D','Chess'],['S1','D','Music']],split:[[0,1],[0,2]],note:'SID ↠ Course and SID ↠ Hobby are independent multivalued dependencies. Splitting into (SID, Course) and (SID, Hobby) removes the redundancy — and the join gives the original 4 rows back (lossless).'},
+    {n:'The notes\' table',cols:['SID','SName','CID','CName'],rows:[['S1','A','C1','C'],['S2','A','C2','D'],['S3','B','C1','C'],['S4','B','C2','D']],split:[[0,1],[2,3]],note:'The notes split this into R1(SID, SName) and R2(CID, CName). Those two share <b>no common attribute</b>, so joining them can only form every pairing of rows — a lossless split needs a common attribute to join on.'}];
+  Tabs($('#mvTabs'),MV.map(m=>m.n),k=>{const m=MV[k];const parts=m.split.map(ix=>{const seen=new Set(),rows=[];m.rows.forEach(r=>{const t=ix.map(i=>r[i]);const key=t.join('|');if(!seen.has(key)){seen.add(key);rows.push(t);}});return {c:ix.map(i=>m.cols[i]),rows,ix};});
+    let joined=[];const [p,q]=parts;const common=p.ix.filter(i=>q.ix.includes(i));
+    p.rows.forEach(a=>q.rows.forEach(b=>{if(common.every(ci=>a[p.ix.indexOf(ci)]===b[q.ix.indexOf(ci)])){const row=m.cols.map((_,ci)=>p.ix.includes(ci)?a[p.ix.indexOf(ci)]:b[q.ix.indexOf(ci)]);joined.push(row);}}));
+    const orig=new Set(m.rows.map(r=>r.join('|'))),back=new Set(joined.map(r=>r.join('|')));const lossless=orig.size===back.size&&[...orig].every(x=>back.has(x));
+    $('#mvOut').innerHTML=`<div class="cols2"><div><b>Original</b>${htmlTable(m.cols,m.rows)}</div>${parts.map((x,i)=>`<div><b>R${i+1}</b>${htmlTable(x.c,x.rows)}</div>`).join('')}</div><p><b>R1 ⋈ R2</b> gives <b>${joined.length}</b> row(s); original has ${m.rows.length}. ${lossless?'<span class="pill g">lossless — same rows come back</span>':'<span class="pill r">not lossless — different rows</span>'}</p><p>${m.note}</p>`;});
+});
+
+/* ================= 11 FUNCTIONAL DEPENDENCY ================= */
+section('fd','Functional dependency',`
+<p class="lead">A <b>functional dependency</b> is a relationship between attributes of a relation. If the same value of X always goes with the same value of Y, we write <b>X → Y</b>.</p>
+<ul><li>From <b>Sid</b> we can uniquely identify <b>Name</b>, so Sid → Name; Sid is the <b>determinant</b>; Name is the <b>determined / dependent</b> attribute.</li><li>If the determinant's value is the same, the determined attribute's value is always the same. But if the determined attributes happen to match, the determinants need not.</li></ul>
+<div class="tool"><div class="th">FD tester</div><div class="tb"><div id="fdTab"></div>
+<div class="row"><span><b>X</b> (determinant)</span><span id="fdX"></span></div><div class="row"><span><b>Y</b> (determined)</span><span id="fdY"></span></div>
+<div class="row"><b style="font-size:13px">Try:</b><button class="btn" data-fd="Sid|Name">Sid → Name</button><button class="btn" data-fd="Dept|Name">Dept → Name</button><button class="btn" data-fd="Sid,Name|Name">Sid, Name → Name</button><button class="btn" data-fd="Sid,Name|Sid,Age">Sid, Name → Sid, Age</button></div><div id="fdOut"></div></div></div>
+<h3>Types of FD</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Type</th><th class="l">Rule</th><th class="l">Example</th></tr>
+<tr><td class="l"><b>Trivial</b></td><td class="l">Y is a subset of X (X ⊇ Y). Every attribute determines itself.</td><td class="l">Sid → Sid;  Sid + Name → Name</td></tr>
+<tr><td class="l"><b>Non-trivial</b></td><td class="l">X and Y have nothing in common (X ∩ Y = ∅); the determinant always determines a new attribute.</td><td class="l">Sid → S_Name</td></tr>
+<tr><td class="l"><b>Semi-trivial</b></td><td class="l">Y is not a subset of X, but they share an attribute; reduces to a non-trivial FD.</td><td class="l">Sid + Sname → Sid + Sage  (≡ Sname → Sage)</td></tr></table></div>
+<div class="note"><b>Clarification.</b> The notes write the non-trivial condition as “x ∩ y ≠ 0”; the standard condition (and the example Sid → S_Name) is X ∩ Y = ∅.</div>
+`,root=>{
+  const A=['Sid','Name','Age','Dept'],R=[[101,'N1',22,'CS'],[102,'N2',25,'CS'],[103,'N3',30,'IT'],[104,'N4',27,'HR']];
+  $('#fdTab').innerHTML=htmlTable(A,R);let X=[1,0,0,0],Y=[0,1,0,0],tx,ty;
+  const upd=()=>{const xi=A.map((_,i)=>i).filter(i=>X[i]),yi=A.map((_,i)=>i).filter(i=>Y[i]);if(!xi.length||!yi.length){$('#fdOut').innerHTML='<p class="msg" style="color:var(--ink2)">Choose attributes for X and Y.</p>';return;}
+    const m=new Map();let holds=true,bad='';R.forEach(r=>{const kx=xi.map(i=>r[i]).join('|'),vy=yi.map(i=>r[i]).join('|');if(m.has(kx)&&m.get(kx)!==vy&&holds){holds=false;bad=`X = ${kx} appears with two different Y values (${m.get(kx)} and ${vy})`;}if(!m.has(kx))m.set(kx,vy);});
+    const nx=xi.map(i=>A[i]),ny=yi.map(i=>A[i]),sub=ny.every(a=>nx.includes(a)),inter=ny.filter(a=>nx.includes(a));
+    const type=sub?'Trivial (Y ⊆ X)':inter.length?'Semi-trivial (shared attribute, Y ⊄ X)':'Non-trivial (X ∩ Y = ∅)';
+    $('#fdOut').innerHTML=`<p><b>${nx.join(', ')} → ${ny.join(', ')}</b></p><p>Type: <span class="pill a">${type}</span></p><p>In this sample data: ${holds?'<span class="pill g">the FD holds</span>':`<span class="pill r">does not hold</span> — ${bad}`}</p>${sub?'<p class="m" style="font-size:13.5px">A trivial FD always holds, whatever the data.</p>':'<p class="m" style="font-size:13.5px">A non-trivial FD is a rule of the data’s meaning; one sample can only disprove it, not prove it.</p>'}`;};
+  tx=Toggles($('#fdX'),A,X,v=>{X=v.slice();upd();});ty=Toggles($('#fdY'),A,Y,v=>{Y=v.slice();upd();});
+  $$('[data-fd]',root).forEach(b=>b.onclick=()=>{const [x,y]=b.dataset.fd.split('|').map(s=>s.split(','));tx.set(A.map(a=>x.includes(a)?1:0));ty.set(A.map(a=>y.includes(a)?1:0));});
+});
+/* ================= 12 SQL ================= */
+const SETUP=`CREATE TABLE Student (Rollno NUMBER(6), Name VARCHAR2(25), Class NUMBER(3), Age NUMBER(3), Fee NUMBER(8,2), City VARCHAR2(20), PRIMARY KEY (Rollno));
+INSERT INTO Student VALUES (101,'Asha',11,16,12000,'Jaipur'),(102,'Ravi',11,17,15000,'Delhi'),(103,'Seeta',12,17,15000,'Jaipur'),(104,'Meena',12,18,18000,'Patna'),(105,'Kiran',11,16,12000,'Delhi'),(106,'Dev',12,17,15000,'Agra');
+CREATE TABLE Dept (DeptId NUMBER(3) PRIMARY KEY, DName VARCHAR2(20));
+INSERT INTO Dept VALUES (10,'IT'),(20,'HR'),(30,'Sales');
+CREATE TABLE Employee (Eid NUMBER(4) PRIMARY KEY, EName VARCHAR2(20) NOT NULL, DeptId NUMBER(3), Salary NUMBER(8) DEFAULT 30000, FOREIGN KEY (DeptId) REFERENCES Dept(DeptId));
+INSERT INTO Employee (Eid, EName, DeptId) VALUES (1,'Anil',10),(2,'Bina',10),(3,'Chetan',20),(4,'Deepa',NULL);
+CREATE TABLE Dual (Dummy VARCHAR2(1));
+INSERT INTO Dual VALUES ('X');
+COMMIT;`;
+function freshDB(){const d=new SQLDB();d.exec(SETUP);return d;}
+const EX={
+ select:"SELECT Rollno, Name, Age FROM Student WHERE Class = 11 ORDER BY Name;",
+ groupby:"SELECT Age, COUNT(*) AS Number FROM Student GROUP BY Age;",
+ having:"SELECT Age, SUM(Fee) AS Amount FROM Student GROUP BY Age HAVING SUM(Fee) > 20000;",
+ distinct:"SELECT DISTINCT Class, Fee FROM Student ORDER BY Class;",
+ selectall:"SELECT * FROM Student;",
+ insert:"INSERT INTO Student (Rollno, Name, Class, Age, Fee, City) VALUES\n  (107,'Seeta',11,19,13000,'Goa'),\n  (108,'Ram',12,21,16000,'Pune');\nSELECT * FROM Student;",
+ update:"UPDATE Student SET Name = 'Malti' WHERE Rollno = 103;\nSELECT * FROM Student;",
+ updateall:"UPDATE Student SET Fee = Fee + 100;   -- no WHERE: every row\nSELECT Rollno, Fee FROM Student;",
+ delete:"DELETE FROM Student WHERE Rollno = 101;\nSELECT * FROM Student;",
+ deleteall:"DELETE FROM Student;   -- no WHERE: all rows\nSELECT COUNT(*) AS Remaining FROM Student;\nROLLBACK;\nSELECT COUNT(*) AS AfterRollback FROM Student;",
+ create:"DROP TABLE IF EXISTS Product;\nCREATE TABLE Product (\n  PID     NUMBER(4) PRIMARY KEY,\n  PName   VARCHAR2(25) NOT NULL,\n  Company VARCHAR2(25),\n  Price   NUMBER(6,3) DEFAULT 100\n);\nINSERT INTO Product (PID, PName) VALUES (1, 'Pen');\nDESC Product;\nSELECT * FROM Product;",
+ alter:"ALTER TABLE Student ADD (Phone NUMBER(12), Address VARCHAR2(25));\nALTER TABLE Student MODIFY (Phone NUMBER(7));\nDESC Student;\nALTER TABLE Student DROP (Address);\nDESC Student;",
+ drop:"DROP TABLE IF EXISTS Temp;\nCREATE TABLE Temp (x NUMBER(2));\nINSERT INTO Temp VALUES (1);\nDROP TABLE Temp;\nSELECT * FROM Temp;   -- the table is gone",
+ truncate:"TRUNCATE TABLE Employee;\nSELECT COUNT(*) AS Rows FROM Employee;\nDESC Employee;   -- structure is still there",
+ desc:"DESC Student;",
+ tcl:"DELETE FROM Student WHERE Class = 11;\nSAVEPOINT s1;\nDELETE FROM Student WHERE Class = 12;\nSELECT COUNT(*) AS RowsLeft FROM Student;\nROLLBACK TO s1;\nSELECT COUNT(*) AS RowsLeft FROM Student;\nROLLBACK;\nSELECT COUNT(*) AS RowsLeft FROM Student;",
+ commit:"DELETE FROM Student WHERE Rollno = 101;\nCOMMIT;   -- permanent now\nDELETE FROM Student WHERE Rollno = 102;\nROLLBACK; -- only undoes the last, uncommitted delete\nSELECT Rollno, Name FROM Student;",
+ grant:"GRANT SELECT ON Student TO ravi;\nREVOKE SELECT ON Student FROM ravi;",
+ grp:"SELECT COUNT(*) AS Cnt, SUM(Fee) AS Total, AVG(Fee) AS Average, MIN(Age) AS Youngest, MAX(Age) AS Oldest FROM Student;",
+ num:"SELECT ABS(-7), SQRT(81), POWER(2,10), ROUND(3.14159,2) FROM Dual;",
+ str:"SELECT UPPER(Name), LOWER(City), LENGTH(Name), SUBSTR(Name,1,3) FROM Student;",
+ c_nn:"DROP TABLE IF EXISTS P1;\nCREATE TABLE P1 (PID NUMBER(4) NOT NULL, PName VARCHAR2(25) NOT NULL, Company VARCHAR2(25), Price NUMBER(6,3));\nINSERT INTO P1 VALUES (1,'Pen','Cello',10);\nINSERT INTO P1 (PID, Company) VALUES (2,'Reynolds');   -- PName missing",
+ c_un:"DROP TABLE IF EXISTS P2;\nCREATE TABLE P2 (PID NUMBER(4) NOT NULL UNIQUE, PName VARCHAR2(25));\nINSERT INTO P2 VALUES (1,'Pen');\nINSERT INTO P2 VALUES (1,'Book');   -- same PID",
+ c_pk:"DROP TABLE IF EXISTS P3;\nCREATE TABLE P3 (PID NUMBER(4) PRIMARY KEY, PName VARCHAR2(25) NOT NULL);\nINSERT INTO P3 VALUES (1,'Pen');\nINSERT INTO P3 VALUES (1,'Book');\nINSERT INTO P3 VALUES (NULL,'Ink');",
+ c_fk:"INSERT INTO Employee VALUES (50,'Ghost',99,10000);   -- no department 99\nDELETE FROM Dept WHERE DeptId = 10;      -- employees still refer to it",
+ c_df:"DROP TABLE IF EXISTS P4;\nCREATE TABLE P4 (PID NUMBER(3) PRIMARY KEY, Price NUMBER(9,3) DEFAULT 100000.000);\nINSERT INTO P4 (PID) VALUES (1);\nSELECT * FROM P4;",
+ c_ck:"DROP TABLE IF EXISTS P5;\nCREATE TABLE P5 (PID NUMBER(3) PRIMARY KEY, PName VARCHAR2(25) CHECK (PName LIKE 'P%'));\nINSERT INTO P5 VALUES (1,'Pen');\nINSERT INTO P5 VALUES (2,'Book');   -- does not start with P",
+ c_tb:"DROP TABLE IF EXISTS P6;\nCREATE TABLE P6 (PID NUMBER(4) NOT NULL, Company VARCHAR2(25), PName VARCHAR2(25) NOT NULL, PRIMARY KEY (PID, PName));   -- table constraint\nINSERT INTO P6 VALUES (1,'A','x');\nINSERT INTO P6 VALUES (1,'B','y');   -- ok: pair (1,y) is new\nINSERT INTO P6 VALUES (1,'C','x');   -- pair (1,x) repeats"};
+const SQLDOC=[
+ ['DDL — Data Definition Language',[
+  ['Create','create',['Creation of a <b>database</b> or table.','Table name — <b>space not allowed</b>, use “_”.']],
+  ['Alter','alter',['Add a new column; drop / delete a column; change data type; change name / size; change table name; add a constraint; update the table structure.']],
+  ['Drop','drop',['Deletes <b>both the table structure and its data</b> together — the complete table.','A table deleted with DROP <b>cannot be recovered</b>.']],
+  ['Truncate / Terminate','truncate',['Deletes <b>all data in the table at once</b>; does <b>not</b> delete the table structure; the deleted data cannot be recovered.']]]],
+ ['DML — Data Manipulation Language',[
+  ['Select','select',['The standard query by which we retrieve table data.']],
+  ['Insert','insert',['Inserts new records into a table; when inserting, values must be given for all columns of the table; NULL values can also be given.']],
+  ['Update','update',['Modifies existing data. With a <b>WHERE</b> clause only the selected data is updated; with no WHERE <b>all records</b> are updated.']],
+  ['Delete','delete',['Deletes records (rows). Use a <b>WHERE</b> clause so that only the selected data is deleted; without WHERE all data in the table is deleted.']]]],
+ ['DCL — Data Control Language',[['Grant','grant',['Allocates some permission to a user on the DB.']],['Revoke','grant',['Denies / deallocates the permission of the user on the DB.']]]],
+ ['TCL — Transaction Control Language',[['Commit','commit',['The transactions / queries done by the user are stored <b>permanently</b> in the DB.']],['Roll back','tcl',['The last (uncommitted) transactions are reverted — back to the last committed state.']],['Save point','tcl',['Marks a particular point in a transaction so that we can roll back only the selected part of it.']]]]];
+section('sql','SQL',`
+<p class="lead">SQL is the language you use to talk to a relational DBMS. The playground below runs a small SQL engine right in your browser — try every command from your notes.</p>
+<div class="tool"><div class="th">SQL playground (Student, Dept, Employee tables are ready)</div><div class="tb">
+<div class="row"><label for="pgEx">Example</label><select id="pgEx"></select><button class="btn pri" id="pgRun">Run  (Ctrl + Enter)</button><button class="btn" id="pgReset">Reset sample database</button></div>
+<textarea class="sql" id="pgSql" spellcheck="false" aria-label="SQL editor"></textarea>
+<div id="pgOut"></div><details class="acc"><summary>Tables in the database</summary><div id="pgSchema"></div></details>
+<p style="font-size:13px;color:var(--ink2);margin:6px 0 0">Separate statements with <b>;</b>. COMMIT / ROLLBACK / SAVEPOINT work on every change here (including CREATE, ALTER and DROP). Supports CREATE, ALTER, DROP, TRUNCATE, INSERT, UPDATE, DELETE, SELECT (WHERE, GROUP BY, HAVING, ORDER BY, DISTINCT, joins), constraints, DESC, COMMIT, ROLLBACK, SAVEPOINT. <b>Dual</b> is a one-row helper table for trying functions.</p></div></div>
+<h3>SQL command groups</h3>
+<div class="fam"><ul><li><b>SQL commands</b><ul><li><b>DDL</b> — Create, Alter, Drop, Truncate</li><li><b>DML</b> — Select, Insert, Update, Delete</li><li><b>DCL</b> — Grant, Revoke</li><li><b>TCL</b> — Commit, Roll back, Save point</li><li><b>Constraints</b> — Primary key, Foreign key, Unique, Check, Default, Not null</li></ul></li></ul></div>
+<div id="sqlDoc"></div>
+<h3>Data types</h3>
+<div class="scroll"><table class="t"><tr><th>#</th><th class="l">Type</th><th class="l">Meaning</th></tr><tr><td>1</td><td class="l"><b>Number</b></td><td class="l">Numeric value; <b>Number(n, d)</b> — n total digits, d digits after the decimal point</td></tr><tr><td>2</td><td class="l"><b>Char</b></td><td class="l">Max size 255</td></tr><tr><td>3</td><td class="l"><b>Varchar</b></td><td class="l">Max size 2000 characters</td></tr><tr><td>4</td><td class="l"><b>Date</b></td><td class="l">Various date formats (e.g. DOB)</td></tr><tr><td>5</td><td class="l"><b>Long</b></td><td class="l">Variable-length data up to 2 GB</td></tr><tr><td>6</td><td class="l"><b>Raw</b></td><td class="l">2000 bytes — stores a binary file</td></tr><tr><td>7</td><td class="l"><b>Long raw</b></td><td class="l">2 GB</td></tr><tr><td>8</td><td class="l"><b>Time</b></td><td class="l">Stores time</td></tr></table></div>
+<h3>Structure of an SQL command</h3>
+<p style="font-size:18px;line-height:2.1"><span class="pill">Select</span><span class="pill g">Name</span> <span style="border:2px dashed var(--red);padding:3px 4px;border-radius:4px;white-space:nowrap"><span class="pill">from</span><span class="pill g">Student</span></span> <span style="border:2px dashed var(--red);padding:3px 4px;border-radius:4px;white-space:nowrap"><span class="pill">where</span><span class="pill g">Rollno = 109</span></span></p>
+<p><span class="pill">dark</span> = <b>keywords</b> (Select, from, where) · <span class="pill g">green</span> = <b>identifiers</b> (names you choose) · red dashes = <b>clauses</b> (“from Student”, “where Rollno = 109”).</p>
+<p><b>Logical operators:</b> <span class="pill a">ALL</span><span class="pill a">AND</span><span class="pill a">ANY</span><span class="pill a">BETWEEN</span><span class="pill a">EXISTS</span><span class="pill a">IN</span><span class="pill a">LIKE</span><span class="pill a">NOT</span><span class="pill a">OR</span></p>
+<h3>Queries from the notes</h3>
+<div class="row"><button class="btn" data-ex="select">ORDER BY (ascending by default)</button><button class="btn" data-ex="groupby">GROUP BY with AS</button><button class="btn" data-ex="having">GROUP BY … HAVING</button><button class="btn" data-ex="distinct">DISTINCT</button></div>
+<ul><li><b>AS</b> gives a result column a name — a “virtual column” used for the group.</li><li><b>HAVING</b> filters groups after grouping (WHERE filters rows before).</li><li><b>DISTINCT</b> eliminates duplicate records. The notes add “applies on first”; in standard SQL it applies to the whole combination of selected columns.</li><li>The notes write <code>DELETE Student where ID=101</code>; the standard form is <code>DELETE FROM Student WHERE …</code>.</li></ul>
+<h3>SQL functions</h3>
+<ul><li>Functions produce a result by manipulating the available data items; they are <b>group</b> or <b>scalar</b>.</li><li><b>Group functions</b> act on a set of values — an entire column goes in, a single value comes out: <b>AVG(), COUNT(), SUM(), MIN(), MAX()</b>.</li><li><b>Scalar functions</b> work on only one value.</li></ul>
+<div class="scroll"><table class="t"><tr><th class="l">Category</th><th class="l">Functions</th><th></th></tr><tr><td class="l">Group</td><td class="l">AVG, COUNT, SUM, MIN, MAX</td><td><button class="btn" data-ex="grp">Try</button></td></tr><tr><td class="l">Numeric</td><td class="l">ABS(), SQRT(), POWER(), ROUND()</td><td><button class="btn" data-ex="num">Try</button></td></tr><tr><td class="l">String</td><td class="l">UPPER(), LOWER(), LENGTH(), LTRIM(), RTRIM(), SUBSTR()</td><td><button class="btn" data-ex="str">Try</button></td></tr><tr><td class="l">Date</td><td class="l">LAST_DAY(), NEXT_DAY(), MONTHS_BETWEEN()</td><td></td></tr><tr><td class="l">Conversion</td><td class="l">TO_NUMBER, TO_CHAR, TO_DATE</td><td></td></tr></table></div>
+<h3>SQL constraints</h3>
+<ul><li>Rules enforced on the data columns of a table; they ensure the <b>accuracy and reliability</b> of data. Two types: <b>column level</b> and <b>table level</b>.</li></ul>
+<div id="conDoc"></div>
+<h3>SQL JOIN</h3>
+<p>A join <b>combines two or more tables</b>. Pick a join type — the Employee table has one employee with no department (Deepa) and the Dept table has one department with no employees (Sales).</p>
+<div class="tool"><div class="th">Join explorer</div><div class="tb"><div id="jnTabs"></div><div class="cols2"><div id="jnSvg"></div><div><div id="jnDesc"></div></div></div><pre class="code" id="jnSql"></pre><div class="cols2"><div><b>Employee</b><div id="jnA"></div></div><div><b>Dept</b><div id="jnB"></div></div></div><b>Result</b><div id="jnRes"></div></div></div>
+`,root=>{
+  let DB=freshDB();
+  const schema=()=>{$('#pgSchema').innerHTML=Object.values(DB.t).map(t=>`<p style="margin:6px 0"><b>${t.name}</b> (${t.cols.map(c=>c.name+(t.pk.includes(c.name)?' 🔑':'')).join(', ')}) — ${t.rows.length} row(s)</p>`).join('')||'<p>No tables.</p>';};
+  const run=()=>{const res=DB.exec($('#pgSql').value);$('#pgOut').innerHTML=res.map(r=>r.err?`<div class="err">Error: ${esc(r.err)}\n  in: ${esc(r.sql)}</div>`:r.msg?`<div class="okm">${esc(r.msg)}</div>`:htmlTable(r.cols,r.rows)+`<p class="m" style="font-size:13px;margin:0 0 6px">${r.rows.length} row(s) selected.</p>`).join('')||'<p>Nothing to run.</p>';schema();};
+  const load=(k,go)=>{$('#pgSql').value=EX[k];if(go)run();const e=$('#pgSql');e.scrollIntoView({behavior:'smooth',block:'center'});};
+  window.loadSql=load;
+  $('#pgEx').innerHTML=Object.keys(EX).map(k=>`<option value="${k}">${k}</option>`).join('');
+  const NAMES={select:'SELECT … ORDER BY',groupby:'GROUP BY + AS',having:'GROUP BY + HAVING',distinct:'DISTINCT',selectall:'SELECT *',insert:'INSERT (two rows)',update:'UPDATE with WHERE',updateall:'UPDATE without WHERE',delete:'DELETE with WHERE',deleteall:'DELETE all, then ROLLBACK',create:'CREATE TABLE with constraints',alter:'ALTER TABLE',drop:'DROP TABLE',truncate:'TRUNCATE TABLE',desc:'DESC',tcl:'SAVEPOINT / ROLLBACK TO',commit:'COMMIT then ROLLBACK',grant:'GRANT / REVOKE',grp:'Group functions',num:'Numeric functions',str:'String functions',c_nn:'NOT NULL violation',c_un:'UNIQUE violation',c_pk:'PRIMARY KEY violation',c_fk:'FOREIGN KEY violation',c_df:'DEFAULT',c_ck:'CHECK violation',c_tb:'Table constraint (composite key)'};
+  $('#pgEx').innerHTML=Object.keys(EX).map(k=>`<option value="${k}">${NAMES[k]}</option>`).join('');
+  $('#pgEx').onchange=()=>{$('#pgSql').value=EX[$('#pgEx').value];};
+  $('#pgRun').onclick=run;$('#pgReset').onclick=()=>{DB=freshDB();$('#pgOut').innerHTML='<div class="okm">Sample database restored.</div>';schema();};
+  $('#pgSql').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}});
+  $('#pgSql').value=EX.select;run();
+  /* doc accordions */
+  $('#sqlDoc').innerHTML=SQLDOC.map(g=>`<h4>${g[0]}</h4>`+g[1].map(c=>`<details class="acc"><summary>${c[0]}</summary><div><ul>${c[2].map(x=>`<li>${x}</li>`).join('')}</ul><button class="btn pri" data-ex="${c[1]}">Try it in the playground</button></div></details>`).join('')).join('')+
+   `<div class="scroll"><table class="t"><tr><th></th><th>DROP</th><th>TRUNCATE</th><th>DELETE</th></tr><tr><td class="l">Removes</td><td>Structure + data</td><td>All data</td><td>Selected rows (WHERE) or all</td></tr><tr><td class="l">Structure kept?</td><td>No</td><td>Yes</td><td>Yes</td></tr><tr><td class="l">Can be rolled back?</td><td>No (per notes)</td><td>No (per notes)</td><td>Yes, before COMMIT</td></tr></table></div><p style="font-size:13.5px;color:var(--ink2)">The playground rolls back everything (even DROP) so you can experiment; real Oracle-style DDL cannot be rolled back.</p>`;
+  const CON=[['(A) NOT NULL','c_nn',['By default a column can hold NULL values.','When a column is defined NOT NULL it becomes <b>mandatory</b>.']],['(B) UNIQUE key','c_un',['Ensures that <b>no two rows have the same value</b> in the specified column.']],['(C) PRIMARY KEY','c_pk',['Identifies a record / row uniquely; by default the column is <b>Not Null and Unique</b>.']],['(D) FOREIGN KEY','c_fk',['Provides a relationship between two tables — hence the “reference key”. A foreign key is a primary key in another table.']],['(E) DEFAULT','c_df',['Sets a <b>default value</b> if no value is passed by the INSERT command.']],['(F) CHECK','c_ck',['Applies a <b>TRUE / FALSE condition</b>; only if it is true can the value be inserted.']],['(G) Table constraint vs column constraint','c_tb',['A constraint on a <b>single column</b> is a column constraint, written with the column definition.','A constraint on a <b>group of columns</b> is a table constraint, written at the end of CREATE TABLE.']]];
+  $('#conDoc').innerHTML=CON.map(c=>`<details class="acc"><summary>${c[0]}</summary><div><ul>${c[2].map(x=>`<li>${x}</li>`).join('')}</ul><pre class="code">${esc(EX[c[1]])}</pre><button class="btn pri" data-ex="${c[1]}">Run this demo</button></div></details>`).join('');
+  root.addEventListener('click',e=>{const b=e.target.closest('[data-ex]');if(!b)return;const k=b.dataset.ex;$('#pgEx').value=k;load(k,true);});
+  /* joins */
+  const JD=[['Inner join','INNER JOIN','Rows that match in <b>both</b> tables (A ∩ B).'],['Left join','LEFT JOIN','<b>All</b> rows of the left table plus matches from the right.'],['Right join','RIGHT JOIN','<b>All</b> rows of the right table plus matches from the left.'],['Full join','FULL JOIN','All rows of <b>both</b> tables (A ∪ B).'],['Natural join','NATURAL JOIN','Connects two tables on their <b>common column</b> (DeptId), matching the values in it.']];
+  const venn=k=>{const id='cp'+k;const A='<circle cx="100" cy="75" r="55"',B='<circle cx="170" cy="75" r="55"';const sh='fill="#80cbd4" ';
+    let o=`<defs><clipPath id="${id}">${A}/></clipPath></defs>`;
+    if(k===0||k===4)o+=`<g clip-path="url(#${id})">${B} fill="#80cbc4"/></g>`;if(k===1||k===3)o+=`${A} fill="#80cbc4"/>`;if(k===2||k===3)o+=`${B} fill="#80cbc4"/>`;
+    o+=`${A} fill="none" stroke="#15233b" stroke-width="2"/>${B} fill="none" stroke="#15233b" stroke-width="2"/><text x="70" y="80" class="pin" font-size="16" text-anchor="middle">A</text><text x="200" y="80" class="pin" font-size="16" text-anchor="middle">B</text>`;
+    return `<svg viewBox="0 0 270 150" width="270" role="img" aria-label="${JD[k][0]} Venn diagram">${o}</svg>`;};
+  Tabs($('#jnTabs'),JD.map(j=>j[0]),k=>{const J=freshDB();$('#jnSvg').innerHTML=venn(k);$('#jnDesc').innerHTML=`<p>${JD[k][2]}</p>`;
+    const q=k===4?'SELECT * FROM Employee NATURAL JOIN Dept;':`SELECT EName, DName FROM Employee ${JD[k][1]} Dept ON Employee.DeptId = Dept.DeptId;`;$('#jnSql').textContent=q;
+    const a=J.exec('SELECT * FROM Employee')[0],b=J.exec('SELECT * FROM Dept')[0],r=J.exec(q)[0];
+    $('#jnA').innerHTML=htmlTable(a.cols,a.rows);$('#jnB').innerHTML=htmlTable(b.cols,b.rows);$('#jnRes').innerHTML=r.err?`<div class="err">${esc(r.err)}</div>`:htmlTable(r.cols,r.rows,{cell:v=>v===null?'bad':''})+`<p class="m" style="font-size:13px">${r.rows.length} row(s). NULL (red) marks a side with no match.</p>`;});
+});
+
+/* ================= 13 TRANSACTIONS ================= */
+function parseSched(t){const re=/([RW])\s*(\d+)\s*\(\s*(\w+)\s*\)/gi,ops=[];let m;while((m=re.exec(t)))ops.push({op:m[1].toUpperCase(),t:+m[2],x:m[3].toUpperCase()});return ops;}
+section('txn','Serializability & locking',`
+<h3>Serializability</h3>
+<ul><li>Describes the <b>execution schema</b> of DB transactions: even if transactions are interleaved, the final result is the same as if they ran <b>one at a time in some serial order</b>.</li><li><b>Conflict serializability:</b> concurrently running transactions can be <b>rearranged</b> so their sequence becomes equivalent to a serial order.</li><li><b>View serializability:</b> they are <b>already equivalent</b> to a serial order, so there is no need to rearrange them.</li></ul>
+<div class="tool"><div class="th">Conflict-serializability tester</div><div class="tb">
+<div class="row"><label for="csIn">Schedule</label><input type="text" id="csIn" value="R1(A) W2(A) W1(A) R2(B)" size="40"><button class="btn" data-cs="R1(A) W1(A) R2(A) W2(A)">Serializable example</button><button class="btn" data-cs="R1(A) W2(A) W1(A)">Not serializable example</button></div>
+<p style="font-size:13px;color:var(--ink2);margin:0">Write operations as R1(A) = transaction 1 reads A, W2(B) = transaction 2 writes B. Two operations <b>conflict</b> when they are from different transactions, touch the same item and at least one is a write.</p><div id="csOut"></div></div></div>
+<h3>Two-phase locking (2PL)</h3>
+<ul><li>A <b>concurrency control protocol</b> that ensures consistency during execution of transactions. Two phases:</li><li><b>Growing phase</b> — the transaction acquires locks on all required resources; it can take as many as it needs but <b>cannot release any lock yet</b>.</li><li><b>Shrinking phase</b> — it releases the locks; once it enters this phase it <b>cannot obtain any new lock</b>.</li></ul>
+<div class="tool"><div class="th">2PL checker</div><div class="tb">
+<div class="row"><label for="plIn">One transaction</label><input type="text" id="plIn" value="LX(A) LS(B) R(B) W(A) U(B) U(A)" size="44"></div>
+<div class="row"><button class="btn" data-pl="LX(A) LS(B) R(B) W(A) U(B) U(A)">Valid 2PL</button><button class="btn" data-pl="LX(A) W(A) U(A) LX(B) W(B) U(B)">Breaks 2PL</button><button class="btn" data-pl="LX(A) LX(B) W(A) W(B) U(A) U(B)">Strict / rigorous</button><button class="btn" data-pl="LS(A) LX(B) R(A) W(B) U(A) U(B)">Conservative</button></div>
+<p style="font-size:13px;color:var(--ink2);margin:0">LS(x) = shared lock, LX(x) = exclusive lock, U(x) = unlock, R(x) / W(x) = read / write.</p><div id="plOut"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">Variation</th><th class="l">Rule</th></tr><tr><td class="l"><b>Strict 2PL</b></td><td class="l">Releases its <b>exclusive</b> locks only when it finishes.</td></tr><tr><td class="l"><b>Rigorous 2PL</b></td><td class="l">Releases <b>none</b> of its locks — neither shared nor exclusive — until it finishes.</td></tr><tr><td class="l"><b>Conservative 2PL</b></td><td class="l">Acquires <b>all</b> the locks it will need <b>before starting</b> execution, so the probability of deadlock is completely removed.</td></tr></table></div>
+<p><b>Advantages of 2PL:</b> ensures serializability (data consistency is not violated) and helps with deadlock avoidance — the notes' wording; strictly, only conservative 2PL removes deadlock completely.</p>
+<h3>Timestamp concurrency control</h3>
+<ul><li>A <b>transaction ordering</b> method: when multiple transactions are ready to execute, each is given a <b>timestamp (T)</b>, which decides the order — and so the execution priority — of the transactions.</li></ul>
+<div class="tool"><div class="th">Timestamp ordering</div><div class="tb"><div class="row"><button class="btn pri" data-t="1">Start T1</button><button class="btn pri" data-t="2">Start T2</button><button class="btn pri" data-t="3">Start T3</button><button class="btn" id="tsR">Reset</button></div><div id="tsOut"></div></div></div>
+`,root=>{
+  const cs=()=>{const ops=parseSched($('#csIn').value);if(!ops.length){$('#csOut').innerHTML='<p class="msg">Enter operations such as R1(A) W2(A).</p>';return;}
+    const T=[...new Set(ops.map(o=>o.t))].sort(),E=new Map();
+    for(let i=0;i<ops.length;i++)for(let j=i+1;j<ops.length;j++){const a=ops[i],b=ops[j];if(a.t!==b.t&&a.x===b.x&&(a.op==='W'||b.op==='W')){const k=a.t+'>'+b.t;if(!E.has(k))E.set(k,`${a.op}${a.t}(${a.x}) before ${b.op}${b.t}(${b.x})`);}}
+    const adj={};T.forEach(t=>adj[t]=[]);[...E.keys()].forEach(k=>{const [a,b]=k.split('>').map(Number);adj[a].push(b);});
+    const indeg={};T.forEach(t=>indeg[t]=0);T.forEach(t=>adj[t].forEach(u=>indeg[u]++));const q=T.filter(t=>!indeg[t]),order=[];
+    while(q.length){const t=q.shift();order.push(t);adj[t].forEach(u=>{if(--indeg[u]===0)q.push(u);});}
+    const ok=order.length===T.length;
+    const R=100,cx=150,cy=130,pos={};T.forEach((t,i)=>{const a=-Math.PI/2+i*2*Math.PI/T.length;pos[t]=[cx+R*Math.cos(a)*(T.length>1?1:0),cy+R*Math.sin(a)*(T.length>1?1:0)];});
+    let svg='<defs><marker id="ah" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><polygon points="0,0 10,4 0,8" fill="#c43d2f"/></marker></defs>';
+    E.forEach((_,k)=>{const [a,b]=k.split('>').map(Number),A=pos[a],B=pos[b],dx=B[0]-A[0],dy=B[1]-A[1],d=Math.hypot(dx,dy)||1,o=a<b?7:-7,ox=-dy/d*o,oy=dx/d*o;svg+=`<line x1="${A[0]+dx/d*24+ox}" y1="${A[1]+dy/d*24+oy}" x2="${B[0]-dx/d*27+ox}" y2="${B[1]-dy/d*27+oy}" stroke="#c43d2f" stroke-width="2.2" marker-end="url(#ah)"/>`;});
+    T.forEach(t=>svg+=`<circle cx="${pos[t][0]}" cy="${pos[t][1]}" r="22" class="g" style="fill:#fff"/><text class="pin" x="${pos[t][0]}" y="${pos[t][1]+5}" text-anchor="middle" font-size="14">T${t}</text>`);
+    const serial=ops.every((o,i)=>i===0||o.t===ops[i-1].t||!ops.slice(0,i).some(p=>p.t===o.t));
+    $('#csOut').innerHTML=`<div class="cols2"><div><svg viewBox="0 0 300 270" width="300" role="img" aria-label="Precedence graph">${svg}</svg></div><div><p><b>Precedence graph edges</b> (Ti → Tj means Ti must come first):</p>${E.size?`<ul>${[...E].map(([k,v])=>`<li>T${k.replace('>',' → T')} — ${v}</li>`).join('')}</ul>`:'<p class="m">No conflicts at all.</p>'}
+      <p>${ok?`<span class="pill g">conflict serializable</span> equivalent serial order: <b>${order.map(t=>'T'+t).join(' → ')}</b>`:'<span class="pill r">NOT conflict serializable</span> the graph has a cycle'}</p>${serial?'<p class="m">The schedule is already serial — no rearranging needed (the view-serializability case).</p>':''}</div></div>`;};
+  $('#csIn').oninput=cs;$$('[data-cs]',root).forEach(b=>b.onclick=()=>{$('#csIn').value=b.dataset.cs;cs();});cs();
+  const pl=()=>{const toks=[...$('#plIn').value.matchAll(/(LS|LX|U|R|W)\s*\(\s*(\w+)\s*\)/gi)].map(m=>({o:m[1].toUpperCase(),x:m[2].toUpperCase()}));if(!toks.length){$('#plOut').innerHTML='<p class="msg">Enter operations such as LX(A) W(A) U(A).</p>';return;}
+    let shrink=false,viol=-1;const chips=toks.map((t,i)=>{if(t.o==='U')shrink=true;if((t.o==='LS'||t.o==='LX')&&shrink&&viol<0)viol=i;return `<div class="chip ${shrink?'':'o'}" style="${viol===i?'background:var(--red2);border-color:var(--red)':''}">${t.o}(${t.x})<small>${viol===i?'lock after unlock!':shrink?'shrinking':'growing'}</small></div>`;});
+    const lastOp=toks.map((t,i)=>t.o==='R'||t.o==='W'?i:-1).reduce((a,b)=>Math.max(a,b),-1),firstOp=toks.findIndex(t=>t.o==='R'||t.o==='W');
+    const ok2=viol<0,xl=new Set(toks.filter(t=>t.o==='LX').map(t=>t.x));
+    const strict=ok2&&toks.every((t,i)=>t.o!=='U'||!xl.has(t.x)||i>lastOp),rig=ok2&&toks.every((t,i)=>t.o!=='U'||i>lastOp),cons=ok2&&toks.every((t,i)=>!(t.o==='LS'||t.o==='LX')||i<firstOp||firstOp<0);
+    const row=(n,v)=>`<tr><td class="l">${n}</td><td class="${v?'good':'bad'}">${v?'✓ yes':'✗ no'}</td></tr>`;
+    $('#plOut').innerHTML=`<div class="chips">${chips.join('')}</div><div class="scroll"><table class="t"><tr><th class="l">Check</th><th>Result</th></tr>${row('Two-phase locking (no lock after the first unlock)',ok2)}${row('Strict 2PL (exclusive locks released only after the last read/write)',strict)}${row('Rigorous 2PL (no lock released before the last read/write)',rig)}${row('Conservative 2PL (all locks taken before the first read/write)',cons)}</table></div>`;};
+  $('#plIn').oninput=pl;$$('[data-pl]',root).forEach(b=>b.onclick=()=>{$('#plIn').value=b.dataset.pl;pl();});pl();
+  let ts=[];const tsd=()=>{$('#tsOut').innerHTML=ts.length?htmlTable(['Transaction','Timestamp (T)','Priority'],ts.map((t,i)=>['T'+t,i+1,i===0?'oldest — runs first':'younger — waits if it conflicts with an older one']))+`<p class="m">Order of execution on a conflict: ${ts.map(t=>'T'+t).join(' → ')} (smaller timestamp first).</p>`:'<p>Press the “Start” buttons in any order — each transaction gets the next timestamp as it starts.</p>';};
+  $$('[data-t]',root).forEach(b=>b.onclick=()=>{const n=+b.dataset.t;if(!ts.includes(n))ts.push(n);tsd();});$('#tsR').onclick=()=>{ts=[];tsd();};tsd();
+});
+
+/* ================= 14 NOSQL ================= */
+section('nosql','NoSQL',`
+<ul><li><b>NoSQL</b> — not in SQL; a <b>non-relational</b> database that stores data <b>without a structured form</b>. Data is stored by <b>scaling</b> it.</li><li><b>Horizontal scaling</b> — adding <b>new server machines</b> alongside the existing servers.</li><li><b>Vertical scaling</b> — adding <b>more hardware / storage</b> (RAM, hard disk …) to an existing server.</li></ul>
+<div class="tool"><div class="th">Scaling</div><div class="tb"><div class="row"><button class="btn pri" id="scH">Horizontal: add a server</button><button class="btn pri" id="scV">Vertical: add RAM / disk</button><button class="btn" id="scR">Reset</button></div><svg id="scSvg" viewBox="0 0 540 170" width="540" role="img" aria-label="Scaling"></svg><p class="m" id="scMsg"></p></div></div>
+<h3>Types of NoSQL databases</h3>
+<div class="tool"><div class="th">The same student, four ways</div><div class="tb"><div id="nsTabs"></div><div id="nsBody"></div></div></div>
+<h3>Comparison</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Feature</th><th>Document based</th><th>Key-value based</th><th>Column based</th><th>Graph based</th></tr>
+<tr><td class="l">Data model</td><td>JSON</td><td>Key–value pair</td><td>Column instead of row</td><td>Nodes &amp; edges</td></tr>
+<tr><td class="l">Best use</td><td>Semi-structured data</td><td>Fast look-up &amp; caching</td><td>Analytics &amp; big data</td><td>Relationship-heavy data</td></tr>
+<tr><td class="l">Query performance</td><td>Moderate</td><td>Fast</td><td>High for analytics</td><td>Optimised for relationships</td></tr>
+<tr><td class="l">Schema</td><td>Flexible</td><td>Dynamic</td><td>Semi-structured</td><td>Schema-less</td></tr>
+<tr><td class="l">Scalability</td><td>Horizontal</td><td>High, horizontal</td><td>Highly scalable</td><td>Scales with relationships</td></tr></table></div>
+`,root=>{
+  let h=1,v=1;
+  const sc=()=>{let o='';for(let i=0;i<h;i++)o+=svgBox(20+i*70,80,60,50,'Server',i===h-1&&h>1,11);
+    const ht=40+v*18;o+=`<rect class="g" x="400" y="${130-ht}" width="110" height="${ht}" style="fill:#e8eaf6"/><text class="pin" x="455" y="${130-ht/2+4}" text-anchor="middle">1 server</text><text class="pin" x="455" y="148" text-anchor="middle" font-size="11">RAM/disk ×${v}</text>`;
+    o+=`<text class="pin" x="20" y="150" font-size="11">${h} server machine${h>1?'s':''}</text>`;$('#scSvg').innerHTML=o;$('#scMsg').textContent=`Horizontal: ${h} server(s) share the load.   Vertical: one server with ${v}× the hardware.`;};
+  $('#scH').onclick=()=>{h=Math.min(5,h+1);sc();};$('#scV').onclick=()=>{v=Math.min(5,v+1);sc();};$('#scR').onclick=()=>{h=1;v=1;sc();};sc();
+  const G=`<svg viewBox="0 0 400 190" width="400" role="img" aria-label="Graph database"><g stroke="#15233b" stroke-width="1.8"><line x1="200" y1="95" x2="70" y2="40"/><line x1="200" y1="95" x2="330" y2="40"/><line x1="200" y1="95" x2="70" y2="150"/><line x1="200" y1="95" x2="330" y2="150"/></g>${[['Std',200,95],['S.No.',70,40],['Sname',330,40],['DoB',70,150],['S-Add',330,150]].map(([t,x,y])=>`<ellipse cx="${x}" cy="${y}" rx="38" ry="20" class="g" style="${t==='Std'?'fill:#fff0c9':''}"/><text class="pin" x="${x}" y="${y+4}" text-anchor="middle">${t}</text>`).join('')}</svg>`;
+  const TY=[['Document based','JSON format — e.g. MongoDB, CouchDB, Firebase.',()=>`<pre class="code">${esc('{ "S.No": 101,\n  "Sname": "Asha",\n  "DoB": "2008-04-12",\n  "S-Add": "Jaipur" }')}</pre>`],
+    ['Key-value based','Key–value pairs — e.g. Amazon DynamoDB, Redis, Memcached.',()=>`<pre class="code">${esc('"std:101:name"  → "Asha"\n"std:101:dob"   → "2008-04-12"\n"std:101:addr"  → "Jaipur"')}</pre>`],
+    ['Wide / column based','Like an RDBMS but data is stored in <b>columns instead of rows</b> — e.g. Apache Cassandra, HBase, Google Bigtable; used in Netflix, Facebook etc.',()=>`<div class="cols2"><div><b>Row-oriented (RDBMS)</b><pre class="code">${esc('101, Asha, 11, 12000\n102, Ravi, 11, 15000\n103, Seeta, 12, 15000')}</pre></div><div><b>Column-oriented</b><pre class="code">${esc('Id:    101, 102, 103\nName:  Asha, Ravi, Seeta\nClass: 11, 11, 12\nFee:   12000, 15000, 15000')}</pre></div></div><p>“Average fee” reads only the <b>Fee</b> column — fast for analytics.</p>`],
+    ['Graph based','Data stored as <b>nodes and edges</b> — e.g. Amazon Neptune, ArangoDB, Neo4j.',()=>G]];
+  Tabs($('#nsTabs'),TY.map(t=>t[0]),k=>{$('#nsBody').innerHTML=`<p>${TY[k][1]}</p>${TY[k][2]()}`;});
+});
+
+/* ================= 15 ACID ================= */
+section('acid','ACID properties',`
+<p class="lead">A <b>transaction</b> must be Atomic, Consistent, Isolated and Durable.</p>
+<ul><li><b>Atomicity</b> — either <b>all or none</b>: the transaction executes completely or no part of it executes.</li><li><b>Consistency</b> — the <b>total amount before the transaction starts and after it ends remains the same</b>.</li><li><b>Isolation</b> — parallel (concurrent) transactions run in a way that is <b>equivalent to some serial order</b>, so no inconsistency occurs.</li><li><b>Durability</b> — once changes are <b>committed</b> they are permanent, even after hardware or software failure.</li></ul>
+<div class="tool"><div class="th">Atomicity and consistency — transfer money from A to B</div><div class="tb">
+<div class="row"><label for="acAmt">Amount</label><input type="text" id="acAmt" value="500" size="6"><label><input type="checkbox" id="acTx" checked> use a transaction (atomic)</label><label><input type="checkbox" id="acCr"> crash after A is debited</label><button class="btn pri" id="acGo">Run transfer</button><button class="btn" id="acR">Reset</button></div>
+<div id="acOut"></div></div></div>
+<div class="tool"><div class="th">Durability — commit, then crash</div><div class="tb"><div class="row"><button class="btn pri" id="duUp">Update (A = 500, B = 4500)</button><button class="btn pri" id="duCm">COMMIT</button><button class="btn pri" id="duCr">Power failure</button><button class="btn" id="duR">Reset</button></div><div id="duOut"></div></div></div>
+<div class="tool"><div class="th">Isolation — two users withdraw from account A (starts at 1000)</div><div class="tb"><div id="isTabs"></div><div id="isOut"></div><div class="row"><button class="btn pri" id="isNext">Next step</button><button class="btn" id="isR">Restart</button></div></div></div>
+`,root=>{
+  let A,B,log;const rs=()=>{A=1000;B=4000;log='';ac();};
+  const ac=()=>{$('#acOut').innerHTML=htmlTable(['Account','Balance'],[['A',A],['B',B],['Total',A+B]],{cell:(v,i,j)=>i===2&&j===1?(v===5000?'good':'bad'):''})+(log||'')+`<p class="m" style="font-size:13.5px">The total must stay <b>5000</b> (the notes' example: A = 1000, B = 4000, transfer 500).</p>`;};
+  $('#acGo').onclick=()=>{const amt=+$('#acAmt').value||0,tx=$('#acTx').checked,cr=$('#acCr').checked;const a0=A,b0=B;A-=amt;
+    if(cr){if(tx){A=a0;B=b0;log='<div class="okm">Crash! The transaction was not committed, so the DBMS rolled it back — A and B are exactly as before. <b>Atomicity</b>: all or none.</div>';}else log='<div class="err">Crash after the debit and no transaction: A lost the money but B never received it. The total is no longer 5000 — consistency is broken.</div>';}
+    else{B+=amt;log=`<div class="okm">Transfer completed${tx?' and committed':''}. Total unchanged → consistent.</div>`;}ac();};
+  $('#acR').onclick=rs;rs();
+  let mem,disk,dmsg;const du=()=>{$('#duOut').innerHTML=htmlTable(['','A','B'],[['In memory (uncommitted)',mem[0],mem[1]],['On disk (committed)',disk[0],disk[1]]])+(dmsg||'');};
+  const dr=()=>{mem=[1000,4000];disk=[1000,4000];dmsg='';du();};
+  $('#duUp').onclick=()=>{mem=[500,4500];dmsg='';du();};$('#duCm').onclick=()=>{disk=mem.slice();dmsg='<div class="okm">COMMIT: the change is now permanent in the database.</div>';du();};
+  $('#duCr').onclick=()=>{const kept=disk.slice();mem=kept.slice();dmsg=(kept[0]===500)?'<div class="okm">Power failure! The change had been committed, so it is still there: <b>durability</b>.</div>':'<div class="err">Power failure! The change was never committed, so it is lost — only committed data is guaranteed.</div>';du();};
+  $('#duR').onclick=dr;dr();
+  let mode=0,step=0;const S0=[['T1 reads A','1000','T1: A = 1000'],['T2 reads A','1000','T2: A = 1000'],['T1 writes A = A − 100','900','A = 900'],['T2 writes A = A − 200','800','A = 800 — T1’s update is lost!']],
+    S1=[['T1 reads A','1000','T1: A = 1000'],['T1 writes A = A − 100','900','A = 900'],['T1 commits (lock released)','900','committed'],['T2 reads A','900','T2: A = 900'],['T2 writes A = A − 200','700','A = 700']];
+  const is=()=>{const S=mode?S1:S0;$('#isOut').innerHTML=htmlTable(['Step','Action','Account A'],S.slice(0,step).map((s,i)=>[i+1,s[0],s[2]]),{cell:(v,i,j)=>(!mode&&step===S.length&&i===S.length-1&&j===2)?'bad':(mode&&step===S.length&&i===S.length-1&&j===2)?'good':''})+(step===S.length?(mode?'<div class="okm">With isolation the result equals the serial order T1 then T2: 1000 − 100 − 200 = <b>700</b> ✓.</div>':'<div class="err">Without isolation the final balance is 800, but two withdrawals (100 + 200) should leave 700. Inconsistent data.</div>'):'');};
+  Tabs($('#isTabs'),['Without isolation (interleaved)','With isolation (serial equivalent)'],k=>{mode=k;step=0;is();});
+  $('#isNext').onclick=()=>{const S=mode?S1:S0;step=Math.min(S.length,step+1);is();};$('#isR').onclick=()=>{step=0;is();};
+});
+
+/* ================= CORRECTIONS ================= */
+section('fixes','Clarifications',`
+<p>While typing up the handwritten notes these points were clarified or corrected.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Topic</th><th class="l">Handwritten notes</th><th class="l">Here</th></tr>
+<tr><td class="l">Data independence</td><td class="l">Heading says “Data Dependence”</td><td class="l">Content is data <i>independence</i></td></tr>
+<tr><td class="l">Units of data</td><td class="l">Database = “collection of fields”</td><td class="l">Kept; strictly a collection of related files / tables</td></tr>
+<tr><td class="l">ER diagram</td><td class="l">Dashed / solid ellipses hard to tell apart</td><td class="l">Duration treated as derived</td></tr>
+<tr><td class="l">Super-key count, Q2</td><td class="l">2³ + 2³ + 2²</td><td class="l">2³ + 2³ − 2² = 12</td></tr>
+<tr><td class="l">Codd's rules</td><td class="l">Numbered (1)–(13) with a crossed-out duplicate</td><td class="l">Rule 0 – Rule 12</td></tr>
+<tr><td class="l"><b>Normalization practice questions</b></td><td class="l">2NF Q2, 3NF Q1 and BCNF Q list candidate keys that do not follow from the FDs shown</td><td class="l">The analyzer computes keys from the FDs and can give a different verdict — see the warning in chapter 10</td></tr>
+<tr><td class="l">4NF decomposition</td><td class="l">R1(SID, SName) and R2(CID, CName)</td><td class="l">They share no attribute, so joining gives every pairing (8 rows vs 4) — not lossless. A Student–Course–Hobby example is added</td></tr>
+<tr><td class="l">Non-trivial FD</td><td class="l">“x ∩ y ≠ 0”</td><td class="l">X ∩ Y = ∅</td></tr>
+<tr><td class="l">DELETE syntax; DISTINCT</td><td class="l">DELETE Student where …; “applies on first”</td><td class="l">DELETE FROM …; DISTINCT covers all selected columns</td></tr>
+<tr><td class="l">2PL advantage</td><td class="l">Deadlock avoidance</td><td class="l">Fully true only for conservative 2PL</td></tr></table></div>
+`,null);
+
+/* ================= BOOT ================= */
+(function(){
+  const nav=$('#nav'),main=$('#main');
+  nav.innerHTML=`<div class="brand"><div>DBMS<small>Interactive notes</small></div><a href="../index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
+  $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
+  $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))setOpen(false);});
+  main.innerHTML=`<header class="hero"><div class="wrap"><h1>DBMS</h1><p>Your Database Management Systems notes, made interactive: run SQL, break and fix tables, test keys and normal forms, and watch transactions at work.</p><div class="bitrow" id="heroSteps"></div><div class="heroTxt" id="heroTxt"></div></div></header>`+
+    SECTIONS.map((s,i)=>`<section class="ch" id="${s.id}"><div class="wrap"><h2><i>${i+1}</i>${s.title}</h2>${s.html}</div></section>`).join('');
+  try{heroInit();}catch(e){console.error(e);}
+  SECTIONS.forEach(s=>{if(s.init){try{s.init(document.getElementById(s.id));}catch(e){console.error('Section '+s.id,e);}}});
+  const links=$$('#navlist a'),obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('act',a.dataset.id===e.target.id));const a=$(`#navlist a[data-id="${e.target.id}"]`);$('#menuLbl').textContent=a?a.textContent.replace(/^\d+/,'').trim():'Chapters';if(a&&innerWidth>980){const t=a.offsetTop;if(t<nav.scrollTop||t>nav.scrollTop+nav.clientHeight-60)nav.scrollTop=t-80;}}});},{rootMargin:'-20% 0px -70% 0px'});
+  SECTIONS.forEach(s=>obs.observe(document.getElementById(s.id)));
+})();
+</script></body></html>

@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Operating System — Interactive Notes</title>
+<style>
+:root{--ink:#15233b;--ink2:#51607a;--paper:#f3f6f2;--grid:#e3e9e4;--panel:#fff;--teal:#0a8f7b;--teal2:#d8f1ea;--amber:#d98e04;--amber2:#fff0c9;--red:#c43d2f;--red2:#fbe3df;--blue:#2c5fb3;--blue2:#e2ebf8;--line:#b8c3bc;
+--serif:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;--ui:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;--mono:ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--serif)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+nav#nav{position:fixed;inset:0 auto 0 0;width:262px;background:#fff;border-right:1.5px solid var(--ink);overflow:auto;padding:18px 0 30px;font-family:var(--ui);z-index:5}
+nav#nav .brand{padding:0 20px 14px;font-weight:800;font-size:17px;line-height:1.2;border-bottom:1.5px solid var(--ink);margin-bottom:8px}
+nav#nav .brand small{display:block;font-weight:500;color:var(--ink2);font-size:12.5px;margin-top:4px}
+nav#nav a{display:block;padding:7px 20px 7px 17px;color:var(--ink);text-decoration:none;font-size:14.5px;border-left:3px solid transparent}
+nav#nav a:hover{background:var(--teal2)}
+nav#nav a.act{border-left-color:var(--teal);background:var(--teal2);font-weight:700}
+nav#nav a span{display:inline-block;width:22px;color:var(--ink2);font-family:var(--mono);font-size:12.5px}
+main{margin-left:262px;padding:0 0 80px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px}
+.hero{background:var(--ink);color:#fff;padding:44px 0 36px;border-bottom:6px solid var(--teal)}
+.hero h1{font:800 clamp(30px,5vw,50px)/1.05 var(--ui);margin:0 0 10px;letter-spacing:-.02em}
+.hero p{margin:0 0 22px;color:#c9d5e6;max-width:60ch;font-family:var(--ui);font-size:16px}
+.bitrow{display:flex;gap:6px;flex-wrap:wrap}
+.hero .tg{background:#22355a;color:#fff;border-color:#5b7098}
+.hero .tg.on{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.readouts div{border-top:2px solid #5b7098;padding-top:6px;font-family:var(--ui);font-size:12.5px;color:#a9b9d3}
+.readouts b{display:block;font:600 22px var(--mono);color:#fff;letter-spacing:.02em;word-break:break-all}
+section.ch{padding:56px 0 8px;scroll-margin-top:0}
+section.ch>.wrap>h2{font:800 32px/1.15 var(--ui);margin:0 0 6px;letter-spacing:-.01em}
+section.ch>.wrap>h2 i{font:500 15px var(--mono);color:var(--teal);margin-right:12px;font-style:normal}
+h3{font:700 20px/1.3 var(--ui);margin:34px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+h4{font:700 16px var(--ui);margin:22px 0 4px;color:var(--teal)}
+p{margin:.55em 0}
+ul{padding-left:1.25em;margin:.5em 0}li{margin:.2em 0}
+.lead{font-size:18.5px;color:#26354f}
+code,.m{font-family:var(--mono);font-size:.9em}
+.n{text-decoration:overline;text-decoration-thickness:1.5px}
+.tool{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;box-shadow:5px 5px 0 var(--teal2);margin:18px 0;font-family:var(--ui);font-size:15px;line-height:1.5}
+.tool>.th{background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:6px 14px;border-radius:2px 2px 0 0}
+.tool>.tb{padding:14px 16px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.tabs button,.btn,select,input[type=text]{font:600 14px var(--ui);border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:6px 11px;border-radius:3px;cursor:pointer}
+input[type=text]{cursor:text;font-family:var(--mono);font-weight:500;font-size:15px;min-width:0}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.btn:hover,.tabs button:hover{background:var(--teal2)}.tabs button[aria-selected=true]:hover{background:var(--ink)}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.row label{font-weight:600;font-size:13.5px;color:var(--ink2)}
+.tg{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:58px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;font-family:var(--mono);padding:2px 4px}
+.tg small{font:600 10.5px var(--ui);opacity:.75}.tg b{font-size:21px;line-height:1.1}
+.tg.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.led{display:inline-block;width:16px;height:16px;border-radius:50%;background:#d4dcd7;border:1.5px solid #95a39b;vertical-align:-3px}
+.led.on{background:var(--teal);border-color:var(--teal);box-shadow:0 0 0 3px var(--teal2)}
+.out{display:inline-flex;align-items:center;gap:7px;font:600 15px var(--mono);margin-right:14px}
+table.t{border-collapse:collapse;font-family:var(--mono);font-size:14px;margin:8px 0}
+table.t th,table.t td{border:1.2px solid var(--line);padding:4px 10px;text-align:center}
+table.t th{background:#e8efe9;font-family:var(--ui);font-weight:700;font-size:13px}
+table.t td.l,table.t th.l{text-align:left}
+table.t tr.hi td{background:var(--amber2);font-weight:700}
+table.t td.ok{color:var(--teal);font-weight:700}
+.scroll{overflow-x:auto}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.res button{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:6px 10px;cursor:pointer;font-family:var(--ui)}
+.res button.sel{border-color:var(--teal);background:var(--teal2)}
+.res small{display:block;color:var(--ink2);font-size:12px}.res b{font:600 16px var(--mono);word-break:break-all}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1.2px solid var(--ink);border-radius:3px;padding:2px 8px;font:600 14px var(--mono);background:#fff;text-align:center}
+.chip small{display:block;font:500 11px var(--ui);color:var(--ink2)}
+.chip.o{background:var(--amber2);border-color:var(--amber)}
+.note,.fix,.key,.eg{padding:10px 14px;margin:14px 0;border-left:4px solid;font-size:15.5px;font-family:var(--ui);line-height:1.55}
+.note{background:var(--blue2);border-color:var(--blue)}.fix{background:var(--red2);border-color:var(--red)}
+.key{background:var(--teal2);border-color:var(--teal)}.eg{background:var(--amber2);border-color:var(--amber)}
+.note b:first-child,.fix b:first-child,.key b:first-child,.eg b:first-child{margin-right:4px}
+pre.w{font:500 14.5px/1.5 var(--mono);margin:8px 0;white-space:pre;overflow-x:auto}
+svg{max-width:100%;height:auto}
+svg text{font-family:var(--ui)}
+.w{fill:none;stroke:#9aa8a1;stroke-width:2.4;stroke-linejoin:round}.w.on{stroke:var(--teal)}
+.g{fill:#fff;stroke:var(--ink);stroke-width:2}
+.pin{font:700 12px var(--ui);fill:var(--ink)}
+.dot{fill:#9aa8a1}.dot.on{fill:var(--teal)}
+.kmap{border-collapse:separate;border-spacing:0;font-family:var(--mono)}
+.kmap td,.kmap th{width:62px;height:58px;border:1.5px solid var(--ink);text-align:center;padding:0;position:relative}
+.kmap th{background:#e8efe9;width:auto;height:auto;font:700 13px var(--mono);padding:4px 8px;border-width:1.5px}
+.kmap th.corner{background:#fff;border:none;font-size:12px;text-align:right}
+.kmap button{all:unset;display:block;width:100%;height:100%;cursor:pointer;font:700 22px var(--mono);position:relative}
+.kmap button small{position:absolute;right:4px;top:2px;font:500 10px var(--mono);color:#7b8a83}
+.kmap button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}
+.kmap td.hl{outline:4px solid var(--amber);outline-offset:-4px;z-index:2}
+.kmap .dots{position:absolute;left:3px;bottom:3px;display:flex;gap:2px}
+.kmap .dots i{width:9px;height:9px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.35)}
+.kmap .v0{color:#9aa8a1;font-weight:500}.kmap .v1{color:var(--ink)}.kmap .vx{color:var(--amber)}
+.leg{list-style:none;padding:0;margin:8px 0;font-family:var(--ui)}
+.leg li{display:flex;gap:10px;align-items:center;padding:4px 6px;border-radius:3px;cursor:default}
+.leg li:hover{background:var(--amber2)}
+.leg i{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.35)}
+.big{font:700 22px var(--mono);padding:8px 12px;background:var(--teal2);border-left:4px solid var(--teal);margin:8px 0;overflow-x:auto}
+.fam ul{list-style:none;padding-left:1.1em;border-left:2px solid var(--ink);margin:2px 0 2px .4em}
+.fam>ul{border:0;padding:0;margin:0}.fam li{margin:4px 0;font-family:var(--ui);font-size:15px}
+.fam li b{background:var(--ink);color:#fff;padding:1px 9px;border-radius:3px;font-size:14px}
+.fam li.leaf b{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.msg{font-weight:700;color:var(--red);min-height:1.4em}
+.mini{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.mini figure{margin:0;text-align:center;font:13px var(--ui);color:var(--ink2)}
+.ff{display:flex;gap:6px;margin:10px 0}
+.ffb{border:2px solid var(--ink);min-width:62px;text-align:center;padding:6px 4px;background:#fff;font-family:var(--mono);border-radius:3px;transition:background .15s}
+.ffb small{display:block;font:600 11px var(--ui);color:var(--ink2)}.ffb b{font-size:26px}
+.ffb.on{background:var(--teal);color:#fff;border-color:var(--teal)}.ffb.on small{color:#d8f1ea}
+.ffb.flash{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.menu-btn{display:none}
+.kmap.sm td{width:44px;height:42px}.kmap.sm button{font-size:16px}.kmap.sm th{font-size:11px;padding:2px 5px}.kmap.sm button small{font-size:8.5px}
+.menu-btn{display:none}
+@media (max-width:980px){
+ nav#nav{position:fixed;inset:0 0 auto 0;width:auto;height:auto;max-height:100vh;overflow:visible;padding:0;border-right:0;border-bottom:1.5px solid var(--ink);display:block}
+ nav#nav .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 6px 14px;margin:0;border-bottom:0;font-size:15px}
+ nav#nav .brand small{display:none}
+ .menu-btn{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--ui);background:var(--ink);color:#fff;border:0;border-radius:3px;padding:9px 13px;min-height:40px;cursor:pointer}
+ #navlist{display:none;max-height:calc(100vh - 58px);overflow-y:auto;border-top:1.5px solid var(--ink);background:#fff;-webkit-overflow-scrolling:touch}
+ nav#nav.open #navlist{display:block}
+ nav#nav a{padding:13px 18px;border-bottom:1px solid #e3e9e4;font-size:16px}
+ main{margin-left:0;padding-top:52px}.wrap{padding:0 16px}
+ section.ch{scroll-margin-top:56px}
+ .kmap td{width:50px;height:50px}
+ .hero{padding-top:28px}
+}
+@media print{nav#nav{display:none}main{margin:0}.tool{break-inside:avoid}}
+.home-link{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;font:700 13px var(--ui);color:var(--teal);background:var(--teal2);border:1.5px solid var(--teal);border-radius:3px;text-decoration:none;transition:all .2s;margin-left:auto;}
+.home-link:hover{background:var(--teal);color:#fff;}
+.null{color:#9aa8a1;font-style:italic}
+td.bad{background:var(--red2)!important;color:var(--red);font-weight:700}td.good{background:var(--teal2)!important}
+td.lock{background:var(--amber2)!important}
+textarea.sql{width:100%;min-height:150px;font:500 14.5px/1.5 var(--mono);border:1.5px solid var(--ink);border-radius:3px;padding:10px;resize:vertical;background:#fbfcfb;color:var(--ink)}
+.err{background:var(--red2);border-left:4px solid var(--red);padding:8px 12px;margin:8px 0;font:600 14px var(--mono);white-space:pre-wrap}
+.okm{background:var(--teal2);border-left:4px solid var(--teal);padding:8px 12px;margin:8px 0;font:600 14px var(--ui)}
+pre.code{background:#f1f4f2;border:1px solid var(--line);border-left:4px solid var(--ink);padding:10px 12px;margin:8px 0;font:500 13.5px/1.55 var(--mono);overflow-x:auto;white-space:pre}
+details.acc{border:1.5px solid var(--ink);border-radius:3px;margin:8px 0;background:#fff;font-family:var(--ui)}
+details.acc>summary{cursor:pointer;padding:9px 14px;font-weight:700;font-size:15px;list-style:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::before{content:'+';display:inline-block;width:20px;color:var(--teal);font-family:var(--mono)}
+details.acc[open]>summary::before{content:'−'}
+details.acc[open]>summary{background:var(--teal2);border-bottom:1.5px solid var(--ink)}
+details.acc>div{padding:8px 16px 12px;font-size:15px}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.cols2>div{min-width:0}
+.pill{display:inline-block;padding:1px 9px;border-radius:12px;font:700 12px var(--ui);background:var(--ink);color:#fff;margin:0 4px 2px 0}
+.pill.g{background:var(--teal)}.pill.r{background:var(--red)}.pill.a{background:var(--amber);color:var(--ink)}
+.sel{cursor:pointer}.sel:hover td{background:var(--amber2)}
+tr.pick td{background:var(--teal2)!important;font-weight:700}
+.stepbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.stepbar span{padding:4px 11px;border:1.5px solid var(--line);border-radius:14px;font:600 13px var(--ui);color:var(--ink2)}
+.stepbar span.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.hero .tg{min-width:auto;height:46px;padding:0 14px;flex-direction:row;font:700 15px var(--ui)}
+.hero .arrowx{color:#5b7098;align-self:center;font-weight:700}
+.heroTxt{margin-top:16px;min-height:3.2em;font-family:var(--ui);color:#e3ebf7;font-size:16px;max-width:62ch}
+.flow{stroke-dasharray:6 6;animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-12}}
+.bit{display:inline-block;width:19px;text-align:center;font:600 13px var(--mono);border:1px solid var(--line);margin:1px;border-radius:2px;background:#fff}.bit.f{background:var(--amber2);border-color:var(--amber)}.bit.n{background:var(--blue2);border-color:var(--blue)}.bit.h{background:var(--teal2);border-color:var(--teal)}
+.oct{display:inline-block;margin:2px 6px 2px 0;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Chapters"></nav>
+<main id="main"></main>
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const SECTIONS=[];
+function section(id,title,html,init){SECTIONS.push({id,title,html,init});}
+function Tabs(el,names,cb,start=0){
+  el.classList.add('tabs');el.setAttribute('role','tablist');
+  const draw=i=>{el.innerHTML=names.map((n,k)=>`<button role="tab" aria-selected="${k===i}" data-k="${k}">${n}</button>`).join('');};
+  el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;draw(k);cb(k);};
+  draw(start);cb(start);
+}
+function Toggles(el,labels,init,cb){
+  let v=init.slice(),last=-1;
+  const draw=()=>{el.innerHTML=labels.map((l,i)=>`<button class="tg ${v[i]?'on':''}" data-i="${i}" aria-pressed="${!!v[i]}"><small>${l}</small><b>${v[i]}</b></button>`).join('');
+    if(last>=0){const b=el.querySelector(`[data-i="${last}"]`);b&&b.focus();}};
+  el.classList.add('bitrow');
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;const i=+b.dataset.i;v[i]^=1;last=i;draw();cb(v);};
+  draw();cb(v);return {get:()=>v,set:nv=>{v=nv.slice();draw();cb(v);}};
+}
+const cell=v=>v===null||v===undefined?'<span class="null">NULL</span>':esc(v);
+function htmlTable(cols,rows,o={}){
+  return `<div class="scroll"><table class="t"><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr class="${o.row&&o.row(r,i)||''}">${r.map((v,j)=>`<td class="${o.cell&&o.cell(v,i,j)||''}">${o.raw?v:cell(v)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+}
+const gotoId=id=>{const e=document.getElementById(id);e&&e.scrollIntoView({behavior:'smooth'});};
+const svgBox=(x,y,w,h,label,on,sz=13)=>`<rect class="g" x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="${on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.6':''}"/><text class="pin" x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" style="font-size:${sz}px">${label}</text>`;
+const wire=(pts,on,dash)=>`<polyline class="w ${on?'on':''}" ${dash?'stroke-dasharray="5 4"':''} points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+const arrowHead=(x,y,dir,on)=>{const c=on?'#0a8f7b':'#9aa8a1';const p={d:`${x},${y} ${x-6},${y-9} ${x+6},${y-9}`,u:`${x},${y} ${x-6},${y+9} ${x+6},${y+9}`,r:`${x},${y} ${x-9},${y-6} ${x-9},${y+6}`,l:`${x},${y} ${x+9},${y-6} ${x+9},${y+6}`}[dir];return `<polygon points="${p}" fill="${c}"/>`;};
+const SQLT=(t)=>`<span class="m">${esc(t)}</span>`;
+
+const nodeBox=(x,y,t,o={})=>`<g ${o.k!==undefined?`data-k="${o.k}" style="cursor:pointer"`:''}><rect class="g" x="${x-(o.w||40)/2}" y="${y-(o.h||24)/2}" width="${o.w||40}" height="${o.h||24}" rx="3" style="${o.bad?'fill:#fbe3df;stroke:#c43d2f;stroke-width:2.6':o.on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.4':o.fill?'fill:'+o.fill:''}"/><text class="pin" x="${x}" y="${y+4}" text-anchor="middle" font-size="${o.sz||11}">${t}</text></g>`;
+const quiz=(id,items,opts)=>{
+  const R=$('#'+id);R.innerHTML=items.map((q,i)=>`<div class="row"><span style="flex:1 1 340px">${q[0]}</span><select data-i="${i}"><option value="">choose…</option>${opts.map(o=>`<option>${o}</option>`).join('')}</select><span id="${id}r${i}"></span></div>`).join('')+`<div class="row"><button class="btn pri" id="${id}c">Check answers</button></div><p class="big" id="${id}o" style="font-size:16px"></p>`;
+  $('#'+id+'c').onclick=()=>{let ok=0;items.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,R).value;if(v===q[1]){ok++;$('#'+id+'r'+i).innerHTML='<span class="pill g">✓</span>';}else $('#'+id+'r'+i).innerHTML=v?'<span class="pill r">✗</span>':'';});$('#'+id+'o').textContent=`Score: ${ok} / ${items.length}`;};
+};
+const HERO=[['Hardware','The physical machine — CPU, memory, disk, devices.'],['Kernel','The internal layer and core of the OS; it interacts with the hardware.'],['Shell','The outer layer; the user interfaces with the OS through it.'],['User','Gives commands (CLI) or clicks (GUI); the OS is the bridge to the hardware and application software.']];
+function heroInit(){const el=$('#heroSteps'),tx=$('#heroTxt');let cur=3;const draw=()=>{el.innerHTML=HERO.map((h,i)=>`<button class="tg ${i===cur?'on':''}" data-i="${i}">${h[0]}</button>${i<3?'<span class="arrowx">→</span>':''}`).join('');tx.innerHTML=`<b>${HERO[cur][0]}.</b> ${HERO[cur][1]}`;};el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;cur=+b.dataset.i;draw();};draw();}
+
+/* ============ 1 BASICS ============ */
+section('basics','OS basics',`
+<p class="lead">The operating system is a <b>link between the user and the hardware</b>. It acts as a <b>bridge</b> so the user and hardware, and the user and application software, can communicate.</p>
+<h3>Parts of the OS — shell and kernel</h3>
+<div class="tool"><div class="th">Click a layer</div><div class="tb"><div class="cols2"><svg id="lyS" viewBox="0 0 260 230" width="260" role="img" aria-label="Shell, kernel, hardware"></svg><div id="lyT"></div></div></div></div>
+<h3>Single-user and multi-user</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Type</th><th class="l">Meaning</th><th class="l">Examples</th></tr><tr><td class="l"><b>SUI</b> — Single User Interface</td><td class="l">Only one user can work at a time</td><td class="l">Android, MS-DOS, iOS</td></tr><tr><td class="l"><b>MUI</b> — Multiple User Interface</td><td class="l">More than one user can work at the same time</td><td class="l">Linux, Unix</td></tr></table></div>
+<h3>CLI and GUI</h3>
+<ul><li><b>CUI / CLI</b> (character user interface / command line interface): the related command must be typed. e.g. MS-DOS, Unix.</li><li><b>GUI</b> (graphical user interface): a graphical tool is used. For an OS to count as a GUI it must follow 4 conditions — <b>WIMP</b>.</li></ul>
+<div class="tool"><div class="th">Is it a GUI?</div><div class="tb"><div id="wmT"></div><div id="wmO"></div></div></div>
+<div class="tool"><div class="th">Quiz</div><div class="tb"><div id="bqL"></div></div></div>
+`,root=>{
+  const L=[['Shell','Outer layer — the user interface. The user interfaces with this layer.','#e8eaf6'],['Kernel','Internal layer of the OS; interacts with the hardware; the core of the OS.','#fff8e1'],['Hardware','The physical machine the kernel controls.','#fff']];let sel=0;
+  const ly=()=>{$('#lyS').innerHTML=[[110,0],[75,1],[38,2]].map(([r,i])=>`<g data-i="${i}" style="cursor:pointer"><circle cx="150" cy="115" r="${r}" class="g" style="fill:${L[i][2]};${i===sel?'stroke:#d98e04;stroke-width:3.5':''}"/></g>`).join('')+`<text class="pin" x="150" y="${115-92}" text-anchor="middle">SHELL</text><text class="pin" x="150" y="${115-52}" text-anchor="middle">Kernel</text><text class="pin" x="150" y="119" text-anchor="middle">Hardware</text><rect class="g" x="2" y="100" width="46" height="28" style="fill:#d8f1ea"/><text class="pin" x="25" y="118" text-anchor="middle">User</text><line x1="48" y1="114" x2="100" y2="114" stroke="#0a8f7b" stroke-width="2"/>`;$('#lyT').innerHTML=`<h4 style="margin-top:0">${L[sel][0]}</h4><p>${L[sel][1]}</p>`;$$('#lyS g[data-i]').forEach(g=>g.onclick=()=>{sel=+g.dataset.i;ly();});};ly();
+  Toggles($('#wmT'),['Window','Icon','Menus','Pointer'],[1,1,1,0],v=>{const m=['Window','Icon','Menus','Pointer'].filter((_,i)=>!v[i]);$('#wmO').innerHTML=m.length?`<div class="err"><b>Not a GUI</b> — missing: ${m.join(', ')}. All four WIMP conditions must be met.</div>`:'<div class="okm"><b>GUI</b> — Window, Icon, Menus and Pointer are all present. e.g. Android, MS Windows, iOS, Macintosh.</div>';});
+  quiz('bqL',[['The core layer that talks to the hardware','Kernel'],['The layer the user interacts with','Shell'],['Linux and Unix allow many users at once','MUI'],['MS-DOS: commands are typed','CLI'],['Window, icon, menus, pointer','GUI']],['Kernel','Shell','MUI','SUI','CLI','GUI']);
+});
+
+/* ============ 2 FUNCTIONS ============ */
+const FN=[['Process management',['Create and delete processes.','Schedule CPU time for all available processes in memory — <b>process scheduling</b>.']],['File management',['Create, delete and retrieve files.','e.g. Rashi.txt = file name + extension. File systems: FAT, NTFS, APFS, HFS, exFAT, … ZFS.']],['Memory management',['Memory <b>allocation and deallocation</b>.','Strategies: best fit, first fit, worst fit (try the lab below).']],['Security management',['Security of the system; preventing unauthorized access.','Passwords for files, folders and system entry.']],['I/O management',['Manages input–output devices and operations through its module.']],['Integrated management',['Data is managed in an integrated form so the working of one data does not disturb the processing time of another.']],['Command management',['The OS responds to the command / instruction given by the user.']],['Disk management',['Manages secondary memory / storage / hard disk.']],['Error management',['Manages errors in the computer system. e.g. the printer runs out of paper.']]];
+section('funcs','Functions of the OS',`
+<div class="tool"><div class="th">The nine functions</div><div class="tb"><div id="fnT"></div><div id="fnB"></div></div></div>
+<h3>Memory allocation — first fit, best fit, worst fit</h3>
+<ul><li><b>First fit</b>: the first free block that is big enough.  <b>Best fit</b>: the smallest free block that is big enough.  <b>Worst fit</b>: the largest free block.</li></ul>
+<div class="tool"><div class="th">Place a process in memory</div><div class="tb"><div class="row"><label for="mmP">Process size (MB)</label><input type="text" id="mmP" value="3" size="4"><button class="btn pri" id="mmA">Allocate</button><button class="btn" id="mmR">Reset memory</button></div><div id="mmT"></div><svg id="mmS" viewBox="0 0 560 130" width="560" role="img" aria-label="Memory blocks"></svg><div id="mmO"></div></div></div>
+<div class="tool"><div class="th">Which function is it?</div><div class="tb"><div id="fqL"></div></div></div>
+`,root=>{
+  Tabs($('#fnT'),FN.map((f,i)=>`${i+1}. ${f[0]}`),k=>{$('#fnB').innerHTML=`<ul>${FN[k][1].map(x=>`<li>${x}</li>`).join('')}</ul>`;});
+  const B0=()=>[[10,0],[20,0],[20,1],[4,1],[6,0],[30,0],[8,1]];let B=B0(),st=0;
+  const pick=(s,p)=>{const f=B.map((b,i)=>[b[0],b[1],i]).filter(b=>!b[1]&&b[0]>=p);if(!f.length)return -1;return s===0?f[0][2]:s===1?f.reduce((a,b)=>b[0]<a[0]?b:a)[2]:f.reduce((a,b)=>b[0]>a[0]?b:a)[2];};
+  const mm=()=>{const p=+$('#mmP').value||0,ch=pick(st,p);let o='',x=10;B.forEach((b,i)=>{const w=40+b[0]*11;o+=`<rect x="${x}" y="30" width="${w}" height="46" class="g" style="fill:${b[1]?'#e0e0e0':i===ch?'#d8f1ea':'#fff'};${i===ch?'stroke:#0a8f7b;stroke-width:3':''}"/><text class="pin" x="${x+w/2}" y="58" text-anchor="middle">${b[0]} MB</text><text class="pin" x="${x+w/2}" y="96" text-anchor="middle" font-size="10" style="fill:${b[1]?'#c43d2f':'#2e7d32'}">${b[1]?'filled':'free'}</text>`;x+=w;});$('#mmS').innerHTML=o;
+    $('#mmO').innerHTML=htmlTable(['Strategy','Chooses','Block for '+p+' MB'],[0,1,2].map(s=>[['First fit','Best fit','Worst fit'][s],['first free block that fits','smallest free block that fits','largest free block'][s],pick(s,p)<0?'none fits':B[pick(s,p)][0]+' MB (block '+(pick(s,p)+1)+')']),{row:(r,i)=>i===st?'hi':''});};
+  Tabs($('#mmT'),['First fit','Best fit','Worst fit'],k=>{st=k;mm();});$('#mmP').oninput=mm;$('#mmA').onclick=()=>{const c=pick(st,+$('#mmP').value||0);if(c>=0)B[c][1]=1;mm();};$('#mmR').onclick=()=>{B=B0();mm();};
+  quiz('fqL',[['Passwords protect files, folders and system entry','Security management'],['Creating, deleting and retrieving files','File management'],['Allocating and freeing RAM','Memory management'],['Telling the user the printer is out of paper','Error management'],['Deciding which process gets the CPU','Process management'],['Managing the hard disk','Disk management'],['Managing keyboards, printers and their operations','I/O management']],FN.map(f=>f[0]));
+});
+
+/* ============ 3 TYPES OF OS ============ */
+const TY=[['Batch processing',['A <b>serial OS</b>: the same type of jobs are processed together in a single batch instead of separately.','No direct connectivity between the user and the system — an <b>offline</b> processing system.','Used in mainframes / where large data is handled; all jobs processed sequentially.']],['Multitasking',['Handles <b>multiple tasks at the same time</b>; while one task executes the OS can allocate resources to another — <b>time slicing</b>.','e.g. Android, Windows. CPU time is divided among tasks.']],['Multiprogramming',['<b>Several programs are in memory</b> at once but only one uses the CPU at a time.','Minimizes CPU idle time; e.g. Linux. Because of multiprogramming, multitasking is possible.']],['Multiprocessing',['A system uses <b>multiple CPUs</b> to process tasks simultaneously.','<b>Symmetric</b>: all CPUs have equal access.  <b>Asymmetric</b>: one CPU is primary, the others secondary.']],['Real-time (RTOS)',['Manages real-time applications; <b>time-critical</b> — must complete within a specific timeframe.']],['Time-sharing',['One CPU is shared among multiple processes; each gets a short <b>time slice / quantum</b>, then goes to the <b>ready</b> state to wait for its next slice.']],['Distributed',['<b>Multiple independent computers</b> connected / integrated to work as a single system. e.g. Facebook, Instagram, Google.']]];
+section('types','Types of OS',`
+<div class="tool"><div class="th">Seven techniques of OS</div><div class="tb"><div id="tyT"></div><div id="tyB"></div></div></div>
+<h3>Hard vs soft real-time</h3>
+<div class="tool"><div class="th">A deadline is missed…</div><div class="tb"><div id="rtT"></div><div id="rtB"></div></div></div>
+<div class="tool"><div class="th">Which type of OS fits?</div><div class="tb"><div id="tqL"></div></div></div>
+`,root=>{
+  Tabs($('#tyT'),TY.map(t=>t[0]),k=>{$('#tyB').innerHTML=`<ul>${TY[k][1].map(x=>`<li>${x}</li>`).join('')}</ul>`;});
+  Tabs($('#rtT'),['Hard RTOS','Soft RTOS'],k=>{const H=k===0;$('#rtB').innerHTML=htmlTable(['Feature','Value'],[['Deadline',H?'Strict':'Flexible'],['Impact of a missed deadline',H?'<b>System fails</b>':'System does not fail — only performance is affected'],['Examples',H?'Medical devices, aviation, nuclear':'Live streaming, online gaming'],['Response time',H?'Deterministic':'Non-deterministic'],['Use case',H?'Systems that are time-critical':'Not time-critical']],{raw:true});});
+  quiz('tqL',[['Payroll jobs collected and run overnight with no user interaction','Batch processing'],['A pacemaker controller with a strict deadline','Real-time (RTOS)'],['A phone running music and messages together','Multitasking'],['Several programs sit in RAM so the CPU is never idle','Multiprogramming'],['A server with two or more CPUs working together','Multiprocessing'],['Many users each get a short slice of one CPU','Time-sharing'],['Many independent computers acting as one system','Distributed']],TY.map(t=>t[0]));
+});
+/* ============ 4 SCHEDULING ============ */
+function simulate(alg,P,q){
+  const n=P.length,rem=P.map(p=>p.bt),done=Array(n).fill(false),ct=Array(n).fill(0),st=Array(n).fill(-1),segs=[];let t=0,fin=0;
+  const push=(l,a,b)=>{if(b<=a)return;const L=segs[segs.length-1];if(L&&L.l===l&&L.b===a)L.b=b;else segs.push({l,a,b});};
+  const nextAt=()=>Math.min(...P.filter((p,i)=>!done[i]&&rem[i]>0).map(p=>p.at));
+  if(alg==='RR'){const order=[...Array(n).keys()].sort((a,b)=>P[a].at-P[b].at||a-b),Q=[];let ptr=0;const adm=()=>{while(ptr<n&&P[order[ptr]].at<=t)Q.push(order[ptr++]);};
+    while(fin<n){adm();if(!Q.length){const nt=P[order[ptr]].at;push('idle',t,nt);t=nt;continue;}const i=Q.shift();if(st[i]<0)st[i]=t;const run=Math.min(q,rem[i]);push(P[i].n,t,t+run);t+=run;rem[i]-=run;adm();if(rem[i]>0)Q.push(i);else{ct[i]=t;fin++;}}}
+  else if(alg==='SRTF'){while(fin<n){const av=P.map((p,i)=>i).filter(i=>rem[i]>0&&P[i].at<=t);if(!av.length){const nt=nextAt();push('idle',t,nt);t=nt;continue;}const i=av.reduce((a,b)=>rem[b]<rem[a]||(rem[b]===rem[a]&&P[b].at<P[a].at)?b:a);if(st[i]<0)st[i]=t;push(P[i].n,t,t+1);rem[i]--;t++;if(rem[i]===0){ct[i]=t;fin++;}}}
+  else{while(fin<n){const av=P.map((p,i)=>i).filter(i=>!done[i]&&P[i].at<=t);if(!av.length){const nt=nextAt();push('idle',t,nt);t=nt;continue;}
+      const key={FCFS:i=>[P[i].at,i],SJF:i=>[P[i].bt,P[i].at,i],Priority:i=>[P[i].pr,P[i].at,i],HRRN:i=>[-((t-P[i].at+P[i].bt)/P[i].bt),P[i].at,i]}[alg];
+      const i=av.reduce((a,b)=>{const ka=key(a),kb=key(b);for(let k=0;k<ka.length;k++){if(kb[k]!==ka[k])return kb[k]<ka[k]?b:a;}return a;});
+      st[i]=t;push(P[i].n,t,t+P[i].bt);t+=P[i].bt;ct[i]=t;done[i]=true;fin++;}}
+  const rows=P.map((p,i)=>({n:p.n,at:p.at,bt:p.bt,pr:p.pr,ct:ct[i],tat:ct[i]-p.at,wt:ct[i]-p.at-p.bt,rt:st[i]-p.at}));
+  const avg=k=>rows.reduce((a,r)=>a+r[k],0)/rows.length;return {segs,rows,awt:avg('wt'),atat:avg('tat'),art:avg('rt'),total:t};}
+function ganttSvg(segs,total){const W=540,x0=15,sc=(W-30)/total;let o='';const cols=['#e8eaf6','#fff0c9','#d8f1ea','#e2ebf8','#fbe3df','#ede7f6'],names={};
+  segs.forEach(s=>{if(s.l!=='idle'&&!(s.l in names))names[s.l]=Object.keys(names).length;o+=`<rect class="g" x="${x0+s.a*sc}" y="12" width="${(s.b-s.a)*sc}" height="34" style="fill:${s.l==='idle'?'#eee':cols[names[s.l]%6]}"/><text class="pin" x="${x0+(s.a+s.b)/2*sc}" y="34" text-anchor="middle" font-size="${(s.b-s.a)*sc<20?9:12}">${s.l==='idle'?'idle':s.l}</text>`;});
+  [...new Set([0,...segs.flatMap(s=>[s.a,s.b])])].sort((a,b)=>a-b).forEach(t=>o+=`<text class="pin" x="${x0+t*sc}" y="62" text-anchor="middle" font-size="10" style="fill:#51607a">${t}</text>`);
+  return `<svg viewBox="0 0 ${W} 72" width="${W}" role="img" aria-label="Gantt chart">${o}</svg>`;}
+const ALGS=[['FCFS','FCFS'],['SJF','SJF (non-preemptive)'],['SRTF','SRTF (preemptive SJF)'],['RR','Round Robin'],['Priority','Priority'],['HRRN','HRRN']];
+const PRE={'FCFS example':{a:'FCFS',p:[[0,4,1],[1,3,1],[2,2,1],[3,1,1]],q:2},'SJF example':{a:'SJF',p:[[0,3,1],[0,2,1],[0,4,1]],q:2},'Round robin (q = 4)':{a:'RR',p:[[0,5,1],[0,4,1],[0,2,1]],q:4},'Priority example':{a:'Priority',p:[[0,4,2],[2,3,3],[4,2,1]],q:2},'SRTF example':{a:'SRTF',p:[[0,8,1],[1,4,1],[2,2,1]],q:2},'Starvation demo':{a:'SJF',p:[[0,8,1],[1,1,1],[2,1,1],[3,1,1],[4,1,1],[5,1,1],[6,1,1],[7,1,1]],q:2}};
+section('sched','CPU scheduling',`
+<p class="lead">The OS <b>schedules CPU time</b> for all available processes in memory. Turn Around Time <b>TAT = CT − AT</b> and Waiting Time <b>WT = TAT − BT</b> (BT = burst time = execution time). <b>Response time</b> = time the process got the CPU − time it entered memory.</p>
+<div class="tool"><div class="th">Scheduling lab — pick an algorithm and edit the processes</div><div class="tb">
+<div class="row"><b style="font-size:13px">Examples from the notes:</b><span id="scP"></span></div>
+<div id="scT"></div><div class="row" id="scQ" style="display:none"><label for="scQv">Time quantum (ms)</label><input type="text" id="scQv" value="4" size="4"></div>
+<div id="scRows"></div><div class="row"><button class="btn" id="scAdd">Add a process</button></div>
+<div class="scroll" id="scG"></div><div id="scO"></div><p id="scN" style="font-size:14px"></p></div></div>
+<div class="tool"><div class="th">Compare every algorithm on the same processes</div><div class="tb"><div class="row"><button class="btn pri" id="cmpGo">Compare</button></div><div id="cmpO"></div></div></div>
+<h3>The algorithms</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Algorithm</th><th class="l">Idea</th><th class="l">Notes</th></tr>
+<tr><td class="l"><b>FCFS</b></td><td class="l">First come first served</td><td class="l">Simple; no starvation</td></tr>
+<tr><td class="l"><b>SJF</b></td><td class="l">Shortest burst time first</td><td class="l">Minimizes average waiting time; <b>starvation</b> if small jobs keep coming</td></tr>
+<tr><td class="l"><b>SRTF</b></td><td class="l">Preemptive SJF — shortest remaining time</td><td class="l">A new shorter process interrupts the running one; starvation possible</td></tr>
+<tr><td class="l"><b>Round Robin</b></td><td class="l">Fixed time slice (quantum) per process</td><td class="l">Fair; no starvation; best for time sharing. Quantum too small → context-switch overhead; too large → works like FCFS</td></tr>
+<tr><td class="l"><b>Priority</b></td><td class="l">Highest priority first; equal priority → FCFS</td><td class="l">Efficient for real time; starvation of low priority</td></tr>
+<tr><td class="l"><b>HRRN</b></td><td class="l">Highest response ratio = (burst + waiting) ÷ burst</td><td class="l">Non-preemptive; avoids starvation; calculation overhead</td></tr>
+<tr><td class="l"><b>MQS</b></td><td class="l">Several queues, each with its own algorithm</td><td class="l">Hard to manage and implement</td></tr>
+<tr><td class="l"><b>MLFQ</b></td><td class="l">MQS where a process can change queue by behaviour</td><td class="l">Heavy CPU users drop to low priority; quick-I/O processes get high priority; used in Linux, Windows; very complex</td></tr>
+<tr><td class="l"><b>FSS</b></td><td class="l">CPU shared among <b>users</b>, not processes</td><td class="l">Used in multi-user systems</td></tr></table></div>
+<div class="tool"><div class="th">Fair share scheduling — users, not processes</div><div class="tb"><div class="row"><label for="fsA">User 1 processes</label><input type="text" id="fsA" value="3" size="3"><label for="fsB">User 2 processes</label><input type="text" id="fsB" value="10" size="3"></div><div id="fsO"></div></div></div>
+<div class="tool"><div class="th">Multilevel queues — in what order do they run?</div><div class="tb"><div class="row"><label for="mqH">High-priority queue (round robin)</label><input type="text" id="mqH" value="P1, P2" size="10"><label for="mqL">Low-priority queue (FCFS)</label><input type="text" id="mqL" value="P3" size="8"></div><div id="mqO"></div></div></div>
+<h3>Comparison table</h3>
+<div class="scroll"><table class="t"><tr><th class="l">Algorithm</th><th>Preemption</th><th>Starvation</th><th>Complexity</th></tr><tr><td class="l">FCFS</td><td>✗</td><td>✗</td><td>L</td></tr><tr><td class="l">SJF</td><td>✗</td><td>✓</td><td>M</td></tr><tr><td class="l">SRTF</td><td>✓</td><td>✓</td><td>H</td></tr><tr><td class="l">RR</td><td>✓</td><td>✗</td><td>M</td></tr><tr><td class="l">Priority</td><td>✓ / ✗</td><td>✓</td><td>M</td></tr><tr><td class="l">MQS</td><td>✓ / ✗</td><td>✓</td><td>H</td></tr><tr><td class="l">MLFQ</td><td>✓</td><td>✗</td><td>VH</td></tr><tr><td class="l">HRRN</td><td>✗</td><td>✗</td><td>M</td></tr><tr><td class="l">FSS</td><td>✓</td><td>✗</td><td>VH</td></tr></table></div>
+<p style="font-size:13.5px;color:var(--ink2)">L = low, M = medium, H = high, VH = very high. The FCFS starvation mark is faint in the notes; FCFS does not starve processes.</p>
+`,root=>{
+  let alg='FCFS',procs=[[0,4,1],[1,3,1],[2,2,1],[3,1,1]];
+  const NOTE={FCFS:'Processes run in arrival order.',SJF:'Shortest burst time first; non-preemptive. Starvation can occur if short jobs keep arriving.',SRTF:'Preemptive: whenever a process with less remaining time arrives, the running one is interrupted.',RR:'Each process runs for at most one quantum, then goes to the back of the queue.',Priority:'A lower priority number runs first; equal priority → FCFS order. Non-preemptive here.',HRRN:'The ready process with the highest (burst + waiting) ÷ burst runs next.'};
+  const read=()=>procs.map((p,i)=>({n:'P'+(i+1),at:+p[0]||0,bt:Math.max(1,+p[1]||1),pr:+p[2]||1}));
+  const rows=()=>{$('#scRows').innerHTML=`<div class="scroll"><table class="t"><tr><th>Process</th><th>Arrival time</th><th>Burst time</th>${alg==='Priority'?'<th>Priority (low = first)</th>':''}<th></th></tr>${procs.map((p,i)=>`<tr><td>P${i+1}</td><td><input type="text" data-r="${i}" data-c="0" value="${p[0]}" size="3"></td><td><input type="text" data-r="${i}" data-c="1" value="${p[1]}" size="3"></td>${alg==='Priority'?`<td><input type="text" data-r="${i}" data-c="2" value="${p[2]}" size="3"></td>`:''}<td><button class="btn" data-x="${i}">×</button></td></tr>`).join('')}</table></div>`;
+    $$('#scRows input').forEach(e=>e.oninput=()=>{procs[+e.dataset.r][+e.dataset.c]=e.value;run();});$$('#scRows [data-x]').forEach(b=>b.onclick=()=>{if(procs.length>1){procs.splice(+b.dataset.x,1);rows();run();}});};
+  const run=()=>{const P=read(),q=Math.max(1,+$('#scQv').value||1);$('#scQ').style.display=alg==='RR'?'flex':'none';const r=simulate(alg,P,q);
+    $('#scG').innerHTML=ganttSvg(r.segs,r.total);
+    $('#scO').innerHTML=htmlTable(['Process','AT','BT','Completion (CT)','TAT = CT − AT','WT = TAT − BT','Response time'],r.rows.map(x=>[x.n,x.at,x.bt,x.ct,x.tat,x.wt,x.rt]))+`<p class="big" style="font-size:16px">Average WT = ${r.rows.reduce((a,x)=>a+x.wt,0)} / ${r.rows.length} = <b>${+r.awt.toFixed(2)}</b> &nbsp;·&nbsp; Average TAT = ${r.rows.reduce((a,x)=>a+x.tat,0)} / ${r.rows.length} = <b>${+r.atat.toFixed(2)}</b></p>`;
+    $('#scN').innerHTML=NOTE[alg]+(alg==='SJF'&&procs.length>=8?' <b style="color:var(--red)">Look at P1: it has to wait until every short job has finished — starvation.</b>':'');};
+  Tabs($('#scT'),ALGS.map(a=>a[1]),k=>{alg=ALGS[k][0];rows();run();});
+  $('#scP').innerHTML=Object.keys(PRE).map(k=>`<button class="btn" data-p="${k}">${k}</button>`).join(' ');
+  $('#scP').onclick=e=>{const b=e.target.closest('[data-p]');if(!b)return;const p=PRE[b.dataset.p];procs=p.p.map(x=>x.slice());$('#scQv').value=p.q;const k=ALGS.findIndex(a=>a[0]===p.a);alg=p.a;$('#scT button[data-k="'+k+'"]').click();};
+  $('#scQv').oninput=run;$('#scAdd').onclick=()=>{procs.push([procs.length,3,1]);rows();run();};
+  $('#cmpGo').onclick=()=>{const P=read(),q=Math.max(1,+$('#scQv').value||1);const R=ALGS.map(a=>[a[1],simulate(a[0],P,q)]);const best=Math.min(...R.map(r=>r[1].awt));
+    $('#cmpO').innerHTML=htmlTable(['Algorithm','Average WT','Average TAT','Average response'],R.map(r=>[r[0],+r[1].awt.toFixed(2),+r[1].atat.toFixed(2),+r[1].art.toFixed(2)]),{row:(x,i)=>R[i][1].awt===best?'hi':''})+'<p style="font-size:13.5px;color:var(--ink2)">Highlighted = lowest average waiting time (SJF / SRTF minimise it). Priority uses the Priority column; if you never edited it, all priorities are 1 (so it behaves like FCFS).</p>';};
+  const fs=()=>{const a=Math.max(0,+$('#fsA').value||0),b=Math.max(0,+$('#fsB').value||0);$('#fsO').innerHTML=htmlTable(['','Processes','CPU share of the user','CPU share per process'],[['User 1',a,'50 %',a?(50/a).toFixed(1)+' %':'—'],['User 2',b,'50 %',b?(50/b).toFixed(1)+' %':'—']])+'<p style="font-size:13.5px;color:var(--ink2)">Each user gets an equal share no matter how many processes they run (the notes’ example: 3 and 10 processes → 50 : 50).</p>';};
+  $('#fsA').oninput=fs;$('#fsB').oninput=fs;fs();
+  const mq=()=>{const h=$('#mqH').value.split(/[ ,]+/).filter(Boolean),l=$('#mqL').value.split(/[ ,]+/).filter(Boolean);$('#mqO').innerHTML=`<p class="big" style="font-size:16px">Execution order: ${[...h,...l].join(' → ')}</p><p style="font-size:13.5px;color:var(--ink2)">High-priority queue (round robin among ${h.join(', ')||'—'}) is served first; the low-priority FCFS queue (${l.join(', ')||'—'}) runs only when the high queue is empty.</p>`;};$('#mqH').oninput=mq;$('#mqL').oninput=mq;mq();
+});
+/* ============ 5 DEADLOCK ============ */
+section('dead','Deadlock',`
+<p class="lead">When two or more processes <b>hold some resources</b> (RAM, scanner, disk …) and <b>demand resources held by other processes</b>, an infinite wait is created — a <b>deadlock</b>.</p>
+<h3>The four conditions</h3>
+<ul><li><b>Mutual exclusion</b> — a resource is held in non-sharable mode (one process at a time).</li><li><b>Hold and wait</b> — a process holds a resource while waiting for others.</li><li><b>No preemption</b> — a held resource can only be released voluntarily.</li><li><b>Circular wait</b> — a closed chain of processes, each waiting for the next (P1 → P2 → P3 → P1).</li></ul>
+<div class="tool"><div class="th">Can a deadlock happen?</div><div class="tb"><div id="dcT"></div><div id="dcO"></div></div></div>
+<div class="tool"><div class="th">Wait-for graph checker — is there a cycle?</div><div class="tb"><div class="row"><label for="wgIn">P1 waits for P2 … write edges</label><input type="text" id="wgIn" value="P1>P2, P2>P3, P3>P1" size="28"></div><div class="row"><button class="btn" data-w="P1>P2, P2>P3, P3>P1">Circular wait</button><button class="btn" data-w="P1>P2, P2>P3">Chain (no cycle)</button><button class="btn" data-w="P1>P2, P2>P1, P3>P4">Two-process deadlock</button></div><svg id="wgS" viewBox="0 0 560 230" width="560" role="img" aria-label="Wait-for graph"></svg><div id="wgO"></div></div></div>
+<h3>Handling deadlock</h3>
+<div class="tool"><div class="th">Four methods</div><div class="tb"><div id="dhT"></div><div id="dhB"></div></div></div>
+<h4>Banker's algorithm — safe or unsafe?</h4>
+<p>Used in <b>deadlock avoidance</b>: before allocating, the OS checks whether the system would stay in a <b>safe state</b>. A state is safe if some order lets every process finish.</p>
+<div class="tool"><div class="th">Banker's algorithm</div><div class="tb"><div class="row"><button class="btn" data-b="safe">Safe example</button><button class="btn" data-b="unsafe">Unsafe example</button></div>
+<div class="cols2"><div><label>Allocation (one row per process)<textarea class="sql" id="bkA" style="min-height:110px"></textarea></label></div><div><label>Max need<textarea class="sql" id="bkM" style="min-height:110px"></textarea></label></div><div><label>Available<input type="text" id="bkV" size="14"></label></div></div><div id="bkO"></div></div></div>
+<div class="tool"><div class="th">Which handling method?</div><div class="tb"><div id="dqL"></div></div></div>
+`,root=>{
+  Toggles($('#dcT'),['Mutual exclusion','Hold and wait','No preemption','Circular wait'],[1,1,1,0],v=>{const n=['Mutual exclusion','Hold and wait','No preemption','Circular wait'],miss=n.filter((_,i)=>!v[i]);$('#dcO').innerHTML=miss.length?`<div class="okm"><b>No deadlock possible</b> — ${miss.join(', ')} ${miss.length>1?'are':'is'} absent. <i>Deadlock prevention</i> = make at least one condition fail (e.g. stop circular wait).</div>`:'<div class="err"><b>Deadlock!</b> All four conditions hold at the same time.</div>';});
+  const wg=()=>{const E=$('#wgIn').value.split(/[,;]+/).map(s=>s.trim()).filter(Boolean).map(s=>s.split('>').map(x=>x.trim())).filter(e=>e.length===2&&e[0]&&e[1]);const N=[...new Set(E.flat())];if(!E.length){$('#wgS').innerHTML='';$('#wgO').innerHTML='<p class="msg">Write edges like P1>P2.</p>';return;}
+    const adj={};N.forEach(n=>adj[n]=[]);E.forEach(([a,b])=>adj[a].push(b));let cyc=null;const col={};const stack=[];const dfs=u=>{col[u]=1;stack.push(u);for(const v of adj[u]){if(col[v]===1){cyc=stack.slice(stack.indexOf(v));return true;}if(!col[v]&&dfs(v))return true;}stack.pop();col[u]=2;return false;};for(const n of N){if(!col[n]&&dfs(n))break;}
+    const pos={};N.forEach((n,i)=>{const a=-Math.PI/2+i*2*Math.PI/N.length;pos[n]=[280+170*Math.cos(a),115+85*Math.sin(a)];});const inC=(a,b)=>cyc&&cyc.includes(a)&&cyc.includes(b)&&cyc[(cyc.indexOf(a)+1)%cyc.length]===b;
+    let o='<defs><marker id="wa" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0,0 9,3.5 0,7" fill="#15233b"/></marker><marker id="wb" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0,0 9,3.5 0,7" fill="#c43d2f"/></marker></defs>';
+    E.forEach(([a,b])=>{const A=pos[a],B=pos[b],dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy)||1,bad=inC(a,b),off=E.some(([c,d])=>c===b&&d===a)?8:0,ox=-dy/L*off,oy=dx/L*off;o+=`<line x1="${A[0]+dx/L*24+ox}" y1="${A[1]+dy/L*24+oy}" x2="${B[0]-dx/L*27+ox}" y2="${B[1]-dy/L*27+oy}" stroke="${bad?'#c43d2f':'#15233b'}" stroke-width="2.4" marker-end="url(#${bad?'wb':'wa'})"/>`;});
+    N.forEach(n=>o+=`<circle cx="${pos[n][0]}" cy="${pos[n][1]}" r="22" class="g" style="fill:${cyc&&cyc.includes(n)?'#fbe3df':'#fff'};${cyc&&cyc.includes(n)?'stroke:#c43d2f;stroke-width:2.6':''}"/><text class="pin" x="${pos[n][0]}" y="${pos[n][1]+4}" text-anchor="middle" font-size="12">${esc(n)}</text>`);
+    $('#wgS').innerHTML=o;$('#wgO').innerHTML=cyc?`<div class="err"><b>Deadlock</b> — cycle found: ${cyc.join(' → ')} → ${cyc[0]}. Each process waits for a resource held by the next one (circular wait). Detected by a cycle-detection algorithm; recovery = kill a process or preempt its resources.</div>`:'<div class="okm">No cycle — no deadlock: the chain can unwind because the last process is not waiting for anyone.</div>';};
+  $('#wgIn').oninput=wg;$$('[data-w]',root).forEach(b=>b.onclick=()=>{$('#wgIn').value=b.dataset.w;wg();});wg();
+  const DH=[['Prevention',['Make <b>at least one of the 4 conditions fail</b>.','If circular wait is stopped, deadlock does not occur.']],['Avoidance',['Before the OS allocates a resource it checks whether the system would enter an <b>unsafe state</b>.','Uses the <b>Banker\'s algorithm</b> to check for safe and unsafe states.','Memory aid: Resource → Process → Avoid, Prevent.']],['Detection & recovery',['Deadlock is detected with a <b>cycle-detection algorithm</b>.','Recovery: <b>kill / terminate</b> the process, or <b>preempt</b> (forcibly take) the resources.']],['Ignorance',['The <b>Ostrich algorithm</b>; mostly used in Windows & Linux.','Assume deadlock will almost never occur; if it is detected, the system is simply restarted.']]];
+  Tabs($('#dhT'),DH.map(d=>d[0]),k=>{$('#dhB').innerHTML=`<ul>${DH[k][1].map(x=>`<li>${x}</li>`).join('')}</ul>`;});
+  const BK={safe:['0 1 0\n2 0 0\n3 0 2\n2 1 1\n0 0 2','7 5 3\n3 2 2\n9 0 2\n2 2 2\n4 3 3','3 3 2'],unsafe:['1 1 0\n2 0 1\n1 1 1','2 2 2\n3 2 3\n2 3 2','0 0 0']};
+  const bk=()=>{const M=s=>s.split('\n').map(r=>r.trim().split(/\s+/).map(Number)).filter(r=>r.length&&!r.some(isNaN));const A=M($('#bkA').value),X=M($('#bkM').value),V=$('#bkV').value.trim().split(/\s+/).map(Number);
+    if(!A.length||A.length!==X.length||A.some((r,i)=>r.length!==X[i].length||r.length!==V.length)){$('#bkO').innerHTML='<p class="msg">Allocation and Max need the same number of rows and columns as Available.</p>';return;}
+    const need=A.map((r,i)=>r.map((a,j)=>X[i][j]-a));let w=V.slice(),fin=A.map(()=>false),seq=[],steps=[],prog=true;
+    while(prog){prog=false;for(let i=0;i<A.length;i++)if(!fin[i]&&need[i].every((n,j)=>n<=w[j])){steps.push([`P${i}`,need[i].join(' '),w.join(' '),A[i].map((a,j)=>w[j]+a).join(' ')]);w=w.map((x,j)=>x+A[i][j]);fin[i]=true;seq.push('P'+i);prog=true;}}
+    const ok=fin.every(Boolean);$('#bkO').innerHTML=htmlTable(['Process','Need = Max − Allocation'],need.map((r,i)=>['P'+i,r.join(' ')]))+(steps.length?'<p style="margin:8px 0 2px"><b>Order in which processes can finish</b></p>'+htmlTable(['Process runs','Its need','Work vector before','Work vector after it finishes'],steps):'')+(ok?`<div class="okm"><b>Safe state</b> — safe sequence: ${seq.join(' → ')}.</div>`:`<div class="err"><b>Unsafe state</b> — no process can be completed with the available resources${seq.length?` after ${seq.join(', ')}`:''}; the OS would not make this allocation (avoidance).</div>`);};
+  const setB=k=>{$('#bkA').value=BK[k][0];$('#bkM').value=BK[k][1];$('#bkV').value=BK[k][2];bk();};$$('[data-b]',root).forEach(b=>b.onclick=()=>setB(b.dataset.b));['#bkA','#bkM','#bkV'].forEach(s=>$(s).oninput=bk);setB('safe');
+  quiz('dqL',[['Make the circular-wait condition impossible','Prevention'],['Check for an unsafe state before every allocation (Banker\'s algorithm)','Avoidance'],['Find a cycle, then kill a process or preempt resources','Detection & recovery'],['Assume it never happens; just restart the system if it does','Ignorance']],['Prevention','Avoidance','Detection & recovery','Ignorance']);
+});
+
+/* ============ 6 PROCESSES ============ */
+const SM={New:[60,40],Ready:[210,40],Running:[390,40],Terminate:[500,40],Waiting:[390,140],'Suspend ready':[210,140],'Suspend wait':[390,225]};
+const TR=[['New','Ready','admit'],['Ready','Running','dispatch (scheduler picks it)'],['Running','Ready','time slice over'],['Running','Waiting','I/O request'],['Waiting','Ready','I/O complete'],['Running','Terminate','exit (fully executed)'],['Ready','Suspend ready','ready queue (RAM) full'],['Suspend ready','Ready','RAM available again'],['Waiting','Suspend wait','RAM shortage'],['Suspend wait','Waiting','RAM available again']];
+section('proc','Processes, PCB & schedulers',`
+<ul><li>Every process has a <b>PCB</b> (Process Control Block) — its <b>ID card / resume</b> — maintained by the OS: process ID, state, program counter, CPU registers, scheduling info, memory-management info, I/O status info.</li></ul>
+<div class="tool"><div class="th">Process life cycle — choose an event</div><div class="tb"><div class="row" id="psB"></div><svg id="psS" viewBox="0 0 560 260" width="560" role="img" aria-label="Process states"></svg><div class="cols2"><div id="psP"></div><div><b>Event log</b><div id="psL" class="m" style="font-size:13px"></div></div></div></div></div>
+<div class="scroll"><table class="t"><tr><th>State</th><th class="l">Meaning</th></tr><tr><td><b>New</b></td><td class="l">Created for the first time; not yet in main memory</td></tr><tr><td><b>Ready</b></td><td class="l">Loaded into RAM, waiting for the CPU; the scheduler decides which ready process runs next</td></tr><tr><td><b>Running</b></td><td class="l">The CPU is executing its instructions</td></tr><tr><td><b>Waiting / Block</b></td><td class="l">Needs I/O, so it leaves the CPU; returns to ready when the I/O is done</td></tr><tr><td><b>Terminate / Exit</b></td><td class="l">Fully executed; the OS terminates it and removes it from memory</td></tr><tr><td><b>Suspend wait</b></td><td class="l">Waiting and RAM is short → shifted to the hard disk</td></tr><tr><td><b>Suspend ready</b></td><td class="l">Ready queue (RAM) is full → shifted to the hard disk</td></tr></table></div>
+<h3>Context switching</h3>
+<ul><li>The CPU switches from one process to another; when it leaves P1 it <b>saves P1's details in its PCB</b>, and loads the PCB of the next process.</li></ul>
+<div class="tool"><div class="th">Switch the CPU between P1 and P2</div><div class="tb"><div class="row"><button class="btn pri" id="cxRun">Run the current process for a while</button><button class="btn pri" id="cxSw">Context switch</button><button class="btn" id="cxR">Reset</button></div><div class="cols2"><div id="cxCpu"></div><div id="cxP1"></div><div id="cxP2"></div></div><p class="big" id="cxMsg" style="font-size:15px"></p></div></div>
+<h3>Schedulers</h3>
+<div class="tool"><div class="th">Three schedulers</div><div class="tb"><div id="shT"></div><svg id="shS" viewBox="0 0 560 150" width="560" role="img" aria-label="Schedulers"></svg><div id="shB"></div></div></div>
+`,root=>{
+  let cur='New',log=[],pc=0x100,regs=[0,0,0,0];
+  const ps=()=>{let o='<defs><marker id="sa" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0,0 9,3.5 0,7" fill="#9aa8a1"/></marker></defs>';
+    TR.forEach(([a,b])=>{const A=SM[a],B=SM[b],dx=B[0]-A[0],dy=B[1]-A[1],L=Math.hypot(dx,dy),back=TR.some(([c,d])=>c===b&&d===a),off=back?7:0,ox=-dy/L*off,oy=dx/L*off,act=a===cur;o+=`<line x1="${A[0]+dx/L*44+ox}" y1="${A[1]+dy/L*18+oy}" x2="${B[0]-dx/L*48+ox}" y2="${B[1]-dy/L*20+oy}" stroke="${act?'#0a8f7b':'#c3ccc7'}" stroke-width="${act?2.6:1.5}" marker-end="url(#sa)"/>`;});
+    Object.entries(SM).forEach(([k,p])=>o+=`<rect class="g" x="${p[0]-46}" y="${p[1]-18}" width="92" height="36" rx="4" style="${k===cur?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:3':(k.startsWith('Suspend')?'fill:#fbe3df':'')}"/><text class="pin" x="${p[0]}" y="${p[1]+4}" text-anchor="middle" font-size="11">${k}</text>`);
+    $('#psS').innerHTML=o;$('#psB').innerHTML=TR.filter(t=>t[0]===cur).map(t=>`<button class="btn pri" data-to="${t[1]}">${t[2]} → ${t[1]}</button>`).join('')||'<span class="okm">The process has terminated — press “Restart”.</span>';
+    if(cur==='Terminate')$('#psB').innerHTML+=' <button class="btn" data-to="New" data-rs="1">Restart</button>';
+    $('#psP').innerHTML=`<b>PCB of the process</b>`+htmlTable(['Field','Value'],[['Process ID','101'],['State',cur],['Program counter','0x'+pc.toString(16)],['CPU registers',regs.map((r,i)=>'R'+i+'='+r).join(' ')],['Scheduling info','priority 1, queue: '+(cur==='Ready'?'ready queue':'—')],['Memory-management info',cur==='New'?'not in main memory':cur.startsWith('Suspend')?'swapped to hard disk':cur==='Terminate'?'freed':'in RAM'],['I/O status info',cur==='Waiting'||cur==='Suspend wait'?'waiting for I/O':'none']]);
+    $('#psL').innerHTML=log.slice(-8).map(l=>'• '+l).join('<br>')||'—';$$('#psB [data-to]').forEach(b=>b.onclick=()=>{const to=b.dataset.to,from=cur;if(b.dataset.rs){log=[];pc=0x100;regs=[0,0,0,0];}else{if(from==='Running'){pc+=12;regs=regs.map((r,i)=>r+i+1);}log.push(`${from} → ${to}  (${TR.find(t=>t[0]===from&&t[1]===to)[2]})`);}cur=to;ps();});};ps();
+  /* context switch */
+  const C0=()=>({run:0,cpu:{pc:0x100,r:[3,0,0,0]},p:[{pc:0x100,r:[3,0,0,0],st:'Running'},{pc:0x200,r:[7,7,0,0],st:'Ready'}],msg:'P1 is running on the CPU.'});let C=C0();
+  const cx=()=>{const box=(t,o)=>`<b>${t}</b>${htmlTable(['Field','Value'],o)}`;$('#cxCpu').innerHTML=box('CPU',[['Running','P'+(C.run+1)],['PC','0x'+C.cpu.pc.toString(16)],['Registers',C.cpu.r.map((x,i)=>`R${i}=${x}`).join(' ')]]);
+    [0,1].forEach(i=>$('#cxP'+(i+1)).innerHTML=box('PCB of P'+(i+1),[['State',C.p[i].st],['Saved PC','0x'+C.p[i].pc.toString(16)],['Saved registers',C.p[i].r.map((x,k)=>`R${k}=${x}`).join(' ')]]));$('#cxMsg').textContent=C.msg;};
+  $('#cxRun').onclick=()=>{C.cpu.pc+=8;C.cpu.r=C.cpu.r.map((x,i)=>i===0?x+1:x+(i<2?1:0));C.msg=`P${C.run+1} executed a few instructions — only the CPU's PC and registers changed; its PCB still holds the old values.`;cx();};
+  $('#cxSw').onclick=()=>{const o=C.run,n=1-o;C.p[o]={pc:C.cpu.pc,r:C.cpu.r.slice(),st:'Ready'};C.cpu={pc:C.p[n].pc,r:C.p[n].r.slice()};C.p[n].st='Running';C.run=n;C.msg=`Context switch: P${o+1}'s current details were saved in its PCB; P${n+1}'s PCB was loaded into the CPU.`;cx();};
+  $('#cxR').onclick=()=>{C=C0();cx();};cx();
+  const SH=[['Long term (job scheduler)','Decides which process is <b>brought from the hard disk to RAM</b>.',[100,127]],['Short term (CPU scheduler)','The <b>fastest</b>; decides which process goes from the <b>ready state to the running state</b>.',[290,127]],['Medium term','Responsible for <b>swapping</b>: if RAM is full it sends processes to the secondary memory.',[240,80]]];
+  Tabs($('#shT'),SH.map(s=>s[0]),k=>{let o=svgBox(10,20,90,40,'Hard disk',k===0||k===2,12)+svgBox(190,20,100,40,'Ready (RAM)',k===1||k===0,12)+svgBox(380,20,90,40,'CPU',k===1,12)+svgBox(190,100,100,34,'Suspended',k===2,11)+wire([[100,40],[190,40]],k===0)+arrowHead(190,40,'r',k===0)+wire([[290,40],[380,40]],k===1)+arrowHead(380,40,'r',k===1)+wire([[240,60],[240,100]],k===2)+arrowHead(240,100,'d',k===2);
+    $('#shS').innerHTML=o;$('#shB').innerHTML=`<p>${SH[k][1]}</p>`;});
+});
+
+/* ============ 7 INTERRUPTS ============ */
+section('intr','Interrupts',`
+<ul><li>An interrupt is a <b>signal / event</b> that tells the CPU to <b>stop the current work</b> and do some other urgent work first.</li><li>By default <b>control goes to the OS</b>, which handles the interrupt. Interrupts are always handled in <b>privileged / kernel mode</b>.</li></ul>
+<div class="scroll"><table class="t"><tr><th></th><th class="l">Hardware interrupt</th><th class="l">Software interrupt</th></tr><tr><td class="l">Generated by</td><td class="l">An external device (from outside the CPU)</td><td class="l">The program itself</td></tr><tr><td class="l">Sources / use</td><td class="l">Keyboard, printer etc.</td><td class="l">To access OS services — read(), write(), open()</td></tr><tr><td class="l">Timing</td><td class="l"><b>Asynchronous</b> — can occur at any time</td><td class="l"><b>Synchronous</b> — occurs after an instruction</td></tr><tr><td class="l">Predictable?</td><td class="l">No</td><td class="l">Yes — e.g. a system call</td></tr></table></div>
+<div class="tool"><div class="th">Run a program and interrupt it</div><div class="tb"><div class="row"><button class="btn pri" id="inN">Execute next instruction</button><button class="btn pri" id="inH">Press a key (hardware interrupt)</button><button class="btn" id="inR">Restart</button></div><div class="cols2"><div id="inP"></div><div><div id="inM"></div><div class="m" id="inL" style="font-size:13px"></div></div></div></div></div>
+<div class="tool"><div class="th">Hardware or software interrupt?</div><div class="tb"><div id="iqL"></div></div></div>
+`,root=>{
+  const PG=['LOAD R1, 5','ADD R1, R2','read(file)   ← system call','STORE R1','print(result)   ← system call'];let pc=0,mode='User mode',log=[];
+  const ind=()=>{$('#inP').innerHTML='<b>Program</b>'+`<div style="font-family:var(--mono);font-size:13.5px;margin-top:6px">${PG.map((l,i)=>`<div style="padding:3px 8px;border-radius:3px;${i===pc?'background:var(--amber2);font-weight:700':''}">${i===pc?'▶ ':'&nbsp;&nbsp;'}${esc(l)}</div>`).join('')}${pc>=PG.length?'<div class="okm">program finished</div>':''}</div>`;$('#inM').innerHTML=`<p class="big" style="font-size:17px;background:${mode==='User mode'?'var(--teal2)':'var(--amber2)'}">CPU mode: ${mode}</p>`;$('#inL').innerHTML=log.slice(-7).map(l=>'• '+l).join('<br>')||'—';};
+  $('#inN').onclick=()=>{if(pc>=PG.length)return;const l=PG[pc];if(l.includes('system call')){log.push(`Instruction ${pc+1} (${l.split('(')[0]}) raises a <b>software interrupt</b> — synchronous: it happens right after this instruction, predictably.`);log.push('Control goes to the OS → kernel mode → the OS service runs → back to user mode.');}else log.push(`Instruction ${pc+1} executed normally.`);pc++;mode='User mode';ind();};
+  $('#inH').onclick=()=>{log.push('A key is pressed → <b>hardware interrupt</b> from an external device — asynchronous: it can arrive at any instruction.');log.push(`CPU stops the current work${pc<PG.length?' (before instruction '+(pc+1)+')':''} → control goes to the OS → handled in <b>kernel mode</b> → CPU resumes the program.`);mode='User mode';ind();};
+  $('#inR').onclick=()=>{pc=0;log=[];ind();};ind();
+  quiz('iqL',[['A key is pressed while the CPU runs a program','Hardware'],['A program calls read() to get data from a file','Software'],['Printer signals that it is ready','Hardware'],['A system call','Software'],['Can occur at any time (asynchronous)','Hardware'],['Occurs after an instruction (synchronous, predictable)','Software']],['Hardware','Software']);
+});
+
+/* ============ CLARIFICATIONS ============ */
+section('fixes','Clarifications',`
+<p>While typing up the handwritten notes these points were clarified or flagged. Everything else follows the notes.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Topic</th><th class="l">Handwritten notes</th><th class="l">Here</th></tr>
+<tr><td class="l">Memory-fit picture</td><td class="l">Block sizes and “filled” marks hard to read</td><td class="l">Default blocks 10, 20, 20, 4, 6, 30, 8 MB with three filled — editable by allocating</td></tr>
+<tr><td class="l">SJF</td><td class="l">“preemptive (SJN) or non-preemptive (SJF)”</td><td class="l">SJF is non-preemptive; the preemptive form is SRTF</td></tr>
+<tr><td class="l">Priority scheduling</td><td class="l">“If the priority of a process changes, it is called preemption”</td><td class="l">The lab treats priority as non-preemptive; in standard usage preemption means interrupting a running process for a higher-priority one</td></tr>
+<tr><td class="l">Priority example</td><td class="l">Priority column hard to read</td><td class="l">Values 2, 3, 1 match the order shown</td></tr>
+<tr><td class="l">FCFS starvation</td><td class="l">Faint cell</td><td class="l">Shown as no starvation</td></tr>
+<tr><td class="l">Process states</td><td class="l">Numbered (1)–(3), then lettered D–G</td><td class="l">Seven states in order</td></tr>
+<tr><td class="l">Added for interactivity</td><td class="l">—</td><td class="l">Banker's algorithm and wait-for graph tools, state-machine transitions, context-switch and interrupt demos, FSS shares</td></tr></table></div>
+`,null);
+
+/* ============ BOOT ============ */
+(function(){
+  const nav=$('#nav'),main=$('#main');
+  nav.innerHTML=`<div class="brand"><div>Operating System<small>Interactive notes</small></div><a href="../index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
+  $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
+  $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))setOpen(false);});
+  main.innerHTML=`<header class="hero"><div class="wrap"><h1>Operating System</h1><p>Your OS notes, made interactive: run every scheduling example, allocate memory by first / best / worst fit, find deadlocks with the Banker's algorithm, step a process through its states and interrupt a running program. Tap a layer to start.</p><div class="bitrow" id="heroSteps"></div><div class="heroTxt" id="heroTxt"></div></div></header>`+
+    SECTIONS.map((s,i)=>`<section class="ch" id="${s.id}"><div class="wrap"><h2><i>${i+1}</i>${s.title}</h2>${s.html}</div></section>`).join('');
+  try{heroInit();}catch(e){console.error(e);}
+  SECTIONS.forEach(s=>{if(s.init){try{s.init(document.getElementById(s.id));}catch(e){console.error('Section '+s.id,e);}}});
+  const links=$$('#navlist a'),obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('act',a.dataset.id===e.target.id));const a=$(`#navlist a[data-id="${e.target.id}"]`);$('#menuLbl').textContent=a?a.textContent.replace(/^\d+/,'').trim():'Chapters';if(a&&innerWidth>980){const t=a.offsetTop;if(t<nav.scrollTop||t>nav.scrollTop+nav.clientHeight-60)nav.scrollTop=t-80;}}});},{rootMargin:'-20% 0px -70% 0px'});
+  SECTIONS.forEach(s=>obs.observe(document.getElementById(s.id)));
+})();
+</script></body></html>

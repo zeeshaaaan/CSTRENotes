@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI, ML and IoT — Interactive Notes</title>
+<style>
+:root{--ink:#15233b;--ink2:#51607a;--paper:#f3f6f2;--grid:#e3e9e4;--panel:#fff;--teal:#0a8f7b;--teal2:#d8f1ea;--amber:#d98e04;--amber2:#fff0c9;--red:#c43d2f;--red2:#fbe3df;--blue:#2c5fb3;--blue2:#e2ebf8;--line:#b8c3bc;
+--serif:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;--ui:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;--mono:ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--serif)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+nav#nav{position:fixed;inset:0 auto 0 0;width:262px;background:#fff;border-right:1.5px solid var(--ink);overflow:auto;padding:18px 0 30px;font-family:var(--ui);z-index:5}
+nav#nav .brand{padding:0 20px 14px;font-weight:800;font-size:17px;line-height:1.2;border-bottom:1.5px solid var(--ink);margin-bottom:8px}
+nav#nav .brand small{display:block;font-weight:500;color:var(--ink2);font-size:12.5px;margin-top:4px}
+nav#nav a{display:block;padding:7px 20px 7px 17px;color:var(--ink);text-decoration:none;font-size:14.5px;border-left:3px solid transparent}
+nav#nav a:hover{background:var(--teal2)}
+nav#nav a.act{border-left-color:var(--teal);background:var(--teal2);font-weight:700}
+nav#nav a span{display:inline-block;width:22px;color:var(--ink2);font-family:var(--mono);font-size:12.5px}
+main{margin-left:262px;padding:0 0 80px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px}
+.hero{background:var(--ink);color:#fff;padding:44px 0 36px;border-bottom:6px solid var(--teal)}
+.hero h1{font:800 clamp(30px,5vw,50px)/1.05 var(--ui);margin:0 0 10px;letter-spacing:-.02em}
+.hero p{margin:0 0 22px;color:#c9d5e6;max-width:60ch;font-family:var(--ui);font-size:16px}
+.bitrow{display:flex;gap:6px;flex-wrap:wrap}
+.hero .tg{background:#22355a;color:#fff;border-color:#5b7098}
+.hero .tg.on{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.readouts div{border-top:2px solid #5b7098;padding-top:6px;font-family:var(--ui);font-size:12.5px;color:#a9b9d3}
+.readouts b{display:block;font:600 22px var(--mono);color:#fff;letter-spacing:.02em;word-break:break-all}
+section.ch{padding:56px 0 8px;scroll-margin-top:0}
+section.ch>.wrap>h2{font:800 32px/1.15 var(--ui);margin:0 0 6px;letter-spacing:-.01em}
+section.ch>.wrap>h2 i{font:500 15px var(--mono);color:var(--teal);margin-right:12px;font-style:normal}
+h3{font:700 20px/1.3 var(--ui);margin:34px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+h4{font:700 16px var(--ui);margin:22px 0 4px;color:var(--teal)}
+p{margin:.55em 0}
+ul{padding-left:1.25em;margin:.5em 0}li{margin:.2em 0}
+.lead{font-size:18.5px;color:#26354f}
+code,.m{font-family:var(--mono);font-size:.9em}
+.n{text-decoration:overline;text-decoration-thickness:1.5px}
+.tool{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;box-shadow:5px 5px 0 var(--teal2);margin:18px 0;font-family:var(--ui);font-size:15px;line-height:1.5}
+.tool>.th{background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:6px 14px;border-radius:2px 2px 0 0}
+.tool>.tb{padding:14px 16px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.tabs button,.btn,select,input[type=text]{font:600 14px var(--ui);border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:6px 11px;border-radius:3px;cursor:pointer}
+input[type=text]{cursor:text;font-family:var(--mono);font-weight:500;font-size:15px;min-width:0}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.btn:hover,.tabs button:hover{background:var(--teal2)}.tabs button[aria-selected=true]:hover{background:var(--ink)}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.row label{font-weight:600;font-size:13.5px;color:var(--ink2)}
+.tg{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:58px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;font-family:var(--mono);padding:2px 4px}
+.tg small{font:600 10.5px var(--ui);opacity:.75}.tg b{font-size:21px;line-height:1.1}
+.tg.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.led{display:inline-block;width:16px;height:16px;border-radius:50%;background:#d4dcd7;border:1.5px solid #95a39b;vertical-align:-3px}
+.led.on{background:var(--teal);border-color:var(--teal);box-shadow:0 0 0 3px var(--teal2)}
+.out{display:inline-flex;align-items:center;gap:7px;font:600 15px var(--mono);margin-right:14px}
+table.t{border-collapse:collapse;font-family:var(--mono);font-size:14px;margin:8px 0}
+table.t th,table.t td{border:1.2px solid var(--line);padding:4px 10px;text-align:center}
+table.t th{background:#e8efe9;font-family:var(--ui);font-weight:700;font-size:13px}
+table.t td.l,table.t th.l{text-align:left}
+table.t tr.hi td{background:var(--amber2);font-weight:700}
+table.t td.ok{color:var(--teal);font-weight:700}
+.scroll{overflow-x:auto}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.res button{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:6px 10px;cursor:pointer;font-family:var(--ui)}
+.res button.sel{border-color:var(--teal);background:var(--teal2)}
+.res small{display:block;color:var(--ink2);font-size:12px}.res b{font:600 16px var(--mono);word-break:break-all}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1.2px solid var(--ink);border-radius:3px;padding:2px 8px;font:600 14px var(--mono);background:#fff;text-align:center}
+.chip small{display:block;font:500 11px var(--ui);color:var(--ink2)}
+.chip.o{background:var(--amber2);border-color:var(--amber)}
+.note,.fix,.key,.eg{padding:10px 14px;margin:14px 0;border-left:4px solid;font-size:15.5px;font-family:var(--ui);line-height:1.55}
+.note{background:var(--blue2);border-color:var(--blue)}.fix{background:var(--red2);border-color:var(--red)}
+.key{background:var(--teal2);border-color:var(--teal)}.eg{background:var(--amber2);border-color:var(--amber)}
+.note b:first-child,.fix b:first-child,.key b:first-child,.eg b:first-child{margin-right:4px}
+pre.w{font:500 14.5px/1.5 var(--mono);margin:8px 0;white-space:pre;overflow-x:auto}
+svg{max-width:100%;height:auto}
+svg text{font-family:var(--ui)}
+.w{fill:none;stroke:#9aa8a1;stroke-width:2.4;stroke-linejoin:round}.w.on{stroke:var(--teal)}
+.g{fill:#fff;stroke:var(--ink);stroke-width:2}
+.pin{font:700 12px var(--ui);fill:var(--ink)}
+.dot{fill:#9aa8a1}.dot.on{fill:var(--teal)}
+.kmap{border-collapse:separate;border-spacing:0;font-family:var(--mono)}
+.kmap td,.kmap th{width:62px;height:58px;border:1.5px solid var(--ink);text-align:center;padding:0;position:relative}
+.kmap th{background:#e8efe9;width:auto;height:auto;font:700 13px var(--mono);padding:4px 8px;border-width:1.5px}
+.kmap th.corner{background:#fff;border:none;font-size:12px;text-align:right}
+.kmap button{all:unset;display:block;width:100%;height:100%;cursor:pointer;font:700 22px var(--mono);position:relative}
+.kmap button small{position:absolute;right:4px;top:2px;font:500 10px var(--mono);color:#7b8a83}
+.kmap button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}
+.kmap td.hl{outline:4px solid var(--amber);outline-offset:-4px;z-index:2}
+.kmap .dots{position:absolute;left:3px;bottom:3px;display:flex;gap:2px}
+.kmap .dots i{width:9px;height:9px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.35)}
+.kmap .v0{color:#9aa8a1;font-weight:500}.kmap .v1{color:var(--ink)}.kmap .vx{color:var(--amber)}
+.leg{list-style:none;padding:0;margin:8px 0;font-family:var(--ui)}
+.leg li{display:flex;gap:10px;align-items:center;padding:4px 6px;border-radius:3px;cursor:default}
+.leg li:hover{background:var(--amber2)}
+.leg i{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.35)}
+.big{font:700 22px var(--mono);padding:8px 12px;background:var(--teal2);border-left:4px solid var(--teal);margin:8px 0;overflow-x:auto}
+.fam ul{list-style:none;padding-left:1.1em;border-left:2px solid var(--ink);margin:2px 0 2px .4em}
+.fam>ul{border:0;padding:0;margin:0}.fam li{margin:4px 0;font-family:var(--ui);font-size:15px}
+.fam li b{background:var(--ink);color:#fff;padding:1px 9px;border-radius:3px;font-size:14px}
+.fam li.leaf b{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.msg{font-weight:700;color:var(--red);min-height:1.4em}
+.mini{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.mini figure{margin:0;text-align:center;font:13px var(--ui);color:var(--ink2)}
+.ff{display:flex;gap:6px;margin:10px 0}
+.ffb{border:2px solid var(--ink);min-width:62px;text-align:center;padding:6px 4px;background:#fff;font-family:var(--mono);border-radius:3px;transition:background .15s}
+.ffb small{display:block;font:600 11px var(--ui);color:var(--ink2)}.ffb b{font-size:26px}
+.ffb.on{background:var(--teal);color:#fff;border-color:var(--teal)}.ffb.on small{color:#d8f1ea}
+.ffb.flash{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.menu-btn{display:none}
+.kmap.sm td{width:44px;height:42px}.kmap.sm button{font-size:16px}.kmap.sm th{font-size:11px;padding:2px 5px}.kmap.sm button small{font-size:8.5px}
+.menu-btn{display:none}
+@media (max-width:980px){
+ nav#nav{position:fixed;inset:0 0 auto 0;width:auto;height:auto;max-height:100vh;overflow:visible;padding:0;border-right:0;border-bottom:1.5px solid var(--ink);display:block}
+ nav#nav .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 6px 14px;margin:0;border-bottom:0;font-size:15px}
+ nav#nav .brand small{display:none}
+ .menu-btn{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--ui);background:var(--ink);color:#fff;border:0;border-radius:3px;padding:9px 13px;min-height:40px;cursor:pointer}
+ #navlist{display:none;max-height:calc(100vh - 58px);overflow-y:auto;border-top:1.5px solid var(--ink);background:#fff;-webkit-overflow-scrolling:touch}
+ nav#nav.open #navlist{display:block}
+ nav#nav a{padding:13px 18px;border-bottom:1px solid #e3e9e4;font-size:16px}
+ main{margin-left:0;padding-top:52px}.wrap{padding:0 16px}
+ section.ch{scroll-margin-top:56px}
+ .kmap td{width:50px;height:50px}
+ .hero{padding-top:28px}
+}
+@media print{nav#nav{display:none}main{margin:0}.tool{break-inside:avoid}}
+.home-link{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;font:700 13px var(--ui);color:var(--teal);background:var(--teal2);border:1.5px solid var(--teal);border-radius:3px;text-decoration:none;transition:all .2s;margin-left:auto;}
+.home-link:hover{background:var(--teal);color:#fff;}
+.null{color:#9aa8a1;font-style:italic}
+td.bad{background:var(--red2)!important;color:var(--red);font-weight:700}td.good{background:var(--teal2)!important}
+td.lock{background:var(--amber2)!important}
+textarea.sql{width:100%;min-height:150px;font:500 14.5px/1.5 var(--mono);border:1.5px solid var(--ink);border-radius:3px;padding:10px;resize:vertical;background:#fbfcfb;color:var(--ink)}
+.err{background:var(--red2);border-left:4px solid var(--red);padding:8px 12px;margin:8px 0;font:600 14px var(--mono);white-space:pre-wrap}
+.okm{background:var(--teal2);border-left:4px solid var(--teal);padding:8px 12px;margin:8px 0;font:600 14px var(--ui)}
+pre.code{background:#f1f4f2;border:1px solid var(--line);border-left:4px solid var(--ink);padding:10px 12px;margin:8px 0;font:500 13.5px/1.55 var(--mono);overflow-x:auto;white-space:pre}
+details.acc{border:1.5px solid var(--ink);border-radius:3px;margin:8px 0;background:#fff;font-family:var(--ui)}
+details.acc>summary{cursor:pointer;padding:9px 14px;font-weight:700;font-size:15px;list-style:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::before{content:'+';display:inline-block;width:20px;color:var(--teal);font-family:var(--mono)}
+details.acc[open]>summary::before{content:'−'}
+details.acc[open]>summary{background:var(--teal2);border-bottom:1.5px solid var(--ink)}
+details.acc>div{padding:8px 16px 12px;font-size:15px}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.cols2>div{min-width:0}
+.pill{display:inline-block;padding:1px 9px;border-radius:12px;font:700 12px var(--ui);background:var(--ink);color:#fff;margin:0 4px 2px 0}
+.pill.g{background:var(--teal)}.pill.r{background:var(--red)}.pill.a{background:var(--amber);color:var(--ink)}
+.sel{cursor:pointer}.sel:hover td{background:var(--amber2)}
+tr.pick td{background:var(--teal2)!important;font-weight:700}
+.stepbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.stepbar span{padding:4px 11px;border:1.5px solid var(--line);border-radius:14px;font:600 13px var(--ui);color:var(--ink2)}
+.stepbar span.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.hero .tg{min-width:auto;height:46px;padding:0 14px;flex-direction:row;font:700 15px var(--ui)}
+.hero .arrowx{color:#5b7098;align-self:center;font-weight:700}
+.heroTxt{margin-top:16px;min-height:3.2em;font-family:var(--ui);color:#e3ebf7;font-size:16px;max-width:62ch}
+.flow{stroke-dasharray:6 6;animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-12}}
+.bit{display:inline-block;width:19px;text-align:center;font:600 13px var(--mono);border:1px solid var(--line);margin:1px;border-radius:2px;background:#fff}.bit.f{background:var(--amber2);border-color:var(--amber)}.bit.n{background:var(--blue2);border-color:var(--blue)}.bit.h{background:var(--teal2);border-color:var(--teal)}
+.oct{display:inline-block;margin:2px 6px 2px 0;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Chapters"></nav>
+<main id="main"></main>
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const SECTIONS=[];
+function section(id,title,html,init){SECTIONS.push({id,title,html,init});}
+function Tabs(el,names,cb,start=0){
+  el.classList.add('tabs');el.setAttribute('role','tablist');
+  const draw=i=>{el.innerHTML=names.map((n,k)=>`<button role="tab" aria-selected="${k===i}" data-k="${k}">${n}</button>`).join('');};
+  el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;draw(k);cb(k);};
+  draw(start);cb(start);
+}
+function Toggles(el,labels,init,cb){
+  let v=init.slice(),last=-1;
+  const draw=()=>{el.innerHTML=labels.map((l,i)=>`<button class="tg ${v[i]?'on':''}" data-i="${i}" aria-pressed="${!!v[i]}"><small>${l}</small><b>${v[i]}</b></button>`).join('');
+    if(last>=0){const b=el.querySelector(`[data-i="${last}"]`);b&&b.focus();}};
+  el.classList.add('bitrow');
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;const i=+b.dataset.i;v[i]^=1;last=i;draw();cb(v);};
+  draw();cb(v);return {get:()=>v,set:nv=>{v=nv.slice();draw();cb(v);}};
+}
+const cell=v=>v===null||v===undefined?'<span class="null">NULL</span>':esc(v);
+function htmlTable(cols,rows,o={}){
+  return `<div class="scroll"><table class="t"><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr class="${o.row&&o.row(r,i)||''}">${r.map((v,j)=>`<td class="${o.cell&&o.cell(v,i,j)||''}">${o.raw?v:cell(v)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+}
+const gotoId=id=>{const e=document.getElementById(id);e&&e.scrollIntoView({behavior:'smooth'});};
+const svgBox=(x,y,w,h,label,on,sz=13)=>`<rect class="g" x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="${on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.6':''}"/><text class="pin" x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" style="font-size:${sz}px">${label}</text>`;
+const wire=(pts,on,dash)=>`<polyline class="w ${on?'on':''}" ${dash?'stroke-dasharray="5 4"':''} points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+const arrowHead=(x,y,dir,on)=>{const c=on?'#0a8f7b':'#9aa8a1';const p={d:`${x},${y} ${x-6},${y-9} ${x+6},${y-9}`,u:`${x},${y} ${x-6},${y+9} ${x+6},${y+9}`,r:`${x},${y} ${x-9},${y-6} ${x-9},${y+6}`,l:`${x},${y} ${x+9},${y-6} ${x+9},${y+6}`}[dir];return `<polygon points="${p}" fill="${c}"/>`;};
+const SQLT=(t)=>`<span class="m">${esc(t)}</span>`;
+
+const nodeBox=(x,y,t,o={})=>`<g ${o.k!==undefined?`data-k="${o.k}" style="cursor:pointer"`:''}><rect class="g" x="${x-(o.w||40)/2}" y="${y-(o.h||24)/2}" width="${o.w||40}" height="${o.h||24}" rx="3" style="${o.bad?'fill:#fbe3df;stroke:#c43d2f;stroke-width:2.6':o.on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.4':o.fill?'fill:'+o.fill:''}"/><text class="pin" x="${x}" y="${y+4}" text-anchor="middle" font-size="${o.sz||11}">${t}</text></g>`;
+const quiz=(id,items,opts)=>{
+  const R=$('#'+id);R.innerHTML=items.map((q,i)=>`<div class="row"><span style="flex:1 1 340px">${q[0]}</span><select data-i="${i}"><option value="">choose…</option>${opts.map(o=>`<option>${o}</option>`).join('')}</select><span id="${id}r${i}"></span></div>`).join('')+`<div class="row"><button class="btn pri" id="${id}c">Check answers</button></div><p class="big" id="${id}o" style="font-size:16px"></p>`;
+  $('#'+id+'c').onclick=()=>{let ok=0;items.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,R).value;if(v===q[1]){ok++;$('#'+id+'r'+i).innerHTML='<span class="pill g">✓</span>';}else $('#'+id+'r'+i).innerHTML=v?'<span class="pill r">✗</span>':'';});$('#'+id+'o').textContent=`Score: ${ok} / ${items.length}`;};
+};
+const svgPt=(svg,e)=>{const r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;return [(e.clientX-r.left)*vb.width/r.width,(e.clientY-r.top)*vb.height/r.height];};
+const HERO=[['Sense','IoT devices collect data — sensors, RFID tags, cameras (the perception layer).'],['Connect','The network layer moves the data: Internet, Wi-Fi, Bluetooth, with protocols like MQTT and CoAP.'],['Think','AI & machine learning find patterns and make decisions — in the middleware / cloud.'],['Act','The application layer and actuators respond: AC on, irrigation on, an alert on your phone.']];
+function heroInit(){const el=$('#heroSteps'),tx=$('#heroTxt');let cur=0;const draw=()=>{el.innerHTML=HERO.map((h,i)=>`<button class="tg ${i===cur?'on':''}" data-i="${i}">${h[0]}</button>${i<3?'<span class="arrowx">→</span>':''}`).join('');tx.innerHTML=`<b>${HERO[cur][0]}.</b> ${HERO[cur][1]}`;};el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;cur=+b.dataset.i;draw();};draw();}
+
+/* ============ A1 AI BASICS ============ */
+const BR=[['Machine learning (incl. deep learning)','Machines learn by themselves from data — supervised, unsupervised and reinforcement learning (see the ML lab).'],['Expert system','A program that captures expert knowledge as rules to give expert-like answers.'],['Fuzzy logic','Reasoning like humans — answers between yes and no (see the fuzzy lab).'],['Neural networks','Networks that work like the human mind; the basis of deep learning and generative AI.'],['Natural language processing','Communication between computers and human beings.'],['Robotics','Machines / humanoids that act in the physical world.']];
+section('ai','AI · Artificial intelligence',`
+<p class="lead"><b>AI</b> is the branch of computer science in which machines are developed that can <b>perform a wide range of tasks expertly</b> without a human doing them. <b>John McCarthy</b> first adopted the term in <b>1956</b> (father of AI) and developed the first AI language, <b>LISP</b> (List Programming), in <b>1958</b>. AI includes <b>learning, reasoning and problem solving</b>.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Fact</th><th class="l">Answer</th></tr><tr><td class="l">Father of AI / term adopted 1956</td><td class="l">John McCarthy</td></tr><tr><td class="l">First AI language (1958)</td><td class="l">LISP — List Programming</td></tr><tr><td class="l">“Programming in Logic”</td><td class="l">Prolog</td></tr><tr><td class="l">Other AI languages</td><td class="l">Java, Python, R, Julia, Smalltalk, Haskell, C++, Scala</td></tr><tr><td class="l">First AI program</td><td class="l">The Logic Theorist, by Allen Newell (year hard to read in the notes — about 1956/57)</td></tr><tr><td class="l">Humanoid</td><td class="l">Human-like but not human</td></tr></table></div>
+<div class="tool"><div class="th">Branches of AI — click one</div><div class="tb"><div id="brT"></div><div id="brB"></div></div></div>
+<div class="tool"><div class="th">Quick quiz</div><div class="tb"><div id="aqL"></div></div></div>
+`,root=>{Tabs($('#brT'),BR.map(b=>b[0]),k=>{$('#brB').innerHTML=`<p>${BR[k][1]}</p><p style="font-size:13px;color:var(--ink2)">The notes list only the six branch names; the one-line descriptions are added.</p>`;});
+  quiz('aqL',[['Who first adopted the term “AI” in 1956?','John McCarthy'],['First AI language (1958)','LISP'],['“Programming in Logic”','Prolog'],['First AI program (Logic Theorist) — by','Allen Newell'],['Human-like machine that is not human','Humanoid']],['John McCarthy','LISP','Prolog','Allen Newell','Humanoid','Alan Turing']);});
+
+/* ============ A2 TYPES ============ */
+const CP=[['Narrow AI','Does a <b>specific task</b>. Examples: virtual / digital assistants (Alexa, Siri, Cortana, Bixby, Google Assistant); face / image recognition; Tesla self-driving car; email spam filter.'],['General / Strong AI','Can do work <b>exactly like a human being</b>. Still in the <b>development phase</b>.'],['Super AI','<b>Stronger than human beings</b>. Still in the <b>imaginary phase</b>.']];
+const FN=[['Reactive machine','Focuses on the <b>present scenario</b>; ignores past experience and memory. Example: IBM <b>Deep Blue</b> (1997) beat the world chess number one, Garry Kasparov.'],['Limited memory','<b>Does not ignore</b> past experience and memory. Example: self-driving car.'],['Theory of mind','AI will <b>work as human beings</b> do.'],['Self awareness','<b>Machines stronger than human beings</b>.']];
+section('types','AI · Types of AI',`
+<div class="tool"><div class="th">Based on capability</div><div class="tb"><div id="cpT"></div><div id="cpB"></div></div></div>
+<div class="tool"><div class="th">Based on functionality</div><div class="tb"><div id="fnT"></div><div id="fnB"></div></div></div>
+<div class="tool"><div class="th">Which type is it?</div><div class="tb"><div id="tyQ"></div></div></div>
+`,root=>{Tabs($('#cpT'),CP.map(c=>c[0]),k=>{$('#cpB').innerHTML=`<p>${CP[k][1]}</p>`;});Tabs($('#fnT'),FN.map(c=>c[0]),k=>{$('#fnB').innerHTML=`<p>${FN[k][1]}</p>`;});
+  quiz('tyQ',[['An email spam filter','Narrow AI'],['Alexa or Siri','Narrow AI'],['An AI that does exactly what a human can — not built yet','General / Strong AI'],['An AI stronger than humans — still imaginary','Super AI'],['Deep Blue, which only looks at the current chess position','Reactive machine'],['A self-driving car using past observations','Limited memory'],['AI that works as human beings do','Theory of mind'],['Machines stronger than human beings (self-aware)','Self awareness']],['Narrow AI','General / Strong AI','Super AI','Reactive machine','Limited memory','Theory of mind','Self awareness']);});
+
+/* ============ A3 TIMELINE ============ */
+const TL=[['1943','First AI program written unknowingly on the Mark-1 computer.'],['1950','Alan Turing launched the book / article “Computer Machinery & Intelligence”.'],['1956','John McCarthy workshop — the study of AI.'],['1958','LISP (List Programming) — first AI language, by John McCarthy; he introduced the term “Humanoid”.'],['1958','Licklider defines the human–machine relationship for the first time.'],['1962','UNIMATION — first robotic company, started by Joseph Engelberger (father of robotics).'],['1966','ELIZA — first AI program / chatbot. <i>(Written by Joseph Weizenbaum; the notes credit Engelberger.)</i>'],['1973','WABOT-1 — first humanoid robot, Waseda University, Japan.'],['1997','IBM Deep Blue defeats world number one Garry Kasparov. <i>(A chess computer, not a humanoid.)</i>'],['14 Feb 2016','Sophia AI robot — face recognition; Hanson Robotics, Hong Kong; first robot to get citizenship in 2017. <i>(Saudi Arabia granted it; the notes say UAE.)</i>']];
+section('hist','AI · Evolution timeline',`
+<div class="tool"><div class="th">Click an event</div><div class="tb"><div class="cols2"><svg id="tlS" viewBox="0 0 260 340" width="260" role="img" aria-label="Timeline"></svg><div id="tlB"></div></div></div></div>
+<div class="tool"><div class="th">Match the milestone</div><div class="tb"><div id="tlQ"></div></div></div>
+`,root=>{let c=9;const tl=()=>{$('#tlS').innerHTML=`<line x1="90" y1="10" x2="90" y2="330" stroke="#15233b" stroke-width="3"/>`+TL.map((e,i)=>`<g data-i="${i}" style="cursor:pointer"><circle cx="90" cy="${25+i*32}" r="${i===c?9:6}" class="g" style="fill:${i===c?'#d8f1ea':'#fff0c9'};${i===c?'stroke:#0a8f7b;stroke-width:3':''}"/><text class="pin" x="78" y="${29+i*32}" text-anchor="end" font-size="11">${e[0]}</text></g>`).join('');
+    $('#tlB').innerHTML=`<h4 style="margin-top:0">${TL[c][0]}</h4><p>${TL[c][1]}</p>`;$$('#tlS g[data-i]').forEach(g=>g.onclick=()=>{c=+g.dataset.i;tl();});};tl();
+  quiz('tlQ',[['1943 — written unknowingly on the Mark-1','First AI program'],['1950 — Alan Turing’s article','Computer Machinery & Intelligence'],['1958 — first AI language','LISP'],['1962 — first robotic company','UNIMATION'],['1966 — first chatbot','ELIZA'],['1973 — first humanoid robot','WABOT-1'],['1997 — beat Kasparov','Deep Blue'],['2016 — Hanson Robotics’ robot','Sophia']],['First AI program','Computer Machinery & Intelligence','LISP','UNIMATION','ELIZA','WABOT-1','Deep Blue','Sophia']);});
+
+/* ============ A4 AGENTS ============ */
+const AG=[['Simple reflex','Observes the environment and acts on a <b>condition</b>; pre-programmed. e.g. if temp &gt; 28 → AC ON else AC OFF.'],['Model-based reflex','Observes the environment <b>partially</b> and acts. e.g. self-driving cars.'],['Goal-based','The <b>extended model-based agent</b>: searching and planning. e.g. Google Waymo (2009).'],['Utility-based','<b>Happy / unhappy state</b> based; picks the optimized path from several. e.g. price comparison.'],['Learning','<b>Learns from past experience</b>, like human beings.']];
+section('agent','AI · Agents',`
+<p class="lead">An <b>agent</b> is an independent entity that <b>observes the environment to achieve a goal</b>. <b>Agent = Architecture + Program.</b></p>
+<div class="tool"><div class="th">Five types of agents</div><div class="tb"><div id="agT"></div><div id="agB"></div></div></div>
+<div class="tool"><div class="th">Simple reflex agent — the thermostat (if temp &gt; 28 → AC ON)</div><div class="tb"><div class="row"><label for="thT">Room temperature</label><input type="range" id="thT" min="15" max="40" value="26" style="width:240px"><b class="m" id="thV"></b></div><svg id="thS" viewBox="0 0 560 90" width="560"></svg><div id="thO"></div></div></div>
+<div class="tool"><div class="th">Utility-based agent — price comparison</div><div class="tb"><p style="font-size:13.5px;margin:0 0 6px">Set what makes you “happy”; the agent scores each shop and chooses the best.</p><div class="cols2"><label>Importance of low price <b class="m" id="utAv"></b><input type="range" id="utA" min="0" max="10" value="6"></label><label>Importance of fast delivery <b class="m" id="utBv"></b><input type="range" id="utB" min="0" max="10" value="3"></label><label>Importance of rating <b class="m" id="utCv"></b><input type="range" id="utC" min="0" max="10" value="5"></label></div><div id="utO"></div></div></div>
+<div class="tool"><div class="th">Which agent?</div><div class="tb"><div id="agQ"></div></div></div>
+`,root=>{Tabs($('#agT'),AG.map(a=>a[0]),k=>{$('#agB').innerHTML=`<p>${AG[k][1]}</p>`;});
+  const th=()=>{const t=+$('#thT').value,on=t>28;$('#thV').textContent=t+' °C';$('#thS').innerHTML=svgBox(10,20,140,50,'Sensor: '+t+' °C',false,13)+wire([[150,45],[250,45]],true)+arrowHead(250,45,'r',true)+svgBox(250,20,160,50,'if temp > 28 ?',true,13)+wire([[410,45],[440,45]],true)+arrowHead(440,45,'r',true)+svgBox(440,20,110,50,'AC '+(on?'ON':'OFF'),on,14);$('#thO').innerHTML=`<div class="${on?'okm':'note'}">${t} °C ${on?'>':'≤'} 28 → the rule fires: <b>AC ${on?'ON':'OFF'}</b>. No memory, no planning — just condition → action.</div>`;};$('#thT').oninput=th;th();
+  const SH=[['Shop A',500,5,4.0],['Shop B',450,7,3.5],['Shop C',550,2,4.5]];const ut=()=>{const w=['A','B','C'].map(k=>+$('#ut'+k).value);['A','B','C'].forEach((k,i)=>$('#ut'+k+'v').textContent=w[i]);const P=SH.map(s=>s[1]),D=SH.map(s=>s[2]),R=SH.map(s=>s[3]);const n=(v,a,lo,hi,inv)=>inv?(hi-v)/(hi-lo):(v-lo)/(hi-lo);const S=SH.map(s=>{const sc=[n(s[1],0,Math.min(...P),Math.max(...P),true),n(s[2],0,Math.min(...D),Math.max(...D),true),n(s[3],0,Math.min(...R),Math.max(...R),false)];const tw=w.reduce((a,b)=>a+b,0)||1;return [s[0],s[1],s[2]+' days',s[3],+(sc.reduce((a,x,i)=>a+x*w[i],0)/tw).toFixed(2)];});const best=Math.max(...S.map(s=>s[4]));
+    $('#utO').innerHTML=htmlTable(['Shop','Price','Delivery','Rating','Utility (0–1)'],S,{row:(r,i)=>S[i][4]===best?'hi':''})+`<p class="big" style="font-size:16px">Chosen: <b>${S.find(s=>s[4]===best)[0]}</b> — the happiest state for these preferences.</p>`;};['#utA','#utB','#utC'].forEach(s=>$(s).oninput=ut);ut();
+  quiz('agQ',[['Turns the AC on when the temperature is above 28','Simple reflex'],['A self-driving car that sees only part of the road','Model-based reflex'],['Google Waymo searching for a route to the destination','Goal-based'],['A price-comparison tool picking the best option','Utility-based'],['An agent that improves from past experience','Learning']],['Simple reflex','Model-based reflex','Goal-based','Utility-based','Learning']);});
+/* ============ A5 SEARCH ============ */
+const GW=12,GH=8;
+function gridSearch(alg,walls,S,G){const key=(x,y)=>x+','+y,nb=(x,y)=>[[1,0],[0,1],[-1,0],[0,-1]].map(d=>[x+d[0],y+d[1]]).filter(p=>p[0]>=0&&p[1]>=0&&p[0]<GW&&p[1]<GH&&!walls.has(key(...p)));
+  const h=(x,y)=>Math.abs(x-G[0])+Math.abs(y-G[1]);const par={},seen=new Set([key(...S)]),order=[];let open=[[S[0],S[1],0]];const g={[key(...S)]:0};let found=false;
+  while(open.length){let cur;if(alg==='BFS')cur=open.shift();else if(alg==='DFS')cur=open.pop();else{let bi=0;open.forEach((o,i)=>{if(o[2]+h(o[0],o[1])<open[bi][2]+h(open[bi][0],open[bi][1]))bi=i;});cur=open.splice(bi,1)[0];}
+    order.push([cur[0],cur[1]]);if(cur[0]===G[0]&&cur[1]===G[1]){found=true;break;}
+    const ns=nb(cur[0],cur[1]);if(alg==='DFS')ns.reverse();ns.forEach(p=>{const k=key(...p);if(alg==='A*'){if(g[k]===undefined||cur[2]+1<g[k]){g[k]=cur[2]+1;par[k]=key(cur[0],cur[1]);open.push([p[0],p[1],cur[2]+1]);}}else if(!seen.has(k)){seen.add(k);par[k]=key(cur[0],cur[1]);open.push([p[0],p[1],cur[2]+1]);}});}
+  let path=[];if(found){let k=key(...G);while(k){path.push(k.split(',').map(Number));k=par[k];}path.reverse();}return {order,path,found};}
+section('search','AI · Searching algorithms',`
+<table class="t" style="max-width:640px"><tr><th class="l">Informed (heuristic)</th><th class="l">Uninformed (blind / brute force)</th></tr><tr><td class="l">Knowledge-based; solution found <b>quickly</b>; no guarantee of completion; direction to the solution is known; <b>A*, graph search</b></td><td class="l">Does not use knowledge; solution found <b>late</b>; guarantee of completion; direction unknown; <b>BFS, uniform-cost search, DFS</b></td></tr></table>
+<div class="tool"><div class="th">Path-finding lab — click cells to toggle walls</div><div class="tb"><div id="srT"></div><div class="row"><label for="srK">Steps shown</label><input type="range" id="srK" min="0" max="1" value="0" style="width:260px"><b class="m" id="srV"></b><button class="btn" id="srR">Clear walls</button></div><svg id="srS" viewBox="0 0 480 320" width="480" role="img" aria-label="Grid"></svg><div id="srO"></div><div class="row"><button class="btn pri" id="srC">Compare all three</button></div><div id="srCo"></div></div></div>
+`,root=>{const S=[0,0],G=[GW-1,GH-1];let walls=new Set(['3,0','3,1','3,2','3,3','3,4','7,7','7,6','7,5','7,4','7,3']),alg='BFS',res;
+  const sr=()=>{res=gridSearch(alg,walls,S,G);const mx=res.order.length;$('#srK').max=mx;if(+$('#srK').value>mx)$('#srK').value=mx;const k=+$('#srK').value,vis=new Set(res.order.slice(0,k).map(p=>p.join(','))),path=new Set(k>=mx?res.path.map(p=>p.join(',')):[]);$('#srV').textContent=k+' / '+mx;
+    let o='';for(let y=0;y<GH;y++)for(let x=0;x<GW;x++){const kk=x+','+y;const f=walls.has(kk)?'#15233b':kk===S.join(',')?'#d98e04':kk===G.join(',')?'#c43d2f':path.has(kk)?'#0a8f7b':vis.has(kk)?'#bfe3d8':'#fff';o+=`<rect data-c="${kk}" x="${x*40}" y="${y*40}" width="40" height="40" stroke="#c3ccc7" style="fill:${f};cursor:pointer"/>`;}
+    o+=`<text class="pin" x="20" y="25" text-anchor="middle" style="fill:#fff;pointer-events:none">S</text><text class="pin" x="${G[0]*40+20}" y="${G[1]*40+25}" text-anchor="middle" style="fill:#fff;pointer-events:none">G</text>`;$('#srS').innerHTML=o;
+    $('#srO').innerHTML=`<p><b>${alg}</b> — cells explored: <b>${mx}</b>; ${res.found?`path length: <b>${res.path.length-1}</b> steps`:'<b style="color:var(--red)">no path exists</b>'}. ${alg==='A*'?'A* uses a heuristic (distance to the goal) to head for G.':alg==='DFS'?'DFS dives deep first — it finds a path, not necessarily the shortest.':'BFS spreads out evenly and finds the shortest path.'}</p>`;};
+  Tabs($('#srT'),['BFS (uninformed)','DFS (uninformed)','A* (informed)'],k=>{alg=['BFS','DFS','A*'][k];$('#srK').value=99999;sr();});
+  $('#srK').oninput=sr;$('#srS').onclick=e=>{const c=e.target.dataset.c;if(!c||c===S.join(',')||c===G.join(','))return;walls.has(c)?walls.delete(c):walls.add(c);$('#srK').value=99999;sr();};$('#srR').onclick=()=>{walls=new Set();$('#srK').value=99999;sr();};
+  $('#srC').onclick=()=>{$('#srCo').innerHTML=htmlTable(['Algorithm','Type','Cells explored','Path length'],['BFS','DFS','A*'].map(a=>{const r=gridSearch(a,walls,S,G);return [a,a==='A*'?'informed':'uninformed',r.order.length,r.found?r.path.length-1:'none'];}));};
+  $('#srK').value=99999;sr();});
+
+/* ============ A6 DOMAINS ============ */
+section('dom','AI · Domains of AI',`
+<p class="lead">Three domains: <b>data science</b> (study of audio / video / textual data using mathematics and statistics), <b>computer vision</b> (identifying images and objects — Google Lens, face recognition) and <b>NLP</b> (communication between computers and human beings).</p>
+<div class="tool"><div class="th">Try each domain</div><div class="tb"><div id="dmT"></div><div id="dmB"></div></div></div>
+`,root=>{
+  const dm=[()=>`<div class="row"><label for="dsI">Numbers</label><input type="text" id="dsI" value="12, 15, 11, 18, 20, 15, 30" size="26"></div><div id="dsO"></div>`,()=>`<p>Click pixels to draw. Edges (where neighbouring pixels differ) are outlined in red — a first step in recognising objects.</p><svg id="cvS" viewBox="0 0 240 240" width="240"></svg><button class="btn" id="cvR">Clear</button>`,()=>`<div class="row"><label for="nlI">Sentence</label><input type="text" id="nlI" value="I love this great phone but the battery is bad" size="40"></div><div id="nlO"></div>`];
+  Tabs($('#dmT'),['Data science','Computer vision','NLP'],k=>{$('#dmB').innerHTML=dm[k]();
+    if(k===0){const ds=()=>{const v=$('#dsI').value.split(/[ ,;]+/).map(Number).filter(x=>!isNaN(x)&&$('#dsI').value);if(!v.length){$('#dsO').innerHTML='';return;}const s=[...v].sort((a,b)=>a-b),mean=v.reduce((a,b)=>a+b,0)/v.length,med=s.length%2?s[(s.length-1)/2]:(s[s.length/2-1]+s[s.length/2])/2,sd=Math.sqrt(v.reduce((a,b)=>a+(b-mean)**2,0)/v.length);const mx=Math.max(...v);
+      $('#dsO').innerHTML=htmlTable(['Count','Mean','Median','Min','Max','Std. dev.'],[[v.length,mean.toFixed(2),med,s[0],s[s.length-1],sd.toFixed(2)]])+`<svg viewBox="0 0 560 100" width="560">${v.map((x,i)=>`<rect x="${10+i*(540/v.length)}" y="${90-x/mx*80}" width="${Math.min(40,540/v.length-6)}" height="${x/mx*80}" fill="#0a8f7b"/>`).join('')}</svg><p style="font-size:13px;color:var(--ink2)">Mathematical and statistical principles applied to data.</p>`;};$('#dsI').oninput=ds;ds();}
+    if(k===1){const px=Array(64).fill(0);[9,10,11,12,17,20,25,28,33,36,41,42,43,44].forEach(i=>px[i]=1);const cv=()=>{let o='';for(let y=0;y<8;y++)for(let x=0;x<8;x++){const i=y*8+x;o+=`<rect data-i="${i}" x="${x*30}" y="${y*30}" width="30" height="30" stroke="#c3ccc7" style="fill:${px[i]?'#15233b':'#fff'};cursor:pointer"/>`;}
+      for(let y=0;y<8;y++)for(let x=0;x<8;x++){const i=y*8+x;if(x<7&&px[i]!==px[i+1])o+=`<line x1="${x*30+30}" y1="${y*30}" x2="${x*30+30}" y2="${y*30+30}" stroke="#e53935" stroke-width="3"/>`;if(y<7&&px[i]!==px[i+8])o+=`<line x1="${x*30}" y1="${y*30+30}" x2="${x*30+30}" y2="${y*30+30}" stroke="#e53935" stroke-width="3"/>`;}$('#cvS').innerHTML=o;};cv();$('#cvS').onclick=e=>{const i=e.target.dataset.i;if(i===undefined)return;px[i]^=1;cv();};$('#cvR').onclick=()=>{px.fill(0);cv();};}
+    if(k===2){const P=['love','great','good','excellent','happy','nice','fast','best'],N=['bad','terrible','slow','worst','hate','poor','broken','sad'];const nl=()=>{const w=($('#nlI').value.toLowerCase().match(/[a-z']+/g)||[]);const pos=w.filter(x=>P.includes(x)),neg=w.filter(x=>N.includes(x));$('#nlO').innerHTML=`<p>Tokens: ${w.map(x=>`<span class="pill ${P.includes(x)?'g':N.includes(x)?'r':''}">${x}</span>`).join('')}</p><p>Positive words: ${pos.length} · negative words: ${neg.length} → <b>${pos.length>neg.length?'positive':neg.length>pos.length?'negative':'mixed / neutral'}</b> sentiment.</p><p style="font-size:13px;color:var(--ink2)">A toy keyword model — real NLP learns this from data.</p>`;};$('#nlI').oninput=nl;nl();}});
+});
+
+/* ============ A7 ML ============ */
+section('ml','ML · Machine learning lab',`
+<p class="lead">ML is a <b>subsystem of AI</b> that <b>learns by itself</b> — no separate algorithm needs to be written. Three types: <b>supervised</b> (labelled data: regression and classification), <b>unsupervised</b> (unlabelled data: K-means, hierarchical clustering) and <b>reinforcement</b> (reward and punishment).</p>
+<div class="tool"><div class="th">Pick a learning type</div><div class="tb"><div id="mlT"></div><div id="mlB"></div></div></div>
+`,root=>{let timer=null;
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  const ML=[
+   ()=>{let pts=[[60,200],[130,170],[200,140],[270,120],[350,70],[430,50]];let q=()=>{const n=pts.length;if(n<2)return null;const mx=pts.reduce((a,p)=>a+p[0],0)/n,my=pts.reduce((a,p)=>a+p[1],0)/n;let nu=0,de=0;pts.forEach(p=>{nu+=(p[0]-mx)*(p[1]-my);de+=(p[0]-mx)**2;});const m=de?nu/de:0;return [m,my-m*mx];};
+     $('#mlB').innerHTML=`<p><b>Supervised — regression</b>: the relationship between two variables. Click the plot to add labelled (x, y) points; the line is learned from them.</p><svg id="rgS" viewBox="0 0 500 250" width="500" style="cursor:crosshair"></svg><div class="row"><label for="rgX">Predict y for x =</label><input type="text" id="rgX" value="250" size="5"><button class="btn" id="rgR">Clear</button></div><div id="rgO"></div>`;
+     const dr=()=>{const f=q();$('#rgS').innerHTML=`<rect width="500" height="250" fill="#fff" stroke="#c3ccc7"/>`+(f?`<line x1="0" y1="${f[1]}" x2="500" y2="${f[0]*500+f[1]}" stroke="#0a8f7b" stroke-width="2.5"/>`:'')+pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#d98e04" stroke="#15233b"/>`).join('');const x=+$('#rgX').value||0;$('#rgO').innerHTML=f?`<p>Learned line: y = ${f[0].toFixed(3)}·x + ${f[1].toFixed(1)}. Prediction for x = ${x}: y ≈ <b>${(f[0]*x+f[1]).toFixed(1)}</b> (screen y grows downward).</p>`:'<p class="m">Add at least 2 points.</p>';};
+     $('#rgS').onclick=e=>{pts.push(svgPt($('#rgS'),e));dr();};$('#rgR').onclick=()=>{pts=[];dr();};$('#rgX').oninput=dr;dr();},
+   ()=>{let pts=[[80,80,1],[110,120,1],[140,70,1],[400,170,0],[370,200,0],[430,140,0]],mode=0;
+     $('#mlB').innerHTML=`<p><b>Supervised — classification</b> (works on Yes / No): add labelled points, then classify a new point by its 3 nearest labelled neighbours.</p><div id="clT"></div><svg id="clS" viewBox="0 0 500 250" width="500" style="cursor:crosshair"></svg><div id="clO"></div>`;
+     let test=null;const cl=()=>{let o=`<rect width="500" height="250" fill="#fff" stroke="#c3ccc7"/>`;pts.forEach(p=>o+=`<circle cx="${p[0]}" cy="${p[1]}" r="6" fill="${p[2]?'#0a8f7b':'#c43d2f'}"/>`);let msg='<p class="m">Add Yes / No points, or switch to “Classify a point”.</p>';
+       if(test){const d=pts.map(p=>[Math.hypot(p[0]-test[0],p[1]-test[1]),p]).sort((a,b)=>a[0]-b[0]).slice(0,3);d.forEach(x=>o+=`<line x1="${test[0]}" y1="${test[1]}" x2="${x[1][0]}" y2="${x[1][1]}" stroke="#15233b" stroke-dasharray="4 3"/>`);const yes=d.filter(x=>x[1][2]).length,res=yes>=2;o+=`<circle cx="${test[0]}" cy="${test[1]}" r="8" fill="${res?'#0a8f7b':'#c43d2f'}" stroke="#15233b" stroke-width="3"/>`;msg=`<div class="${res?'okm':'err'}">3 nearest neighbours: ${yes} Yes, ${3-yes} No → classified <b>${res?'YES':'NO'}</b>.</div>`;}
+       $('#clS').innerHTML=o;$('#clO').innerHTML=msg;};
+     Tabs($('#clT'),['Add “Yes” points','Add “No” points','Classify a point'],k=>{mode=k;});$('#clS').onclick=e=>{const p=svgPt($('#clS'),e);if(mode<2){pts.push([p[0],p[1],mode===0?1:0]);test=null;}else test=p;cl();};cl();},
+   ()=>{let pts=[],K=3,C=[],asg=[],it=0;const gen=()=>{pts=[];[[110,70],[380,80],[250,190]].forEach(c=>{for(let i=0;i<14;i++)pts.push([c[0]+rnd(-45,45),c[1]+rnd(-35,35)]);});C=[...Array(K)].map(()=>pts[Math.floor(Math.random()*pts.length)].slice());asg=pts.map(()=>-1);it=0;};
+     $('#mlB').innerHTML=`<p><b>Unsupervised — K-means</b>: unlabelled data; the machine finds hidden groups itself. Each step: assign every point to the nearest centroid, then move the centroids.</p><div class="row"><label for="kmK">Clusters K</label><select id="kmK"><option>2</option><option selected>3</option><option>4</option></select><button class="btn pri" id="kmS">Step</button><button class="btn" id="kmN">New random data</button></div><svg id="kmS2" viewBox="0 0 500 250" width="500"></svg><div id="kmO"></div>`;
+     const cols=['#c43d2f','#0a8f7b','#d98e04','#6a4fb3'];const km=(moved)=>{$('#kmS2').innerHTML=`<rect width="500" height="250" fill="#fff" stroke="#c3ccc7"/>`+pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="${asg[i]<0?'#9aa8a1':cols[asg[i]]}"/>`).join('')+C.map((c,i)=>`<rect x="${c[0]-7}" y="${c[1]-7}" width="14" height="14" fill="${cols[i]}" stroke="#15233b" stroke-width="2.5"/>`).join('');$('#kmO').innerHTML=`<p>Iteration ${it}${moved===false?' — <b>converged</b>: assignments stopped changing.':''}</p>`;};
+     const step=()=>{let ch=false;pts.forEach((p,i)=>{let b=0,bd=1e9;C.forEach((c,j)=>{const d=Math.hypot(p[0]-c[0],p[1]-c[1]);if(d<bd){bd=d;b=j;}});if(asg[i]!==b){asg[i]=b;ch=true;}});C.forEach((c,j)=>{const m=pts.filter((p,i)=>asg[i]===j);if(m.length){c[0]=m.reduce((a,p)=>a+p[0],0)/m.length;c[1]=m.reduce((a,p)=>a+p[1],0)/m.length;}});it++;km(ch);};
+     $('#kmS').onclick=step;$('#kmN').onclick=()=>{gen();km();};$('#kmK').onchange=()=>{K=+$('#kmK').value;gen();km();};gen();km();},
+   ()=>{const T=[0.3,0.5,0.8];let Q,N,tot,steps;const rs=()=>{Q=[0,0,0];N=[0,0,0];tot=0;steps=0;};rs();
+     $('#mlB').innerHTML=`<p><b>Reinforcement learning</b>: no labels — the agent tries actions (hit &amp; trial), gets a <b>reward (+1) or punishment (−1)</b> from the environment and learns which action is best (a <b>value-based</b> method).</p><div class="row"><label for="rlE">Exploration ε</label><input type="range" id="rlE" min="0" max="100" value="20" style="width:160px"><b class="m" id="rlEv"></b><button class="btn pri" id="rl1">1 step</button><button class="btn pri" id="rl100">100 steps</button><button class="btn" id="rlR">Reset</button></div><div id="rlO"></div>`;
+     const act=()=>{const e=+$('#rlE').value/100;let a=Math.random()<e?Math.floor(Math.random()*3):Q.indexOf(Math.max(...Q));const r=Math.random()<T[a]?1:-1;N[a]++;Q[a]+=(r-Q[a])/N[a];tot+=r;steps++;};
+     const rl=()=>{$('#rlEv').textContent=$('#rlE').value+'%';$('#rlO').innerHTML=htmlTable(['Action (slot machine)','Times tried','Learned value','Hidden win chance'],[0,1,2].map(i=>['Machine '+(i+1),N[i],Q[i].toFixed(2),Math.round(T[i]*100)+'%']),{row:(r,i)=>N[i]&&Q[i]===Math.max(...Q)?'hi':''})+`<p class="big" style="font-size:16px">Steps: ${steps} · total reward: <b>${tot}</b> · the agent currently prefers <b>Machine ${Q.indexOf(Math.max(...Q))+1}</b> (the best is Machine 3).</p>`;};
+     $('#rlE').oninput=rl;$('#rl1').onclick=()=>{act();rl();};$('#rl100').onclick=()=>{for(let i=0;i<100;i++)act();rl();};$('#rlR').onclick=()=>{rs();rl();};rl();}];
+  Tabs($('#mlT'),['Regression','Classification','K-means','Reinforcement'],k=>{ML[k]();});
+});
+
+/* ============ A8 BLOCKCHAIN ============ */
+function fnv(s){let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0;}return h.toString(16).padStart(8,'0');}
+section('bc','AI · Blockchain',`
+<ul><li>A <b>ledger</b> that records transactions in a <b>peer-to-peer network</b>; information is <b>encrypted / secured</b> and cannot be changed. Each <b>block</b> holds: <b>data</b>, <b>timestamp</b> (creation time), <b>hash value</b> (block security) and the <b>previous hash</b>. Connected blocks form the <b>blockchain</b>. No centralized control, no specific owner, no privacy breach.</li><li>History: 1991 Haber &amp; Stornetta (secured block) · 1992 Merkle tree (Ralph Merkle, 1979) · 2004 RPOW — Hal Finney · 2008 Satoshi Nakamoto — cryptocurrency.</li></ul>
+<div class="tool"><div class="th">Tamper with a block</div><div class="tb"><p style="font-size:13.5px;margin:0 0 6px">Edit any block's data and watch the chain break. “Re-mine” recomputes that block's hash — but then the next block's “previous hash” no longer matches.</p><div id="bcO"></div><div class="row"><button class="btn pri" id="bcAdd">Add a block</button><button class="btn" id="bcR">Reset</button></div></div></div>
+`,root=>{let B;const mk=(i,data,prev)=>{const ts='10:'+String(10+i*7).padStart(2,'0')+':00';return {i,data,ts,prev,hash:fnv(i+data+ts+prev)};};
+  const rs=()=>{B=[];['Alice pays Bob 5','Bob pays Carol 2','Carol pays Dan 1'].forEach(d=>B.push(mk(B.length,d,B.length?B[B.length-1].hash:'00000000')));};rs();
+  const bc=()=>{const ok=B.map((b,i)=>fnv(b.i+b.data+b.ts+b.prev)===b.hash&&(i===0||b.prev===B[i-1].hash));
+    $('#bcO').innerHTML=`<div class="scroll"><div style="display:flex;gap:10px;min-width:${B.length*190}px">${B.map((b,i)=>`<div style="flex:1;min-width:180px;border:2px solid ${ok[i]?'#0a8f7b':'#c43d2f'};background:${ok[i]?'#eaf6f2':'#fbe3df'};border-radius:6px;padding:8px;font-size:12.5px"><b>Block ${i+1}</b> ${ok[i]?'✓ valid':'✗ INVALID'}<br>Data:<input type="text" data-d="${i}" value="${esc(b.data)}" style="width:100%"><br>Timestamp: ${b.ts}<br>Hash: <span class="m">${b.hash}</span><br>Previous hash: <span class="m">${b.prev}</span><br><button class="btn" data-m="${i}" style="margin-top:4px">Re-mine</button></div>`).join('')}</div></div><p class="big" style="font-size:15px">${ok.every(Boolean)?'Chain is valid — every block links to the hash of the one before it.':'Chain is <b>broken</b>: '+ok.map((v,i)=>v?null:'Block '+(i+1)).filter(Boolean).join(', ')+' no longer match their hashes / links.'}</p>`;
+    $$('#bcO [data-d]').forEach(e=>e.onchange=()=>{B[+e.dataset.d].data=e.value;bc();});$$('#bcO [data-m]').forEach(b=>b.onclick=()=>{const i=+b.dataset.m,x=B[i];x.prev=i?B[i-1].hash:'00000000';x.hash=fnv(x.i+x.data+x.ts+x.prev);bc();});};
+  $('#bcAdd').onclick=()=>{B.push(mk(B.length,'New transaction '+(B.length+1),B[B.length-1].hash));bc();};$('#bcR').onclick=()=>{rs();bc();};bc();});
+
+/* ============ A9 FUZZY ============ */
+section('fz','AI · Fuzzy logic & generative AI',`
+<p class="lead"><b>Fuzzy logic</b> reasons like humans: an ordinary computer decides only <b>yes / no</b>, fuzzy logic also covers the <b>possibilities between yes and no</b> (first introduced by <b>Lotfi Zadeh</b>). Advantages: any type of input, less memory, easy to understand, add / delete rules easily. Disadvantages: not always correct, can be confusing, no systematic design, slow. Uses: altitude control of spacecraft, decision support, microwave cooking, traffic control.</p>
+<div class="tool"><div class="th">Fuzzy fan controller</div><div class="tb"><div class="row"><label for="fzT">Temperature</label><input type="range" id="fzT" min="0" max="50" value="27" style="width:260px"><b class="m" id="fzV"></b></div><svg id="fzS" viewBox="0 0 560 160" width="560" role="img" aria-label="Membership functions"></svg><div id="fzO"></div></div></div>
+<div class="tool"><div class="th">“Is Raju a teacher?” — a degree, not just yes / no</div><div class="tb"><div class="row"><label for="rjD">How much of his day is spent teaching</label><input type="range" id="rjD" min="0" max="100" value="80" style="width:240px"><b class="m" id="rjV"></b></div><div id="rjO"></div></div></div>
+<div class="tool"><div class="th">Generative AI — a tiny pattern learner</div><div class="tb"><p style="font-size:13.5px;margin:0 0 6px"><b>Generative AI</b> processes existing data, learns its pattern (using neural networks — ChatGPT, DALL-E) and creates new data with a similar pattern. This toy learns word-to-next-word patterns from the text below and generates new text.</p><textarea class="sql" id="gnT" style="min-height:70px">the cat sat on the mat the dog sat on the rug the cat saw the dog and the dog saw the cat</textarea><div class="row"><button class="btn pri" id="gnG">Generate new text</button><label for="gnN">Words</label><input type="text" id="gnN" value="12" size="3"></div><div id="gnO"></div></div></div>
+`,root=>{
+  const mu={cold:t=>t<=10?1:t>=25?0:(25-t)/15,warm:t=>t<=15||t>=35?0:t<=25?(t-15)/10:(35-t)/10,hot:t=>t<=25?0:t>=40?1:(t-25)/15};
+  const fz=()=>{const t=+$('#fzT').value;$('#fzV').textContent=t+' °C';const m={cold:mu.cold(t),warm:mu.warm(t),hot:mu.hot(t)},sp={cold:0,warm:50,hot:100},tw=m.cold+m.warm+m.hot,out=(m.cold*sp.cold+m.warm*sp.warm+m.hot*sp.hot)/(tw||1);
+    const x=v=>10+v*10.8;let o=`<line x1="10" y1="140" x2="550" y2="140" stroke="#15233b"/>`;[['cold','#0a6bb3'],['warm','#d98e04'],['hot','#c43d2f']].forEach(([k,c])=>{let p='';for(let v=0;v<=50;v+=1)p+=(p?' ':'')+x(v)+','+(140-mu[k](v)*110);o+=`<polyline points="${p}" fill="none" stroke="${c}" stroke-width="3"/>`;});o+=`<line x1="${x(t)}" y1="20" x2="${x(t)}" y2="140" stroke="#15233b" stroke-dasharray="4 3"/><text class="pin" x="14" y="156">0</text><text class="pin" x="540" y="156">50 °C</text><text class="pin" x="${x(2)}" y="34" style="fill:#0a6bb3">cold</text><text class="pin" x="${x(22)}" y="34" style="fill:#d98e04">warm</text><text class="pin" x="${x(44)}" y="34" style="fill:#c43d2f">hot</text>`;$('#fzS').innerHTML=o;
+    $('#fzO').innerHTML=htmlTable(['Fuzzy set','Degree of membership','Rule → fan speed'],[['cold',m.cold.toFixed(2),'0 %'],['warm',m.warm.toFixed(2),'50 %'],['hot',m.hot.toFixed(2),'100 %']])+`<p class="big" style="font-size:16px">Fuzzy fan speed = <b>${out.toFixed(0)} %</b> &nbsp;(weighted by the memberships). A crisp rule “hot if &gt; 30” would jump from 0 % to 100 %; fuzzy logic changes smoothly.</p>`;};$('#fzT').oninput=fz;fz();
+  const rj=()=>{const d=+$('#rjD').value;$('#rjV').textContent=d+'%';const y=d>=90,n=d<=10;$('#rjO').innerHTML=`<p>Ordinary computer: <span class="pill ${d>=50?'g':'r'}">${d>=50?'YES':'NO'}</span> &nbsp; Fuzzy logic: membership in “teacher” = <b>${(d/100).toFixed(2)}</b> — ${y?'yes':n?'no':d>=50?'<b>nearly yes</b>':'<b>sometimes no</b>'}.</p>`;};$('#rjD').oninput=rj;rj();
+  const gn=()=>{const w=$('#gnT').value.toLowerCase().match(/[a-z']+/g)||[];const M={};for(let i=0;i<w.length-1;i++)(M[w[i]]=M[w[i]]||[]).push(w[i+1]);const n=Math.min(40,+$('#gnN').value||12);if(!w.length){$('#gnO').innerHTML='';return;}let c=w[Math.floor(Math.random()*w.length)],out=[c];for(let i=1;i<n;i++){const nx=M[c];c=nx?nx[Math.floor(Math.random()*nx.length)]:w[Math.floor(Math.random()*w.length)];out.push(c);}
+    $('#gnO').innerHTML=`<p class="big" style="font-size:17px">${out.join(' ')}</p>`+htmlTable(['Word','Learned next words'],Object.entries(M).slice(0,8).map(([k,v])=>[k,[...new Set(v)].join(', ')]))+'<p style="font-size:13px;color:var(--ink2)">New text with a similar pattern — real generative AI uses deep neural networks instead of this simple table.</p>';};$('#gnG').onclick=gn;gn();
+});
+/* ============ B1 IOT BASICS ============ */
+const IL=[['Application layer','Provides <b>user-specific services</b> — e.g. smartphones.','#e8f5e9'],['Middleware layer','Handles <b>decision making</b> — data processing, filtering data.','#e3f2fd'],['Network layer','<b>Transmits data</b> — Internet, Wi-Fi, Bluetooth.','#fff8e1'],['Perception layer','<b>Collects data</b> — sensors, RFID tags, cameras.','#e8eaf6']];
+section('iot','IoT · Basics & architecture',`
+<p class="lead"><b>IoT</b> is a network system in which <b>physical devices</b> — sensors, gadgets, vehicles, home appliances — are <b>connected to the internet</b> and exchange data. Functional requirements: <b>scalability</b>, <b>interoperability</b>, <b>security</b>, <b>real-time monitoring</b>, <b>low-power consumption</b>. Four pillars: <b>People, Process, Data, Thing</b>. DNA of IoT: <b>Data, Network, Application</b>.</p>
+<div class="tool"><div class="th">Follow a sensor reading through the four layers</div><div class="tb"><div class="row"><label for="ioT">Room temperature sensor reads</label><input type="range" id="ioT" min="15" max="40" value="31" style="width:200px"><b class="m" id="ioV"></b><button class="btn pri" id="ioN">Next step</button><button class="btn" id="ioR">Restart</button></div><svg id="ioS" viewBox="0 0 560 230" width="560" role="img" aria-label="IoT layers"></svg><p class="big" id="ioM" style="font-size:15px"></p></div></div>
+<div class="tool"><div class="th">Ubiquity — IoT is present everywhere</div><div class="tb"><div id="ubT"></div><div id="ubB"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">View</th><th class="l">Focus</th></tr><tr><td class="l">Technology-oriented</td><td class="l">Sensors, actuators, cloud computing, big data &amp; AI</td></tr><tr><td class="l">Application-oriented</td><td class="l">Smart phones, health care, agriculture</td></tr><tr><td class="l">Service-oriented</td><td class="l">IoTaaS — IoT as a Service</td></tr></table></div>
+<div class="tool"><div class="th">Which layer?</div><div class="tb"><div id="ilQ"></div></div></div>
+`,root=>{let st=-1;const MS=t=>['Press “Next step”.',`<b>Perception layer</b>: the sensor measures <b>${t} °C</b>.`,`<b>Network layer</b>: the reading travels over Wi-Fi / Internet to the platform.`,t>28?'<b>Middleware layer</b>: data is filtered and a decision is made — <b>30 °C is above 28 → AC should be ON</b>.':'<b>Middleware layer</b>: data is filtered and processed — temperature is fine, <b>no action needed</b>.',`<b>Application layer</b>: the smartphone app shows ${t} °C${t>28?' and “AC ON”':''}; the command returns to the actuator.`];
+  const io=()=>{const t=+$('#ioT').value;$('#ioV').textContent=t+' °C';const lay=st<1?-1:st<=1?3:st===2?2:st===3?1:0;$('#ioS').innerHTML=IL.map((l,i)=>svgBox(20,10+i*55,170,42,l[0],i===lay,13)).join('')+IL.map((l,i)=>`<text class="pin" x="205" y="${36+i*55}" font-size="12">${l[1].replace(/<[^>]+>/g,'')}</text>`).join('')+`<text class="pin" x="10" y="226" font-size="11" style="fill:#0a8f7b">data flows up ↑</text>`;$('#ioM').innerHTML=MS(t)[Math.max(0,st+1)];};
+  $('#ioN').onclick=()=>{st=Math.min(4,st+1);io();};$('#ioR').onclick=()=>{st=-1;io();};$('#ioT').oninput=io;io();
+  const UB=[['Smart homes','Control automatically — light, AC, machines etc.'],['Smart cities','Traffic management, pollution control.'],['Health care','Fitness bands, remote patient monitoring.'],['Agriculture','Soil monitoring, smart irrigation.'],['Industrial IoT (IIoT)','Machines and real-time monitoring.'],['Retail','Inventory tracking, employee biometrics, smart checkout.']];
+  Tabs($('#ubT'),UB.map(u=>u[0]),k=>{$('#ubB').innerHTML=`<p>${UB[k][1]}</p>`;});
+  quiz('ilQ',[['Sensors, RFID tags, cameras','Perception layer'],['Wi-Fi, Bluetooth, Internet','Network layer'],['Data processing and filtering, decision making','Middleware layer'],['User-specific services such as a smartphone app','Application layer']],['Perception layer','Network layer','Middleware layer','Application layer']);});
+
+/* ============ B2 WEB 3.0 & WOT ============ */
+section('wot','IoT · Web 3.0 & Web of Things',`
+<ul><li><b>Web 3.0</b> is a <b>semantic web</b>: machines understand and interpret data like humans. Web 3.0 + IoT enables smart decision-making machines without human intervention (blockchain-enabled IoT security, DApps).</li><li><b>WoT</b> extends IoT with <b>web technologies (HTTP, JSON)</b> — an abstraction layer so any device can be used through web standards. e.g. a smart bulb with a URL can be turned on / off from a browser.</li></ul>
+<div class="tool"><div class="th">Smart bulb — IoT style vs WoT style</div><div class="tb"><div id="wtT"></div><div class="row"><button class="btn pri" id="wtOn">Turn ON</button><button class="btn pri" id="wtOff">Turn OFF</button></div><svg id="wtS" viewBox="0 0 560 110" width="560"></svg><div id="wtO"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">Aspect</th><th class="l">IoT</th><th class="l">WoT</th></tr><tr><td class="l">Connectivity</td><td class="l">Device-centric, physical</td><td class="l">Web-centric, application-layer abstraction</td></tr><tr><td class="l">Protocol</td><td class="l">MQTT, CoAP, Zigbee, Bluetooth</td><td class="l">HTTP &amp; JSON</td></tr><tr><td class="l">Data formats</td><td class="l">Binary &amp; lightweight</td><td class="l">JSON &amp; XML</td></tr><tr><td class="l">Interface</td><td class="l">Mostly proprietary / protocol-specific</td><td class="l">Standard web interface (URI)</td></tr><tr><td class="l">Interoperability</td><td class="l">Low — diverse protocols</td><td class="l">High — web standards</td></tr><tr><td class="l">Goal</td><td class="l">Connect the real world / objects</td><td class="l">Embed IoT devices into the web</td></tr></table></div>
+`,root=>{let mode=0,on=false,msg='';const wt=()=>{$('#wtS').innerHTML=svgBox(10,30,120,50,mode?'Web browser':'IoT app',false,13)+wire([[130,55],[220,55]],true)+arrowHead(220,55,'r',true)+svgBox(220,30,130,50,mode?'HTTP server':'MQTT broker',false,12)+wire([[350,55],[400,55]],true)+arrowHead(400,55,'r',true)+`<circle cx="470" cy="50" r="30" class="g" style="fill:${on?'#fff0c9':'#eee'};stroke:${on?'#d98e04':'#9aa8a1'};stroke-width:3"/><text class="pin" x="470" y="55" text-anchor="middle" font-size="13">${on?'ON':'OFF'}</text>`;
+    $('#wtO').innerHTML=msg?`<p class="m" style="background:var(--bg2);padding:8px;border-radius:4px">${msg}</p>`:'<p class="m">Press a button to send a command.</p>';};
+  const send=v=>{on=v;msg=mode?`PUT http://home.local/bulbs/1<br>Content-Type: application/json<br>{"on": ${v}}<br><span style="color:#0a8f7b">→ 200 OK  (the bulb has a URL, so a browser can control it)</span>`:`PUBLISH topic: home/bulb/1/command<br>payload: ${v?'ON':'OFF'}<br><span style="color:#0a8f7b">→ delivered by the MQTT broker (needs an MQTT client)</span>`;wt();};
+  Tabs($('#wtT'),['IoT (MQTT)','WoT (HTTP + JSON + URL)'],k=>{mode=k;msg='';wt();});$('#wtOn').onclick=()=>send(true);$('#wtOff').onclick=()=>send(false);wt();});
+
+/* ============ B3 PROTOCOLS ============ */
+const PR=[['MQTT','Message Queuing Telemetry Transport','<b>Lightweight</b>, low bandwidth; publish / subscribe through a broker.'],['CoAP','Constrained Application Protocol','An <b>optimized web transfer protocol</b> for constrained devices.'],['HTTP / HTTPS','Hypertext Transfer Protocol (Secure)','<b>Traditional internet communication</b>.'],['AMQP','Advanced Message Queuing Protocol','Message queuing between applications.']];
+function mqMatch(f,t){const F=f.split('/'),T=t.split('/');for(let i=0;i<F.length;i++){if(F[i]==='#')return true;if(i>=T.length)return false;if(F[i]!=='+'&&F[i]!==T[i])return false;}return F.length===T.length;}
+section('proto','IoT · Middleware, protocols & standards',`
+<ul><li><b>Middleware</b> is the software layer that manages data between sensors and applications: <b>device management, data management, security handling, interoperability</b>.</li></ul>
+<div class="tool"><div class="th">Protocols used</div><div class="tb"><div id="prT"></div><div id="prB"></div></div></div>
+<div class="tool"><div class="th">MQTT publish / subscribe — who receives the message?</div><div class="tb"><p style="font-size:13.5px;margin:0 0 6px">Each client subscribes to a topic filter (<span class="m">+</span> = one level, <span class="m">#</span> = everything below — standard MQTT, added). Publish a message and see who gets it.</p>
+<div class="cols2"><label>Phone subscribes to<input type="text" id="mqA" value="home/#"></label><label>Dashboard subscribes to<input type="text" id="mqB" value="home/livingroom/temp"></label><label>Fan subscribes to<input type="text" id="mqC" value="home/+/command"></label></div>
+<div class="row"><label for="mqT">Publish to topic</label><input type="text" id="mqTp" value="home/livingroom/temp" size="24"><label for="mqM">message</label><input type="text" id="mqM" value="31" size="8"><button class="btn pri" id="mqP">Publish</button></div><div class="row"><button class="btn" data-t="home/livingroom/temp">home/livingroom/temp</button><button class="btn" data-t="home/kitchen/command">home/kitchen/command</button><button class="btn" data-t="garage/door">garage/door</button></div><svg id="mqS" viewBox="0 0 560 150" width="560"></svg><div id="mqO"></div></div></div>
+<h3>Protocol standardization</h3>
+<ul><li>A <b>common set of rules</b> all IoT devices can follow, so devices from different manufacturers can communicate. Objectives: <b>interoperability, scalability and flexibility, security and data integrity</b>.</li></ul>
+<div class="tool"><div class="th">Who standardizes what?</div><div class="tb"><div id="stQ"></div></div></div>
+<ul><li><b>M2M protocols</b>: machines communicate directly or through a gateway — MQTT, CoAP, LwM2M (lightweight machine to machine).</li></ul>
+`,root=>{Tabs($('#prT'),PR.map(p=>p[0]),k=>{$('#prB').innerHTML=`<p><b>${PR[k][1]}</b></p><p>${PR[k][2]}</p>`;});
+  let last=null;const mq=()=>{const subs=[['Phone',$('#mqA').value.trim()],['Dashboard',$('#mqB').value.trim()],['Fan',$('#mqC').value.trim()]],top=$('#mqTp').value.trim(),msg=$('#mqM').value;const got=last?subs.map(s=>mqMatch(s[1],last.t)):[false,false,false];
+    $('#mqS').innerHTML=svgBox(10,50,110,46,'Publisher',false,12)+wire([[120,73],[230,73]],!!last)+arrowHead(230,73,'r',!!last)+svgBox(230,45,100,56,'MQTT broker',!!last,12)+subs.map((s,i)=>wire([[330,73],[430,22+i*50]],got[i])+svgBox(430,5+i*50,120,34,s[0],got[i],12)).join('');
+    $('#mqO').innerHTML=last?htmlTable(['Client','Filter','Topic matches?','Received'],subs.map((s,i)=>[s[0],s[1],mqMatch(s[1],last.t)?'<span class="pill g">yes</span>':'<span class="pill r">no</span>',got[i]?`“${esc(last.m)}” on ${esc(last.t)}`:'—']),{raw:true}):'<p class="m">Nothing published yet.</p>';};
+  $('#mqP').onclick=()=>{last={t:$('#mqTp').value.trim(),m:$('#mqM').value};mq();};$$('[data-t]',root).forEach(b=>b.onclick=()=>{$('#mqTp').value=b.dataset.t;last={t:b.dataset.t,m:$('#mqM').value};mq();});['#mqA','#mqB','#mqC'].forEach(s=>$(s).oninput=mq);mq();
+  quiz('stQ',[['Defines protocols for the physical and data-link layers','IEEE'],['Develops network-layer protocols such as 6LoWPAN','IETF'],['Standardizes M2M (machine-to-machine) protocols','ETSI']],['IEEE','IETF','ETSI']);});
+
+/* ============ B4 WSN / RFID / SCADA ============ */
+section('wsn','IoT · WSN, RFID & SCADA',`
+<ul><li><b>WSN</b> (wireless sensor network): sensors collect and transmit data — Zigbee, 6LoWPAN, RPL. <b>IEEE 802.15.4</b> (basis of Zigbee): low-rate wireless personal area networks, <b>2.4 GHz / 868 MHz / 915 MHz</b>, short-range, reliable.</li><li><b>SCADA</b> (Supervisory Control and Data Acquisition): industrial control, electricity grids and water systems; <b>DNP</b> is used in SCADA. <b>RFID</b> (Radio Frequency Identification): wireless identification between tags (like <b>FASTag</b>) and readers.</li></ul>
+<div class="tool"><div class="th">Sensor network — click a sensor to make it fail</div><div class="tb"><svg id="wnS" viewBox="0 0 560 280" width="560" role="img" aria-label="Sensor network"></svg><div id="wnO"></div></div></div>
+<div class="tool"><div class="th">RFID — a FASTag toll gate</div><div class="tb"><div class="row"><label for="rfB">Balance (₹)</label><b class="m" id="rfBv"></b><button class="btn pri" id="rfGo">Drive through the gate</button><button class="btn" id="rfRc">Recharge ₹200</button></div><svg id="rfS" viewBox="0 0 560 100" width="560"></svg><div id="rfO"></div></div></div>
+<div class="tool"><div class="th">SCADA — supervising a water tank</div><div class="tb"><div class="row"><label for="scL">Pump ON below</label><input type="text" id="scL" value="30" size="3">%<label for="scH">OFF above</label><input type="text" id="scH" value="80" size="3">%<button class="btn pri" id="scG">Start / stop monitoring</button></div><svg id="scS" viewBox="0 0 560 170" width="560"></svg><div id="scO"></div></div></div>
+`,root=>{
+  const N=[[60,60],[60,200],[170,130],[260,50],[270,220],[380,130],[390,40],[400,230]],SINK=[510,135];const all=[...N,SINK];let dead=new Set();
+  const wn=()=>{const n=all.length,adj=all.map((p,i)=>all.map((q,j)=>i!==j&&!dead.has(i)&&!dead.has(j)&&Math.hypot(p[0]-q[0],p[1]-q[1])<160));const hop=Array(n).fill(null),par=Array(n).fill(-1);hop[n-1]=0;const q=[n-1];while(q.length){const u=q.shift();adj[u].forEach((a,v)=>{if(a&&hop[v]===null){hop[v]=hop[u]+1;par[v]=u;q.push(v);}});}
+    let o='';all.forEach((p,i)=>all.forEach((r,j)=>{if(j>i&&adj[i][j])o+=`<line x1="${p[0]}" y1="${p[1]}" x2="${r[0]}" y2="${r[1]}" stroke="#d4dcd8" stroke-width="1.5"/>`;}));N.forEach((p,i)=>{if(par[i]>=0&&!dead.has(i)){const t=all[par[i]];o+=`<line x1="${p[0]}" y1="${p[1]}" x2="${t[0]}" y2="${t[1]}" stroke="#0a8f7b" stroke-width="3"/>`;}});
+    N.forEach((p,i)=>{const d=dead.has(i),un=!d&&hop[i]===null;o+=`<g data-i="${i}" style="cursor:pointer"><circle cx="${p[0]}" cy="${p[1]}" r="16" class="g" style="fill:${d?'#fbe3df':un?'#fff0c9':'#d8f1ea'};${d?'stroke:#c43d2f;stroke-width:3':''}"/><text class="pin" x="${p[0]}" y="${p[1]+4}" text-anchor="middle" font-size="11">S${i+1}</text></g>`;});o+=`<rect x="${SINK[0]-28}" y="${SINK[1]-18}" width="56" height="36" class="g" style="fill:#e2ebf8"/><text class="pin" x="${SINK[0]}" y="${SINK[1]+4}" text-anchor="middle" font-size="12">Sink</text>`;$('#wnS').innerHTML=o;
+    $('#wnO').innerHTML=htmlTable(['Sensor','Status','Hops to the sink'],N.map((p,i)=>['S'+(i+1),dead.has(i)?'<span class="pill r">failed</span>':hop[i]===null?'<span class="pill a">cut off</span>':'<span class="pill g">working</span>',dead.has(i)?'—':hop[i]===null?'no route':hop[i]]),{raw:true})+'<p style="font-size:13.5px;color:var(--ink2)">Sensors collect data and pass it hop by hop to the sink (green links). Fail a node and the network re-routes if it can. Layout and hop routing are an illustration added to the notes.</p>';$$('#wnS g[data-i]').forEach(g=>g.onclick=()=>{const i=+g.dataset.i;dead.has(i)?dead.delete(i):dead.add(i);wn();});};wn();
+  let bal=300,rf='';const rfd=()=>{$('#rfBv').textContent='₹'+bal;$('#rfS').innerHTML=svgBox(10,20,110,50,'Car + FASTag',false,12)+wire([[120,45],[220,45]],!!rf)+`<text class="pin" x="170" y="38" text-anchor="middle" font-size="10">radio</text>`+svgBox(220,20,120,50,'RFID reader',!!rf,12)+wire([[340,45],[400,45]],rf==='ok')+svgBox(400,20,150,50,rf==='ok'?'Barrier OPEN':'Barrier closed',rf==='ok',12);$('#rfO').innerHTML=rf==='ok'?'<div class="okm">Reader identified the tag wirelessly and deducted the ₹85 toll — barrier open.</div>':rf==='low'?'<div class="err">Balance is below the ₹85 toll — barrier stays closed. Recharge.</div>':'<p class="m">Tags communicate with readers wirelessly.</p>';};
+  $('#rfGo').onclick=()=>{if(bal>=85){bal-=85;rf='ok';}else rf='low';rfd();};$('#rfRc').onclick=()=>{bal+=200;rf='';rfd();};rfd();
+  let lv=60,pump=false,hist=[60],tm=null;const sc=()=>{const lo=+$('#scL').value||30,hi=+$('#scH').value||80;if(lv<=lo)pump=true;if(lv>=hi)pump=false;lv=Math.max(0,Math.min(100,lv+(pump?4:0)-2.5));hist.push(lv);if(hist.length>60)hist.shift();
+    $('#scS').innerHTML=`<rect x="10" y="10" width="520" height="150" fill="#fff" stroke="#c3ccc7"/><line x1="10" y1="${160-lo*1.5}" x2="530" y2="${160-lo*1.5}" stroke="#c43d2f" stroke-dasharray="4 3"/><line x1="10" y1="${160-hi*1.5}" x2="530" y2="${160-hi*1.5}" stroke="#0a8f7b" stroke-dasharray="4 3"/><polyline points="${hist.map((v,i)=>(10+i*8.6)+','+(160-v*1.5)).join(' ')}" fill="none" stroke="#15233b" stroke-width="2.5"/><text class="pin" x="14" y="${156-lo*1.5}" font-size="10" style="fill:#c43d2f">pump ON</text><text class="pin" x="14" y="${156-hi*1.5}" font-size="10" style="fill:#0a8f7b">pump OFF</text>`;$('#scO').innerHTML=`<p>Level <b>${lv.toFixed(0)} %</b> · pump <span class="pill ${pump?'g':'r'}">${pump?'ON':'OFF'}</span> — the SCADA system monitors the sensor and controls the pump (supervisory control + data acquisition; DNP carries the data).</p>`;};
+  $('#scG').onclick=()=>{if(tm){clearInterval(tm);tm=null;}else tm=setInterval(sc,350);};sc();
+});
+/* ============ B5 CLOUD & MORE ============ */
+section('cloud','IoT · Cloud, SoA, MCC, IIoT & more',`
+<ul><li><b>CoT</b> (Cloud of Things) = cloud computing + IoT: data from IoT devices is accessed, stored, processed and managed through platforms. <b>Grid computing</b>: different resources (servers and storage) connected by a network for large-scale computation, with shared resources. <b>Cloud standards</b> ensure interoperability, security and portability — <b>OCCI</b> (Open Cloud Computing Interface), <b>CSA</b> (Cloud Security Alliance), <b>ISO</b>.</li></ul>
+<div class="tool"><div class="th">SoA — independent services that talk by messages</div><div class="tb"><div id="soT"></div><div class="row"><button class="btn pri" id="soGo">Place an order</button></div><div id="soO"></div></div></div>
+<div class="tool"><div class="th">MCC — mobile cloud computing: folder sync</div><div class="tb"><div class="row"><label for="mcF">New file name</label><input type="text" id="mcF" value="notes.txt" size="14"><button class="btn pri" data-d="phone">Add on phone</button><button class="btn pri" data-d="laptop">Add on laptop</button><button class="btn" id="mcSy">Sync</button></div><div id="mcT"></div><div id="mcO"></div></div></div>
+<div class="tool"><div class="th">IIoT — real-time machine monitoring</div><div class="tb"><div class="row"><label for="iiT">Temperature</label><input type="range" id="iiT" min="20" max="120" value="60" style="width:180px"><b class="m" id="iiTv"></b><label for="iiV">Vibration</label><input type="range" id="iiV" min="0" max="10" value="2" style="width:140px"><b class="m" id="iiVv"></b><button class="btn" id="iiA">Live data on / off</button></div><div id="iiO"></div></div></div>
+<ul><li><b>IIoT</b>: sensors, devices and machines in industry connected for real-time monitoring so operations can be optimized; <b>IIoT 4.0</b> = the fourth industrial revolution (automation, data exchange, integrating technologies). <b>ARMET</b> (Autonomous Risk Management &amp; Engineering Technology) makes IoT systems secure and risk-free using AI and machine learning. In a <b>collaborative production environment</b> IoT brings autonomy and agility, resource management, synchronization and software agents.</li></ul>
+<div class="tool"><div class="th">Basic technologies behind IoT</div><div class="tb"><div id="tcT"></div><div id="tcB"></div></div></div>
+<div class="tool"><div class="th">Quick quiz</div><div class="tb"><div id="clQ"></div></div></div>
+`,root=>{
+  let down=new Set();const SV=['Order','Inventory','Payment','Shipping'];Toggles($('#soT'),SV.map(s=>s+' service up'),[1,1,1,1],v=>{down=new Set(SV.filter((s,i)=>!v[i]));});
+  $('#soGo').onclick=()=>{const L=[];SV.forEach(s=>{if(s==='Order')L.push(down.has(s)?'<span class="pill r">Order service down — the request cannot start</span>':'Order service receives the order and sends messages to the others');else L.push(down.has(s)?`${s} service: <span class="pill r">no reply (down)</span> — the other services still run`:`${s} service: <span class="pill g">replies via message</span>`);});$('#soO').innerHTML='<ol style="font-size:14px">'+L.map(x=>`<li>${x}</li>`).join('')+'</ol><p style="font-size:13.5px;color:var(--ink2)">Services are independent and communicate only through messages; cloud platforms add scalability and flexibility.</p>';};
+  let dev={phone:['photo.jpg'],laptop:[]},cloud=['photo.jpg'];const mc=()=>{$('#mcT').innerHTML=htmlTable(['Phone','☁ Cloud (iCloud / Google Drive / Dropbox)','Laptop'],[[dev.phone.join(', ')||'—',cloud.join(', ')||'—',dev.laptop.join(', ')||'—']]);};
+  $$('[data-d]',root).forEach(b=>b.onclick=()=>{const f=$('#mcF').value.trim();if(f&&!dev[b.dataset.d].includes(f))dev[b.dataset.d].push(f);$('#mcO').innerHTML='<p class="m">Not synced yet.</p>';mc();});$('#mcSy').onclick=()=>{cloud=[...new Set([...cloud,...dev.phone,...dev.laptop])];dev.phone=[...cloud];dev.laptop=[...cloud];$('#mcO').innerHTML='<div class="okm">Folder synced through the cloud — both devices now hold the same files.</div>';mc();};mc();
+  let live=null;const ii=()=>{const t=+$('#iiT').value,v=+$('#iiV').value;$('#iiTv').textContent=t+' °C';$('#iiVv').textContent=v;const al=t>100||v>7,wa=!al&&(t>80||v>5);$('#iiO').innerHTML=`<div class="${al?'err':wa?'note':'okm'}"><b>${al?'ALARM — stop the machine':wa?'Warning — schedule maintenance':'Normal'}</b> · temperature ${t} °C, vibration ${v}. Real-time data lets the plant react before a failure and optimize operations.</div>`;};
+  ['#iiT','#iiV'].forEach(s=>$(s).oninput=ii);$('#iiA').onclick=()=>{if(live){clearInterval(live);live=null;}else live=setInterval(()=>{$('#iiT').value=Math.max(20,Math.min(120,+$('#iiT').value+(Math.random()*16-8)));$('#iiV').value=Math.max(0,Math.min(10,+$('#iiV').value+(Math.random()*2-1)));ii();},600);};ii();
+  const TC=[['Sensors & actuators','Collect real-time data (sensors) and act on it (actuators).'],['Cloud computing','Stores and processes IoT data on platforms.'],['Big data','Handles the huge volume of data devices produce.'],['AI & machine learning','Finds patterns and makes smart decisions — see Part A.'],['5G network','Fast, low-latency connections for many devices.']];
+  Tabs($('#tcT'),TC.map(t=>t[0]),k=>{$('#tcB').innerHTML=`<p>${TC[k][1]}</p><p style="font-size:13px;color:var(--ink2)">The notes list the five technologies; the one-line roles are added.</p>`;});
+  quiz('clQ',[['Cloud computing + Internet of Things','CoT'],['Resources (servers, storage) connected by a network for large-scale computation','Grid computing'],['Independent services that communicate by messages','SoA'],['Connecting mobiles through cloud platforms (iCloud, Dropbox)','MCC'],['Fourth industrial revolution — machines integrated with digital technologies','IIoT 4.0'],['Makes IoT systems secure and risk-free using AI & ML','ARMET']],['CoT','Grid computing','SoA','MCC','IIoT 4.0','ARMET']);});
+
+/* ============ CLARIFICATIONS ============ */
+section('fixes','Clarifications',`
+<p>While typing up the handwritten notes these points were clarified or flagged. Everything else follows the notes.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Topic</th><th class="l">Handwritten notes</th><th class="l">Here</th></tr>
+<tr><td class="l">First AI program</td><td class="l">Logic Theorist; year hard to read</td><td class="l">About 1956/57, by Allen Newell (with Simon and Shaw)</td></tr>
+<tr><td class="l">ELIZA</td><td class="l">Credited to Joseph Engelberger</td><td class="l">Written by Joseph Weizenbaum</td></tr>
+<tr><td class="l">Sophia</td><td class="l">UAE citizenship, 2017</td><td class="l">Saudi Arabia granted it</td></tr>
+<tr><td class="l">Deep Blue</td><td class="l">“First intelligent humanoid”</td><td class="l">A chess computer, not a humanoid</td></tr>
+<tr><td class="l">Branches of AI</td><td class="l">“Neutral logic”</td><td class="l">Neural networks</td></tr>
+<tr><td class="l">Cloud computing definition</td><td class="l">Cut off at the page edge</td><td class="l">Not completed</td></tr>
+<tr><td class="l">Added for interactivity</td><td class="l">—</td><td class="l">Path-finding, K-means, kNN, regression and bandit labs; blockchain tamper demo; fuzzy fan controller; MQTT wildcards; WSN routing, FASTag, SCADA tank, SoA, MCC and IIoT demos</td></tr></table></div>
+`,null);
+
+/* ============ BOOT ============ */
+(function(){
+  const nav=$('#nav'),main=$('#main');
+  nav.innerHTML=`<div class="brand"><div>AI, ML &amp; IoT<small>Interactive notes</small></div><a href="../index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
+  $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
+  $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))setOpen(false);});
+  main.innerHTML=`<header class="hero"><div class="wrap"><h1>AI, Machine Learning &amp; IoT</h1><p>Both note sets, made interactive: race search algorithms, train a classifier, tamper with a blockchain, steer a fuzzy fan, then publish MQTT messages, re-route a sensor network and supervise a water tank. Tap a step to start.</p><div class="bitrow" id="heroSteps"></div><div class="heroTxt" id="heroTxt"></div></div></header>`+
+    SECTIONS.map((s,i)=>`<section class="ch" id="${s.id}"><div class="wrap"><h2><i>${i+1}</i>${s.title}</h2>${s.html}</div></section>`).join('');
+  try{heroInit();}catch(e){console.error(e);}
+  SECTIONS.forEach(s=>{if(s.init){try{s.init(document.getElementById(s.id));}catch(e){console.error('Section '+s.id,e);}}});
+  const links=$$('#navlist a'),obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('act',a.dataset.id===e.target.id));const a=$(`#navlist a[data-id="${e.target.id}"]`);$('#menuLbl').textContent=a?a.textContent.replace(/^\d+/,'').trim():'Chapters';if(a&&innerWidth>980){const t=a.offsetTop;if(t<nav.scrollTop||t>nav.scrollTop+nav.clientHeight-60)nav.scrollTop=t-80;}}});},{rootMargin:'-20% 0px -70% 0px'});
+  SECTIONS.forEach(s=>obs.observe(document.getElementById(s.id)));
+})();
+</script></body></html>

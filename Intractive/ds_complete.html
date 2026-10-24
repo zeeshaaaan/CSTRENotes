@@ -17,28 +17,62 @@
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
 /* HEADER */
-.site-header{background:var(--surface);border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;}
-.logo{font-size:18px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.site-header p{font-size:12px;color:var(--text2);}
-.home-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font:600 13px 'Inter',sans-serif;color:var(--accent);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;transition:all .2s;}
+.site-header{background:rgba(22,27,34,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100;}
+.logo{font-size:18px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;display:flex;align-items:center;gap:8px;}
+.site-header p{font-size:12px;color:var(--text2);margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.home-btn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;font:600 13px 'Inter',sans-serif;color:var(--accent);background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;transition:all .2s;white-space:nowrap;flex-shrink:0;}
 .home-btn:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);}
 .home-btn svg{width:16px;height:16px;fill:currentColor;}
+
+/* MOBILE MENU BUTTON */
+.mobile-menu-btn{display:none;align-items:center;gap:6px;padding:6px 12px;font:600 13px 'Inter',sans-serif;background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all .15s;flex-shrink:0;}
+.mobile-menu-btn:hover{border-color:var(--accent);color:var(--accent);}
+.mobile-menu-btn svg{width:16px;height:16px;fill:currentColor;}
+
+/* BACKDROP OVERLAY */
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.68);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:190;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+.sidebar-backdrop.active{opacity:1;pointer-events:auto;}
+
+/* DRAWER TOP BAR */
+.sidebar-top-bar{display:none;align-items:center;justify-content:space-between;padding:14px 18px 12px;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.sidebar-top-title{font-size:13px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.6px;}
+.sidebar-close-btn{background:none;border:none;font-size:18px;color:var(--text2);cursor:pointer;padding:4px 8px;border-radius:4px;display:flex;align-items:center;justify-content:center;}
+.sidebar-close-btn:hover{color:var(--text);background:var(--surface2);}
 
 /* LAYOUT */
 .layout{display:flex;min-height:calc(100vh - 57px);}
 
 /* SIDEBAR */
-.sidebar{width:220px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;}
+.sidebar{width:230px;background:var(--surface);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;position:sticky;top:57px;height:calc(100vh - 57px);overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .sidebar-group{margin-bottom:4px;}
 .sidebar-group-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);padding:10px 16px 4px;}
-.sidebar-item{display:block;width:100%;text-align:left;font-family:inherit;font-size:12px;padding:6px 16px;border:none;background:none;color:var(--text2);cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
+.sidebar-item{display:block;width:100%;text-align:left;font-family:inherit;font-size:12.5px;padding:8px 16px;border:none;background:none;color:var(--text2);cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
 .sidebar-item:hover{background:var(--surface2);color:var(--text);}
-.sidebar-item.active{background:var(--surface2);color:var(--accent);border-left-color:var(--accent);}
+.sidebar-item.active{background:var(--surface2);color:var(--accent);border-left-color:var(--accent);font-weight:600;}
 
 /* MAIN */
-.main{flex:1;padding:32px;max-width:860px;overflow-x:hidden;}
+.main{flex:1;padding:28px 32px;max-width:880px;overflow-x:hidden;}
 .page{display:none;}
 .page.active{display:block;}
+
+/* MOBILE TOPIC BAR */
+.mobile-topic-bar{display:none;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;margin-bottom:20px;gap:12px;}
+.topic-meta{display:flex;flex-direction:column;gap:2px;overflow:hidden;}
+.topic-indicator{font-size:10px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.6px;font-family:var(--mono);}
+.topic-current-title{font-size:13.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.change-topic-btn{font-family:inherit;font-size:12px;font-weight:600;padding:6px 12px;background:var(--surface2);color:var(--accent);border:1px solid var(--border);border-radius:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.change-topic-btn:hover{background:var(--accent);color:var(--bg);}
+
+/* PAGE NAVIGATION FOOTER */
+.page-nav-footer{display:flex;justify-content:space-between;gap:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.nav-btn{flex:1;min-width:140px;display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);cursor:pointer;text-align:left;transition:all .2s;}
+.nav-btn:hover{border-color:var(--accent);background:var(--surface2);}
+.nav-btn.next{justify-content:flex-end;text-align:right;}
+.nav-btn.disabled{opacity:.35;pointer-events:none;}
+.nav-arrow{font-size:18px;color:var(--accent);line-height:1;}
+.nav-text{display:flex;flex-direction:column;gap:2px;overflow:hidden;}
+.nav-text small{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;font-weight:600;}
+.nav-text strong{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 
 /* PAGE HEADER */
 .page-title{font-size:26px;font-weight:700;margin-bottom:6px;letter-spacing:-.5px;}
@@ -62,7 +96,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-h
 .steps li::before{content:counter(step);min-width:22px;height:22px;background:var(--accent);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;margin-top:1px;}
 
 /* TABLE */
-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px;}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:8px;border:1px solid var(--border);border-radius:var(--radius);}
+table{width:100%;min-width:440px;border-collapse:collapse;font-size:12px;}
 th{text-align:left;padding:9px 12px;background:var(--surface2);color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);}
 td{padding:8px 12px;border-bottom:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:11px;}
 tr:last-child td{border-bottom:none;}
@@ -82,7 +117,7 @@ tr:last-child td{border-bottom:none;}
 .info-box.bad{border-color:var(--warn);color:var(--warn);}
 
 /* CANVAS */
-.canvas{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.canvas{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto;-webkit-overflow-scrolling:touch;}
 svg{display:block;width:100%;}
 
 /* PILLS */
@@ -99,8 +134,8 @@ svg{display:block;width:100%;}
 .lline{display:inline-block;width:18px;height:3px;border-radius:2px;}
 
 /* BARS */
-.bar-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 12px 8px;display:flex;align-items:flex-end;gap:4px;height:150px;}
-.bar{flex:1;border-radius:3px 3px 0 0;background:var(--accent);transition:height .25s,background .2s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;}
+.bar-area{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 12px 8px;display:flex;align-items:flex-end;gap:4px;height:150px;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.bar{flex:1;min-width:14px;border-radius:3px 3px 0 0;background:var(--accent);transition:height .25s,background .2s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;}
 .bar span{font-size:9px;font-family:var(--mono);color:rgba(255,255,255,.8);}
 .bar.comparing{background:var(--warn);}
 .bar.sorted{background:var(--accent2);}
@@ -128,82 +163,118 @@ svg{display:block;width:100%;}
 .badge-red{background:#3a1a1a;color:var(--danger);}
 
 /* NOTATION DISPLAY */
-.expr{font-family:var(--mono);font-size:15px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;color:var(--accent);margin:6px 0;}
+.expr{font-family:var(--mono);font-size:15px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;color:var(--accent);margin:6px 0;overflow-x:auto;}
 
 /* QUEUE VIS */
-.queue-visual{display:flex;gap:0;margin:8px 0;}
+.queue-visual{display:flex;gap:0;margin:8px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
 .q-cell{min-width:44px;height:40px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:13px;background:var(--surface2);color:var(--text);transition:all .3s;}
 .q-cell.front{border-color:var(--accent2);color:var(--accent2);}
 .q-cell.rear{border-color:var(--danger);color:var(--danger);}
 .q-cell.empty{color:var(--text3);}
 .q-label{font-size:10px;color:var(--text2);text-align:center;margin-top:3px;}
 
-@media(max-width:700px){
-  .sidebar{display:none;}
-  .main{padding:16px;}
-  .cards{grid-template-columns:1fr;}
-  .site-header{padding:12px 16px;}
+@media(max-width:768px){
+  .site-header{padding:10px 14px;gap:10px;}
+  .site-header p{display:none;}
+  .mobile-menu-btn{display:inline-flex;}
+  .sidebar-backdrop{display:block;}
+  .sidebar-top-bar{display:flex;}
+  .sidebar{position:fixed;top:0;left:0;bottom:0;width:280px;max-width:84vw;height:100vh;z-index:200;transform:translateX(-100%);transition:transform .25s cubic-bezier(0.4, 0, 0.2, 1);box-shadow:4px 0 24px rgba(0,0,0,0.5);}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-item{padding:10px 18px;font-size:13px;}
+  .main{padding:16px 14px 40px;max-width:100%;}
+  .cards{grid-template-columns:1fr;gap:10px;}
+  .mobile-topic-bar{display:flex;}
+  .page-title{font-size:22px;}
+  .controls{gap:6px;}
+  .btn{padding:7px 12px;font-size:12px;}
+  .bar-area{height:140px;}
+  .page-nav-footer{flex-direction:column;gap:10px;}
+  .nav-btn{width:100%;}
+}
+@media(max-width:480px){
+  .logo{font-size:16px;}
+  .home-btn span{display:none;}
+  .home-btn{padding:6px 10px;}
+  .canvas svg{min-width:300px;}
 }
 </style>
 </head>
 <body>
 
 <header class="site-header">
+  <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="Toggle Topics Navigation">
+    <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+    <span>Topics</span>
+  </button>
   <div class="logo">DS Explorer</div>
   <p>Complete Interactive Data Structures & Algorithms Guide</p>
-  <a href="index.html" class="home-btn"><svg viewBox="0 0 20 20"><path d="M10 2L2 9h3v7h4v-5h2v5h4V9h3L10 2z"/></svg> Home</a>
+  <a href="../index.html" class="home-btn" title="Back to Study Hub"><svg viewBox="0 0 20 20"><path d="M10 2L2 9h3v7h4v-5h2v5h4V9h3L10 2z"/></svg> <span>Home</span></a>
 </header>
+<div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeMobileSidebar()"></div>
 
 <div class="layout">
-<nav class="sidebar">
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-top-bar">
+    <span class="sidebar-top-title">📚 Course Topics</span>
+    <button class="sidebar-close-btn" onclick="closeMobileSidebar()" aria-label="Close menu">✕</button>
+  </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Foundations</div>
-    <button class="sidebar-item active" onclick="nav('overview')">Overview & Types</button>
-    <button class="sidebar-item" onclick="nav('complexity')">Complexity & Asymptotic</button>
+    <button class="sidebar-item active" data-page="overview" onclick="nav('overview')">Overview & Types</button>
+    <button class="sidebar-item" data-page="complexity" onclick="nav('complexity')">Complexity & Asymptotic</button>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Linear DS</div>
-    <button class="sidebar-item" onclick="nav('stack')">Stack</button>
-    <button class="sidebar-item" onclick="nav('queue')">Queue</button>
-    <button class="sidebar-item" onclick="nav('linkedlist')">Linked List</button>
+    <button class="sidebar-item" data-page="stack" onclick="nav('stack')">Stack</button>
+    <button class="sidebar-item" data-page="queue" onclick="nav('queue')">Queue</button>
+    <button class="sidebar-item" data-page="linkedlist" onclick="nav('linkedlist')">Linked List</button>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Non-Linear DS</div>
-    <button class="sidebar-item" onclick="nav('tree')">Trees</button>
-    <button class="sidebar-item" onclick="nav('graph')">Graph</button>
+    <button class="sidebar-item" data-page="tree" onclick="nav('tree')">Trees</button>
+    <button class="sidebar-item" data-page="graph" onclick="nav('graph')">Graph</button>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Graph Algorithms</div>
-    <button class="sidebar-item" onclick="nav('bfs')">BFS</button>
-    <button class="sidebar-item" onclick="nav('dfs')">DFS</button>
-    <button class="sidebar-item" onclick="nav('spanning')">Spanning Tree</button>
-    <button class="sidebar-item" onclick="nav('prim')">Prim's Algorithm</button>
-    <button class="sidebar-item" onclick="nav('kruskal')">Kruskal's Algorithm</button>
+    <button class="sidebar-item" data-page="bfs" onclick="nav('bfs')">BFS</button>
+    <button class="sidebar-item" data-page="dfs" onclick="nav('dfs')">DFS</button>
+    <button class="sidebar-item" data-page="spanning" onclick="nav('spanning')">Spanning Tree</button>
+    <button class="sidebar-item" data-page="prim" onclick="nav('prim')">Prim's Algorithm</button>
+    <button class="sidebar-item" data-page="kruskal" onclick="nav('kruskal')">Kruskal's Algorithm</button>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Sorting</div>
-    <button class="sidebar-item" onclick="nav('sorting_intro')">Sorting Concepts</button>
-    <button class="sidebar-item" onclick="nav('bubble')">Bubble Sort</button>
-    <button class="sidebar-item" onclick="nav('selection')">Selection Sort</button>
-    <button class="sidebar-item" onclick="nav('insertion')">Insertion Sort</button>
-    <button class="sidebar-item" onclick="nav('merge')">Merge Sort</button>
-    <button class="sidebar-item" onclick="nav('quick')">Quick Sort</button>
+    <button class="sidebar-item" data-page="sorting_intro" onclick="nav('sorting_intro')">Sorting Concepts</button>
+    <button class="sidebar-item" data-page="bubble" onclick="nav('bubble')">Bubble Sort</button>
+    <button class="sidebar-item" data-page="selection" onclick="nav('selection')">Selection Sort</button>
+    <button class="sidebar-item" data-page="insertion" onclick="nav('insertion')">Insertion Sort</button>
+    <button class="sidebar-item" data-page="merge" onclick="nav('merge')">Merge Sort</button>
+    <button class="sidebar-item" data-page="quick" onclick="nav('quick')">Quick Sort</button>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Searching</div>
-    <button class="sidebar-item" onclick="nav('searching')">Linear & Binary Search</button>
+    <button class="sidebar-item" data-page="searching" onclick="nav('searching')">Linear & Binary Search</button>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Expressions</div>
-    <button class="sidebar-item" onclick="nav('expressions')">Infix / Prefix / Postfix</button>
+    <button class="sidebar-item" data-page="expressions" onclick="nav('expressions')">Infix / Prefix / Postfix</button>
   </div>
   <div class="sidebar-group">
     <div class="sidebar-group-label">Advanced</div>
-    <button class="sidebar-item" onclick="nav('advanced')">Shortest Path & NP</button>
+    <button class="sidebar-item" data-page="advanced" onclick="nav('advanced')">Shortest Path & NP</button>
   </div>
 </nav>
 
 <main class="main">
+
+<div class="mobile-topic-bar">
+  <div class="topic-meta">
+    <span class="topic-indicator" id="mobileTopicIndicator">Topic 1 of 21</span>
+    <span class="topic-current-title" id="mobileCurrentTitle">Overview & Types</span>
+  </div>
+  <button class="change-topic-btn" onclick="openMobileSidebar()">Browse All ▾</button>
+</div>
 
 <!-- ===== OVERVIEW ===== -->
 <div class="page active" id="page-overview">
@@ -258,14 +329,14 @@ svg{display:block;width:100%;}
   </div>
   <div class="section">
     <div class="sec-label">Sorting Complexity Summary (from notes)</div>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable</th></tr>
       <tr><td>Bubble</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✓</td></tr>
       <tr><td>Selection</td><td>O(n²)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✗</td></tr>
       <tr class="hl"><td>Insertion</td><td>O(n)</td><td>O(n²)</td><td>O(n²)</td><td>O(1)</td><td>✓</td></tr>
       <tr class="hl"><td>Merge</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n)</td><td>✓</td></tr>
       <tr><td>Quick</td><td>O(n log n)</td><td>O(n log n)</td><td>O(n²)</td><td>O(log n)</td><td>✗</td></tr>
-    </table>
+    </table></div>
   </div>
   <div class="section">
     <div class="sec-label">Divide & Conquer Examples (from notes)</div>
@@ -500,14 +571,14 @@ svg{display:block;width:100%;}
   </div>
   <div class="section">
     <div class="sec-label">BFS vs DFS Quick Compare</div>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Property</th><th>BFS</th><th>DFS</th></tr>
       <tr><td>Data Structure</td><td>Queue (FIFO)</td><td>Stack (LIFO)</td></tr>
       <tr><td>Order</td><td>Level by level</td><td>Depth first</td></tr>
       <tr><td>Memory</td><td>Less (shallow trees)</td><td>More</td></tr>
       <tr><td>Backtracking</td><td>Not allowed</td><td>Allowed</td></tr>
       <tr class="hl"><td>Best for</td><td>Nearest node to root</td><td>Deep paths</td></tr>
-    </table>
+    </table></div>
   </div>
 </div>
 
@@ -661,14 +732,14 @@ svg{display:block;width:100%;}
   </div>
   <div class="section">
     <div class="sec-label">Summary from Notes</div>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Sort</th><th>Inplace</th><th>Stable</th><th>Adaptive</th><th>Best</th></tr>
       <tr><td>Bubble</td><td>✓</td><td>✓</td><td>✓</td><td>O(n)</td></tr>
       <tr><td>Selection</td><td>✓</td><td>✗</td><td>✗</td><td>O(n²)</td></tr>
       <tr><td>Insertion</td><td>✓</td><td>✓</td><td>✓</td><td>O(n)</td></tr>
       <tr class="hl"><td>Merge</td><td>✗</td><td>✓</td><td>✗</td><td>O(n log n)</td></tr>
       <tr><td>Quick</td><td>✓</td><td>✗</td><td>✗</td><td>O(n log n)</td></tr>
-    </table>
+    </table></div>
   </div>
 </div>
 
@@ -872,12 +943,12 @@ svg{display:block;width:100%;}
   </div>
   <div class="section">
     <div class="sec-label">From Notes — Examples</div>
-    <table>
+    <div class="table-wrap"><table>
       <tr><th>Infix</th><th>Prefix</th><th>Postfix</th></tr>
       <tr><td>(A+B)*C</td><td>*+ABC</td><td>AB+C*</td></tr>
       <tr><td>A+B*C-D</td><td>+-A*BCD</td><td>ABC*+D-</td></tr>
       <tr><td>5*(6+2)-12/4</td><td>-*5+62/124</td><td>562+*124/-</td></tr>
-    </table>
+    </table></div>
   </div>
 </div>
 
@@ -912,18 +983,129 @@ svg{display:block;width:100%;}
   </div>
 </div>
 
+<div class="page-nav-footer">
+  <button class="nav-btn prev" id="btnPrevTopic" onclick="navigateAdjacent(-1)">
+    <span class="nav-arrow">←</span>
+    <span class="nav-text"><small>Previous</small><strong id="prevTopicTitle">Overview</strong></span>
+  </button>
+  <button class="nav-btn next" id="btnNextTopic" onclick="navigateAdjacent(1)">
+    <span class="nav-text"><small>Next</small><strong id="nextTopicTitle">Complexity</strong></span>
+    <span class="nav-arrow">→</span>
+  </button>
+</div>
 </main>
 </div>
 
 <script>
+
 // ============================================================
-// NAV
+// TOPIC REGISTRY & RESPONSIVE NAV
 // ============================================================
-function nav(id){
+const TOPICS = [
+  { id: 'overview', title: 'Overview & Types', group: 'Foundations' },
+  { id: 'complexity', title: 'Complexity & Asymptotic', group: 'Foundations' },
+  { id: 'stack', title: 'Stack', group: 'Linear DS' },
+  { id: 'queue', title: 'Queue', group: 'Linear DS' },
+  { id: 'linkedlist', title: 'Linked List', group: 'Linear DS' },
+  { id: 'tree', title: 'Trees', group: 'Non-Linear DS' },
+  { id: 'graph', title: 'Graph', group: 'Non-Linear DS' },
+  { id: 'bfs', title: 'BFS', group: 'Graph Algorithms' },
+  { id: 'dfs', title: 'DFS', group: 'Graph Algorithms' },
+  { id: 'spanning', title: 'Spanning Tree', group: 'Graph Algorithms' },
+  { id: 'prim', title: "Prim's Algorithm", group: 'Graph Algorithms' },
+  { id: 'kruskal', title: "Kruskal's Algorithm", group: 'Graph Algorithms' },
+  { id: 'sorting_intro', title: 'Sorting Concepts', group: 'Sorting' },
+  { id: 'bubble', title: 'Bubble Sort', group: 'Sorting' },
+  { id: 'selection', title: 'Selection Sort', group: 'Sorting' },
+  { id: 'insertion', title: 'Insertion Sort', group: 'Sorting' },
+  { id: 'merge', title: 'Merge Sort', group: 'Sorting' },
+  { id: 'quick', title: 'Quick Sort', group: 'Sorting' },
+  { id: 'searching', title: 'Linear & Binary Search', group: 'Searching' },
+  { id: 'expressions', title: 'Infix / Prefix / Postfix', group: 'Expressions' },
+  { id: 'advanced', title: 'Shortest Path & NP', group: 'Advanced' }
+];
+
+let currentTopicId = 'overview';
+
+function openMobileSidebar(){
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('sidebarBackdrop');
+  if(sb) sb.classList.add('open');
+  if(bd) bd.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileSidebar(){
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('sidebarBackdrop');
+  if(sb) sb.classList.remove('open');
+  if(bd) bd.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function toggleMobileSidebar(){
+  const sb = document.getElementById('sidebar');
+  if(sb && sb.classList.contains('open')) closeMobileSidebar();
+  else openMobileSidebar();
+}
+
+function updateNavUI(id){
+  currentTopicId = id;
+  const idx = TOPICS.findIndex(t => t.id === id);
+  if(idx === -1) return;
+
+  // Update mobile top bar
+  const indicator = document.getElementById('mobileTopicIndicator');
+  const title = document.getElementById('mobileCurrentTitle');
+  if(indicator) indicator.textContent = `Topic ${idx + 1} of ${TOPICS.length}`;
+  if(title) title.textContent = TOPICS[idx].title;
+
+  // Update bottom prev/next buttons
+  const prevBtn = document.getElementById('btnPrevTopic');
+  const nextBtn = document.getElementById('btnNextTopic');
+  const prevTitle = document.getElementById('prevTopicTitle');
+  const nextTitle = document.getElementById('nextTopicTitle');
+
+  if(idx > 0){
+    if(prevBtn) prevBtn.classList.remove('disabled');
+    if(prevTitle) prevTitle.textContent = TOPICS[idx - 1].title;
+  } else {
+    if(prevBtn) prevBtn.classList.add('disabled');
+    if(prevTitle) prevTitle.textContent = 'None';
+  }
+
+  if(idx < TOPICS.length - 1){
+    if(nextBtn) nextBtn.classList.remove('disabled');
+    if(nextTitle) nextTitle.textContent = TOPICS[idx + 1].title;
+  } else {
+    if(nextBtn) nextBtn.classList.add('disabled');
+    if(nextTitle) nextTitle.textContent = 'Completed!';
+  }
+}
+
+function navigateAdjacent(delta){
+  const idx = TOPICS.findIndex(t => t.id === currentTopicId);
+  const targetIdx = idx + delta;
+  if(targetIdx >= 0 && targetIdx < TOPICS.length){
+    nav(TOPICS[targetIdx].id);
+  }
+}
+
+function nav(id, btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.sidebar-item').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  event.target.classList.add('active');
+  
+  const targetPage = document.getElementById('page-'+id);
+  if(targetPage) targetPage.classList.add('active');
+
+  const activeBtn = btn || document.querySelector(`.sidebar-item[data-page="${id}"]`) || (window.event && window.event.target && window.event.target.closest ? window.event.target.closest('.sidebar-item') : null);
+  if(activeBtn) activeBtn.classList.add('active');
+
+  updateNavUI(id);
+  closeMobileSidebar();
+
+  window.scrollTo({top: 0, behavior: 'smooth'});
+
   // lazy init
   if(id==='stack'&&!stackInit) initStack();
   if(id==='queue'&&!qInit) initQueue();
@@ -938,6 +1120,17 @@ function nav(id){
   if(id==='searching'&&!searchInit) initSearch();
   if(['bubble','selection','insertion','merge','quick'].includes(id)&&!sortStates[id]) initSort(id);
 }
+
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeMobileSidebar();
+});
+
+// Initialize Nav UI on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  updateNavUI('overview');
+});
+setTimeout(() => updateNavUI('overview'), 100);
+
 
 // ============================================================
 // SVG HELPER

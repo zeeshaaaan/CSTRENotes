@@ -254,7 +254,6 @@ footer .f-brand{font-weight:700;color:var(--text2)}
         <li><strong>Part II (General Studies):</strong> 40 Questions (Maths, Reasoning, GK, CA)</li>
         <li><strong>Part III (Computer Science Core):</strong> 80 Questions (In-depth CS)</li>
         <li><strong>Duration:</strong> 2 Hours 30 Minutes</li>
-        <li><strong>Negative Marking:</strong> No negative marking (as per latest BPSC notification)</li>
       </ul>
     </div>
     <div class="ei-card">
@@ -357,10 +356,10 @@ const subjects = [
     title: "Data Structures & Algorithms",
     marks: "Core Syllabus Topic",
     desc: "Complete guide covering arrays, stacks, queues, linked lists, trees, graphs, sorting, searching, spanning trees, shortest paths, and expression evaluation with interactive visualizations.",
-    link: "ds_complete.html",
+    link: "Intractive/ds_complete.html",
     icon: "🏗️",
     c1: "#60a5fa", c2: "#818cf8",
-    chapters: 22, tools: 15, status: "live",
+    chapters: 21, tools: 15, status: "live",
     topics: ["Stacks","Queues","Linked Lists","Trees","BST","Graphs","BFS","DFS","Bubble Sort","Quick Sort","Merge Sort","Prim's","Kruskal's","Dijkstra's"]
   },
   {
@@ -368,7 +367,7 @@ const subjects = [
     title: "Digital Electronics",
     marks: "Core Syllabus Topic",
     desc: "Number systems, Boolean algebra, logic gates, combinational & sequential circuits, flip-flops, registers, counters, K-map simplification — with calculators and truth-table generators.",
-    link: "digital-electronics.html",
+    link: "Intractive/digital-electronics.html",
     icon: "⚡",
     c1: "#34d399", c2: "#22d3ee",
     chapters: 14, tools: 12, status: "live",
@@ -378,45 +377,67 @@ const subjects = [
     code: "Unit III",
     title: "Database Management Systems",
     marks: "Core Syllabus Topic",
-    desc: "ER models, relational algebra, SQL, normalization, transactions, concurrency control, indexing, and file organization — essential DBMS concepts for the exam.",
-    link: null,
+    desc: "ER models, 3-level schema, relational keys, Codd's rules, normalization (1NF–BCNF), functional dependencies, SQL queries, transactions & ACID, and concurrency control.",
+    link: "Intractive/dbms.html",
     icon: "🗄️",
     c1: "#fbbf24", c2: "#fb923c",
-    chapters: 0, tools: 0, status: "soon",
-    topics: ["ER Model","Relational Algebra","SQL","Normalization","Transactions","Concurrency","Indexing","File Organization"]
+    chapters: 16, tools: 14, status: "live",
+    topics: ["ER Model","3-Level Architecture","Keys & Superkeys","Codd's Rules","Normalization (1NF-BCNF)","Functional Dependencies","SQL Queries","Serializability & 2PL","ACID Properties","NoSQL"]
   },
   {
     code: "Unit IV",
     title: "Computer Networks",
     marks: "Core Syllabus Topic",
-    desc: "OSI & TCP/IP models, data link protocols, routing algorithms, IP addressing, TCP/UDP, application layer protocols, and network security fundamentals.",
-    link: null,
+    desc: "Network types, topologies, hardware devices, 7-layer OSI model, IPv4 addressing & subnetting, TCP/IP protocol suite, data communication media, and RAID storage.",
+    link: "Intractive/networking.html",
     icon: "🌐",
     c1: "#818cf8", c2: "#a78bfa",
-    chapters: 0, tools: 0, status: "soon",
-    topics: ["OSI Model","TCP/IP","Routing","IP Addressing","Subnetting","TCP/UDP","HTTP/DNS","Network Security"]
+    chapters: 9, tools: 8, status: "live",
+    topics: ["Network Types & Topologies","Networking Devices","OSI 7 Layers","IP Addressing & Subnetting","TCP/IP Suite","Guided/Unguided Media","Data Communication","RAID & Backup"]
   },
   {
     code: "Unit V",
     title: "Operating Systems",
     marks: "Core Syllabus Topic",
-    desc: "Process management, CPU scheduling, deadlocks, memory management, paging, segmentation, file systems, and disk scheduling algorithms.",
-    link: null,
+    desc: "OS functions & types, CPU scheduling algorithms (FCFS, SJF, Round Robin), deadlock conditions & Banker's algorithm, process control blocks (PCB), and interrupt handling.",
+    link: "Intractive/operating-systems.html",
     icon: "⚙️",
     c1: "#fb7185", c2: "#f43f5e",
-    chapters: 0, tools: 0, status: "soon",
-    topics: ["Process Management","CPU Scheduling","Deadlocks","Memory Management","Paging","File Systems","Disk Scheduling"]
+    chapters: 8, tools: 7, status: "live",
+    topics: ["OS Functions & Types","CPU Scheduling (FCFS/SJF/RR)","Deadlock & Banker's Algorithm","Processes & PCB","Process States","Schedulers (Long/Short/Medium)","Interrupts & Context Switch"]
   },
   {
     code: "Unit VI",
-    title: "Computer Organization",
+    title: "Software Engineering",
     marks: "Core Syllabus Topic",
-    desc: "CPU architecture, instruction formats, addressing modes, ALU design, control unit, pipelining, cache memory, and I/O organization.",
-    link: null,
+    desc: "Software development life cycle (SDLC), waterfall, spiral & agile models, black & white box testing, COCOMO estimation, data flow diagrams (DFD), object-oriented design, and quality standards.",
+    link: "Intractive/software-engineering.html",
+    icon: "📐",
+    c1: "#38bdf8", c2: "#6366f1",
+    chapters: 10, tools: 6, status: "live",
+    topics: ["SDLC Phases","Development Models (Waterfall, Spiral)","Black & White Box Testing","COCOMO Estimation","Data Flow Diagrams (DFD)","Object-Oriented Design","ISO & CMM Standards","Maintenance"]
+  },
+  {
+    code: "Unit VII",
+    title: "TOC & Computer Organization",
+    marks: "Core Syllabus Topic",
+    desc: "Finite automata (DFA/NFA), Chomsky grammar hierarchy, regular expressions, Turing machines, computer organization vs architecture, CISC vs RISC, pipelining, and error correction.",
+    link: "Intractive/toc-coa.html",
     icon: "🔧",
     c1: "#22d3ee", c2: "#06b6d4",
-    chapters: 0, tools: 0, status: "soon",
-    topics: ["CPU Architecture","Instruction Set","Addressing Modes","ALU","Pipelining","Cache","I/O Organization"]
+    chapters: 13, tools: 10, status: "live",
+    topics: ["Strings & Languages","Chomsky Hierarchy","Finite Automata (DFA/NFA)","Regular Expressions","Turing Machine & PDA","Organization vs Architecture","CISC vs RISC & ISA","Pipelining & Hazards","Error Detection (Hamming)","Buses & Microprocessors"]
+  },
+  {
+    code: "Unit VIII",
+    title: "Emerging Trends: AI, ML & IoT",
+    marks: "Modern Tech Syllabus",
+    desc: "Artificial intelligence concepts, agent types, heuristic search algorithms, machine learning lab, blockchain, fuzzy logic, generative AI, IoT architecture, and wireless sensor networks.",
+    link: "Intractive/ai-ml-iot.html",
+    icon: "🤖",
+    c1: "#e879f9", c2: "#c084fc",
+    chapters: 15, tools: 8, status: "live",
+    topics: ["AI Types & History","Intelligent Agents","Search Algorithms (A*, Heuristic)","Machine Learning Lab","Blockchain & Web 3.0","Fuzzy Logic & GenAI","IoT Architecture & Protocols","WSN, RFID & SCADA"]
   }
 ];
 

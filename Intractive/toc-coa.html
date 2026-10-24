@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TOC and COA — Interactive Notes</title>
+<style>
+:root{--ink:#15233b;--ink2:#51607a;--paper:#f3f6f2;--grid:#e3e9e4;--panel:#fff;--teal:#0a8f7b;--teal2:#d8f1ea;--amber:#d98e04;--amber2:#fff0c9;--red:#c43d2f;--red2:#fbe3df;--blue:#2c5fb3;--blue2:#e2ebf8;--line:#b8c3bc;
+--serif:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;--ui:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;--mono:ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--serif)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+nav#nav{position:fixed;inset:0 auto 0 0;width:262px;background:#fff;border-right:1.5px solid var(--ink);overflow:auto;padding:18px 0 30px;font-family:var(--ui);z-index:5}
+nav#nav .brand{padding:0 20px 14px;font-weight:800;font-size:17px;line-height:1.2;border-bottom:1.5px solid var(--ink);margin-bottom:8px}
+nav#nav .brand small{display:block;font-weight:500;color:var(--ink2);font-size:12.5px;margin-top:4px}
+nav#nav a{display:block;padding:7px 20px 7px 17px;color:var(--ink);text-decoration:none;font-size:14.5px;border-left:3px solid transparent}
+nav#nav a:hover{background:var(--teal2)}
+nav#nav a.act{border-left-color:var(--teal);background:var(--teal2);font-weight:700}
+nav#nav a span{display:inline-block;width:22px;color:var(--ink2);font-family:var(--mono);font-size:12.5px}
+main{margin-left:262px;padding:0 0 80px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px}
+.hero{background:var(--ink);color:#fff;padding:44px 0 36px;border-bottom:6px solid var(--teal)}
+.hero h1{font:800 clamp(30px,5vw,50px)/1.05 var(--ui);margin:0 0 10px;letter-spacing:-.02em}
+.hero p{margin:0 0 22px;color:#c9d5e6;max-width:60ch;font-family:var(--ui);font-size:16px}
+.bitrow{display:flex;gap:6px;flex-wrap:wrap}
+.hero .tg{background:#22355a;color:#fff;border-color:#5b7098}
+.hero .tg.on{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.readouts div{border-top:2px solid #5b7098;padding-top:6px;font-family:var(--ui);font-size:12.5px;color:#a9b9d3}
+.readouts b{display:block;font:600 22px var(--mono);color:#fff;letter-spacing:.02em;word-break:break-all}
+section.ch{padding:56px 0 8px;scroll-margin-top:0}
+section.ch>.wrap>h2{font:800 32px/1.15 var(--ui);margin:0 0 6px;letter-spacing:-.01em}
+section.ch>.wrap>h2 i{font:500 15px var(--mono);color:var(--teal);margin-right:12px;font-style:normal}
+h3{font:700 20px/1.3 var(--ui);margin:34px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+h4{font:700 16px var(--ui);margin:22px 0 4px;color:var(--teal)}
+p{margin:.55em 0}
+ul{padding-left:1.25em;margin:.5em 0}li{margin:.2em 0}
+.lead{font-size:18.5px;color:#26354f}
+code,.m{font-family:var(--mono);font-size:.9em}
+.n{text-decoration:overline;text-decoration-thickness:1.5px}
+.tool{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;box-shadow:5px 5px 0 var(--teal2);margin:18px 0;font-family:var(--ui);font-size:15px;line-height:1.5}
+.tool>.th{background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:6px 14px;border-radius:2px 2px 0 0}
+.tool>.tb{padding:14px 16px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.tabs button,.btn,select,input[type=text]{font:600 14px var(--ui);border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:6px 11px;border-radius:3px;cursor:pointer}
+input[type=text]{cursor:text;font-family:var(--mono);font-weight:500;font-size:15px;min-width:0}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.btn:hover,.tabs button:hover{background:var(--teal2)}.tabs button[aria-selected=true]:hover{background:var(--ink)}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.row label{font-weight:600;font-size:13.5px;color:var(--ink2)}
+.tg{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:58px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;font-family:var(--mono);padding:2px 4px}
+.tg small{font:600 10.5px var(--ui);opacity:.75}.tg b{font-size:21px;line-height:1.1}
+.tg.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.led{display:inline-block;width:16px;height:16px;border-radius:50%;background:#d4dcd7;border:1.5px solid #95a39b;vertical-align:-3px}
+.led.on{background:var(--teal);border-color:var(--teal);box-shadow:0 0 0 3px var(--teal2)}
+.out{display:inline-flex;align-items:center;gap:7px;font:600 15px var(--mono);margin-right:14px}
+table.t{border-collapse:collapse;font-family:var(--mono);font-size:14px;margin:8px 0}
+table.t th,table.t td{border:1.2px solid var(--line);padding:4px 10px;text-align:center}
+table.t th{background:#e8efe9;font-family:var(--ui);font-weight:700;font-size:13px}
+table.t td.l,table.t th.l{text-align:left}
+table.t tr.hi td{background:var(--amber2);font-weight:700}
+table.t td.ok{color:var(--teal);font-weight:700}
+.scroll{overflow-x:auto}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.res button{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:6px 10px;cursor:pointer;font-family:var(--ui)}
+.res button.sel{border-color:var(--teal);background:var(--teal2)}
+.res small{display:block;color:var(--ink2);font-size:12px}.res b{font:600 16px var(--mono);word-break:break-all}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1.2px solid var(--ink);border-radius:3px;padding:2px 8px;font:600 14px var(--mono);background:#fff;text-align:center}
+.chip small{display:block;font:500 11px var(--ui);color:var(--ink2)}
+.chip.o{background:var(--amber2);border-color:var(--amber)}
+.note,.fix,.key,.eg{padding:10px 14px;margin:14px 0;border-left:4px solid;font-size:15.5px;font-family:var(--ui);line-height:1.55}
+.note{background:var(--blue2);border-color:var(--blue)}.fix{background:var(--red2);border-color:var(--red)}
+.key{background:var(--teal2);border-color:var(--teal)}.eg{background:var(--amber2);border-color:var(--amber)}
+.note b:first-child,.fix b:first-child,.key b:first-child,.eg b:first-child{margin-right:4px}
+pre.w{font:500 14.5px/1.5 var(--mono);margin:8px 0;white-space:pre;overflow-x:auto}
+svg{max-width:100%;height:auto}
+svg text{font-family:var(--ui)}
+.w{fill:none;stroke:#9aa8a1;stroke-width:2.4;stroke-linejoin:round}.w.on{stroke:var(--teal)}
+.g{fill:#fff;stroke:var(--ink);stroke-width:2}
+.pin{font:700 12px var(--ui);fill:var(--ink)}
+.dot{fill:#9aa8a1}.dot.on{fill:var(--teal)}
+.kmap{border-collapse:separate;border-spacing:0;font-family:var(--mono)}
+.kmap td,.kmap th{width:62px;height:58px;border:1.5px solid var(--ink);text-align:center;padding:0;position:relative}
+.kmap th{background:#e8efe9;width:auto;height:auto;font:700 13px var(--mono);padding:4px 8px;border-width:1.5px}
+.kmap th.corner{background:#fff;border:none;font-size:12px;text-align:right}
+.kmap button{all:unset;display:block;width:100%;height:100%;cursor:pointer;font:700 22px var(--mono);position:relative}
+.kmap button small{position:absolute;right:4px;top:2px;font:500 10px var(--mono);color:#7b8a83}
+.kmap button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}
+.kmap td.hl{outline:4px solid var(--amber);outline-offset:-4px;z-index:2}
+.kmap .dots{position:absolute;left:3px;bottom:3px;display:flex;gap:2px}
+.kmap .dots i{width:9px;height:9px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.35)}
+.kmap .v0{color:#9aa8a1;font-weight:500}.kmap .v1{color:var(--ink)}.kmap .vx{color:var(--amber)}
+.leg{list-style:none;padding:0;margin:8px 0;font-family:var(--ui)}
+.leg li{display:flex;gap:10px;align-items:center;padding:4px 6px;border-radius:3px;cursor:default}
+.leg li:hover{background:var(--amber2)}
+.leg i{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.35)}
+.big{font:700 22px var(--mono);padding:8px 12px;background:var(--teal2);border-left:4px solid var(--teal);margin:8px 0;overflow-x:auto}
+.fam ul{list-style:none;padding-left:1.1em;border-left:2px solid var(--ink);margin:2px 0 2px .4em}
+.fam>ul{border:0;padding:0;margin:0}.fam li{margin:4px 0;font-family:var(--ui);font-size:15px}
+.fam li b{background:var(--ink);color:#fff;padding:1px 9px;border-radius:3px;font-size:14px}
+.fam li.leaf b{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.msg{font-weight:700;color:var(--red);min-height:1.4em}
+.mini{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.mini figure{margin:0;text-align:center;font:13px var(--ui);color:var(--ink2)}
+.ff{display:flex;gap:6px;margin:10px 0}
+.ffb{border:2px solid var(--ink);min-width:62px;text-align:center;padding:6px 4px;background:#fff;font-family:var(--mono);border-radius:3px;transition:background .15s}
+.ffb small{display:block;font:600 11px var(--ui);color:var(--ink2)}.ffb b{font-size:26px}
+.ffb.on{background:var(--teal);color:#fff;border-color:var(--teal)}.ffb.on small{color:#d8f1ea}
+.ffb.flash{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.menu-btn{display:none}
+.kmap.sm td{width:44px;height:42px}.kmap.sm button{font-size:16px}.kmap.sm th{font-size:11px;padding:2px 5px}.kmap.sm button small{font-size:8.5px}
+.menu-btn{display:none}
+@media (max-width:980px){
+ nav#nav{position:fixed;inset:0 0 auto 0;width:auto;height:auto;max-height:100vh;overflow:visible;padding:0;border-right:0;border-bottom:1.5px solid var(--ink);display:block}
+ nav#nav .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 6px 14px;margin:0;border-bottom:0;font-size:15px}
+ nav#nav .brand small{display:none}
+ .menu-btn{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--ui);background:var(--ink);color:#fff;border:0;border-radius:3px;padding:9px 13px;min-height:40px;cursor:pointer}
+ #navlist{display:none;max-height:calc(100vh - 58px);overflow-y:auto;border-top:1.5px solid var(--ink);background:#fff;-webkit-overflow-scrolling:touch}
+ nav#nav.open #navlist{display:block}
+ nav#nav a{padding:13px 18px;border-bottom:1px solid #e3e9e4;font-size:16px}
+ main{margin-left:0;padding-top:52px}.wrap{padding:0 16px}
+ section.ch{scroll-margin-top:56px}
+ .kmap td{width:50px;height:50px}
+ .hero{padding-top:28px}
+}
+@media print{nav#nav{display:none}main{margin:0}.tool{break-inside:avoid}}
+.home-link{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;font:700 13px var(--ui);color:var(--teal);background:var(--teal2);border:1.5px solid var(--teal);border-radius:3px;text-decoration:none;transition:all .2s;margin-left:auto;}
+.home-link:hover{background:var(--teal);color:#fff;}
+.null{color:#9aa8a1;font-style:italic}
+td.bad{background:var(--red2)!important;color:var(--red);font-weight:700}td.good{background:var(--teal2)!important}
+td.lock{background:var(--amber2)!important}
+textarea.sql{width:100%;min-height:150px;font:500 14.5px/1.5 var(--mono);border:1.5px solid var(--ink);border-radius:3px;padding:10px;resize:vertical;background:#fbfcfb;color:var(--ink)}
+.err{background:var(--red2);border-left:4px solid var(--red);padding:8px 12px;margin:8px 0;font:600 14px var(--mono);white-space:pre-wrap}
+.okm{background:var(--teal2);border-left:4px solid var(--teal);padding:8px 12px;margin:8px 0;font:600 14px var(--ui)}
+pre.code{background:#f1f4f2;border:1px solid var(--line);border-left:4px solid var(--ink);padding:10px 12px;margin:8px 0;font:500 13.5px/1.55 var(--mono);overflow-x:auto;white-space:pre}
+details.acc{border:1.5px solid var(--ink);border-radius:3px;margin:8px 0;background:#fff;font-family:var(--ui)}
+details.acc>summary{cursor:pointer;padding:9px 14px;font-weight:700;font-size:15px;list-style:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::before{content:'+';display:inline-block;width:20px;color:var(--teal);font-family:var(--mono)}
+details.acc[open]>summary::before{content:'−'}
+details.acc[open]>summary{background:var(--teal2);border-bottom:1.5px solid var(--ink)}
+details.acc>div{padding:8px 16px 12px;font-size:15px}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.cols2>div{min-width:0}
+.pill{display:inline-block;padding:1px 9px;border-radius:12px;font:700 12px var(--ui);background:var(--ink);color:#fff;margin:0 4px 2px 0}
+.pill.g{background:var(--teal)}.pill.r{background:var(--red)}.pill.a{background:var(--amber);color:var(--ink)}
+.sel{cursor:pointer}.sel:hover td{background:var(--amber2)}
+tr.pick td{background:var(--teal2)!important;font-weight:700}
+.stepbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.stepbar span{padding:4px 11px;border:1.5px solid var(--line);border-radius:14px;font:600 13px var(--ui);color:var(--ink2)}
+.stepbar span.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.hero .tg{min-width:auto;height:46px;padding:0 14px;flex-direction:row;font:700 15px var(--ui)}
+.hero .arrowx{color:#5b7098;align-self:center;font-weight:700}
+.heroTxt{margin-top:16px;min-height:3.2em;font-family:var(--ui);color:#e3ebf7;font-size:16px;max-width:62ch}
+.flow{stroke-dasharray:6 6;animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-12}}
+.bit{display:inline-block;width:19px;text-align:center;font:600 13px var(--mono);border:1px solid var(--line);margin:1px;border-radius:2px;background:#fff}.bit.f{background:var(--amber2);border-color:var(--amber)}.bit.n{background:var(--blue2);border-color:var(--blue)}.bit.h{background:var(--teal2);border-color:var(--teal)}
+.oct{display:inline-block;margin:2px 6px 2px 0;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Chapters"></nav>
+<main id="main"></main>
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const SECTIONS=[];
+function section(id,title,html,init){SECTIONS.push({id,title,html,init});}
+function Tabs(el,names,cb,start=0){
+  el.classList.add('tabs');el.setAttribute('role','tablist');
+  const draw=i=>{el.innerHTML=names.map((n,k)=>`<button role="tab" aria-selected="${k===i}" data-k="${k}">${n}</button>`).join('');};
+  el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;draw(k);cb(k);};
+  draw(start);cb(start);
+}
+function Toggles(el,labels,init,cb){
+  let v=init.slice(),last=-1;
+  const draw=()=>{el.innerHTML=labels.map((l,i)=>`<button class="tg ${v[i]?'on':''}" data-i="${i}" aria-pressed="${!!v[i]}"><small>${l}</small><b>${v[i]}</b></button>`).join('');
+    if(last>=0){const b=el.querySelector(`[data-i="${last}"]`);b&&b.focus();}};
+  el.classList.add('bitrow');
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;const i=+b.dataset.i;v[i]^=1;last=i;draw();cb(v);};
+  draw();cb(v);return {get:()=>v,set:nv=>{v=nv.slice();draw();cb(v);}};
+}
+const cell=v=>v===null||v===undefined?'<span class="null">NULL</span>':esc(v);
+function htmlTable(cols,rows,o={}){
+  return `<div class="scroll"><table class="t"><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr class="${o.row&&o.row(r,i)||''}">${r.map((v,j)=>`<td class="${o.cell&&o.cell(v,i,j)||''}">${o.raw?v:cell(v)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+}
+const gotoId=id=>{const e=document.getElementById(id);e&&e.scrollIntoView({behavior:'smooth'});};
+const svgBox=(x,y,w,h,label,on,sz=13)=>`<rect class="g" x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="${on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.6':''}"/><text class="pin" x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" style="font-size:${sz}px">${label}</text>`;
+const wire=(pts,on,dash)=>`<polyline class="w ${on?'on':''}" ${dash?'stroke-dasharray="5 4"':''} points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+const arrowHead=(x,y,dir,on)=>{const c=on?'#0a8f7b':'#9aa8a1';const p={d:`${x},${y} ${x-6},${y-9} ${x+6},${y-9}`,u:`${x},${y} ${x-6},${y+9} ${x+6},${y+9}`,r:`${x},${y} ${x-9},${y-6} ${x-9},${y+6}`,l:`${x},${y} ${x+9},${y-6} ${x+9},${y+6}`}[dir];return `<polygon points="${p}" fill="${c}"/>`;};
+const SQLT=(t)=>`<span class="m">${esc(t)}</span>`;
+
+const nodeBox=(x,y,t,o={})=>`<g ${o.k!==undefined?`data-k="${o.k}" style="cursor:pointer"`:''}><rect class="g" x="${x-(o.w||40)/2}" y="${y-(o.h||24)/2}" width="${o.w||40}" height="${o.h||24}" rx="3" style="${o.bad?'fill:#fbe3df;stroke:#c43d2f;stroke-width:2.6':o.on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.4':o.fill?'fill:'+o.fill:''}"/><text class="pin" x="${x}" y="${y+4}" text-anchor="middle" font-size="${o.sz||11}">${t}</text></g>`;
+const quiz=(id,items,opts)=>{
+  const R=$('#'+id);R.innerHTML=items.map((q,i)=>`<div class="row"><span style="flex:1 1 340px">${q[0]}</span><select data-i="${i}"><option value="">choose…</option>${opts.map(o=>`<option>${o}</option>`).join('')}</select><span id="${id}r${i}"></span></div>`).join('')+`<div class="row"><button class="btn pri" id="${id}c">Check answers</button></div><p class="big" id="${id}o" style="font-size:16px"></p>`;
+  $('#'+id+'c').onclick=()=>{let ok=0;items.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,R).value;if(v===q[1]){ok++;$('#'+id+'r'+i).innerHTML='<span class="pill g">✓</span>';}else $('#'+id+'r'+i).innerHTML=v?'<span class="pill r">✗</span>':'';});$('#'+id+'o').textContent=`Score: ${ok} / ${items.length}`;};
+};
+const HERO=[['Symbol','An abstract entity — a, b, 0, 1 …'],['Alphabet','A finite set of symbols, Σ = {a, b}.'],['String','A sequence of symbols; ε (λ) is the empty string.'],['Language','A collection of strings over an alphabet.'],['Automaton','An abstract machine that accepts a language — and a computer is built from such machines (Part B).']];
+function heroInit(){const el=$('#heroSteps'),tx=$('#heroTxt');let cur=0;const draw=()=>{el.innerHTML=HERO.map((h,i)=>`<button class="tg ${i===cur?'on':''}" data-i="${i}">${h[0]}</button>${i<4?'<span class="arrowx">→</span>':''}`).join('');tx.innerHTML=`<b>${HERO[cur][0]}.</b> ${HERO[cur][1]}`;};el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;cur=+b.dataset.i;draw();};draw();}
+
+/* ============ A1 STRINGS & LANGUAGES ============ */
+section('str','TOC · Strings & languages',`
+<p class="lead"><b>Automata</b> = the study of abstract computing devices or machines. A <b>symbol</b> is an abstract entity (a, b, 0, 1 …); an <b>alphabet</b> Σ is a finite set of symbols; a <b>string</b> is a sequence of symbols; a <b>language</b> is a collection of strings over an alphabet.</p>
+<h3>Strings over an alphabet — Σⁿ and Σ*</h3>
+<ul><li>Σ<sup>n</sup> = all strings of length n (count = |Σ|<sup>n</sup>); Σ* = Σ⁰ ∪ Σ¹ ∪ Σ² ∪ … = Σ⁺ ∪ {ε} — all strings of all lengths. ε (or λ) is the empty string of length 0.</li></ul>
+<div class="tool"><div class="th">Kleene closure explorer</div><div class="tb"><div class="row"><label for="klA">Alphabet Σ (comma separated)</label><input type="text" id="klA" value="a,b" size="10"><label for="klN">Length n</label><input type="range" id="klN" min="0" max="4" value="2" style="width:140px"><b class="m" id="klV"></b></div><div id="klO"></div></div></div>
+<h3>Language — finite or infinite</h3>
+<div class="tool"><div class="th">Is the string in the language? (Σ = {a, b})</div><div class="tb"><div class="row"><label for="lgS">String</label><input type="text" id="lgS" value="ab" size="12"></div><div id="lgO"></div></div></div>
+<h3>Prefix and suffix</h3>
+<ul><li>If w = xy then <b>x is a prefix</b> and <b>y is a suffix</b> of w. Length of a string = number of symbols; |ε| = 0.</li></ul>
+<div class="tool"><div class="th">Split a string</div><div class="tb"><div class="row"><label for="pfS">w =</label><input type="text" id="pfS" value="0011" size="12"><span class="m" id="pfL"></span></div><div id="pfO"></div></div></div>
+`,root=>{
+  const kl=()=>{const A=[...new Set($('#klA').value.split(/[ ,]+/).filter(Boolean))];const n=+$('#klN').value;$('#klV').textContent='n = '+n;if(!A.length){$('#klO').innerHTML='<p class="msg">Enter some symbols.</p>';return;}
+    const gen=k=>k===0?['']:gen(k-1).flatMap(s=>A.map(c=>s+c));const L=gen(n);const show=L.slice(0,64).map(s=>`<span class="pill g">${s||'ε'}</span>`).join('')+(L.length>64?` … (${L.length-64} more)`:'');
+    let tot=0;const rows=[];for(let k=0;k<=n;k++){const c=Math.pow(A.length,k);tot+=c;rows.push([k,'Σ'+k,c]);}
+    $('#klO').innerHTML=`<p><b>Σ<sup>${n}</sup></b> = ${show}</p><p>Count = |Σ|<sup>n</sup> = ${A.length}<sup>${n}</sup> = <b>${L.length}</b>. ${n===2&&A.length===2?'(Σ² = Σ¹·Σ¹ = {a,b}{b,a} = {aa, ab, ba, bb}.)':''}</p>`+htmlTable(['n','Set','Number of strings'],rows)+`<p>Σ* up to length ${n} has ${tot} strings (it is infinite when all lengths are included).</p>`;};
+  $('#klA').oninput=kl;$('#klN').oninput=kl;kl();
+  const lg=()=>{const s=$('#lgS').value;const ok=/^[ab]*$/.test(s);if(!ok){$('#lgO').innerHTML='<p class="msg">Use only a and b (empty = ε).</p>';return;}const l1=s.length===2,l2=s.startsWith('a');$('#lgO').innerHTML=htmlTable(['Language','Definition','Contains it?','Size'],[['L1','all strings of length 2 = {aa, ab, ba, bb}',l1?'<span class="pill g">yes</span>':'<span class="pill r">no</span>','finite (4)'],['L2','all strings that start with “a”',l2?'<span class="pill g">yes</span>':'<span class="pill r">no</span>','infinite']],{raw:true})+`<p style="font-size:13.5px;color:var(--ink2)">|${s||'ε'}| = ${s.length}.</p>`;};$('#lgS').oninput=lg;lg();
+  const pf=()=>{const w=$('#pfS').value;$('#pfL').textContent='|w| = '+w.length;const R=[];for(let i=0;i<=w.length;i++)R.push([`${w.slice(0,i)||'ε'} | ${w.slice(i)||'ε'}`,w.slice(0,i)||'ε',w.slice(i)||'ε']);$('#pfO').innerHTML=htmlTable(['Split x | y','Prefix x','Suffix y'],R)+'<p style="font-size:13.5px;color:var(--ink2)">The notes show the splits 0|011, 00|11 and 001|1 for w = 0011; the full list also includes ε and w itself.</p>';};$('#pfS').oninput=pf;pf();
+});
+
+/* ============ A2 GRAMMAR & CHOMSKY ============ */
+const CH=[['Type 0','Unrestricted grammar','Recursively enumerable language','Turing machine','Includes almost all formal languages; generates exactly the languages a Turing machine can recognize.'],['Type 1','Context-sensitive grammar','Context-sensitive language','Linear bounded automaton (LBA)','Languages defined by a Type-1 grammar are accepted by linear bounded automata.'],['Type 2','Context-free grammar','Context-free language','Pushdown automaton (PDA)','Accepted by a PDA.'],['Type 3','Regular grammar','Regular language','Finite state automaton (FSA)','Accepted by finite automata.']];
+const GR={'aⁿbⁿ':{V:['S'],T:['a','b'],P:{S:['aSb','']},note:'Context-free: equal numbers of a then b.'},'a⁺ (regular)':{V:['S'],T:['a'],P:{S:['aS','a']},note:'Regular: one or more a.'},'Balanced parentheses':{V:['S'],T:['(',')'],P:{S:['(S)S','']},note:'Context-free: the classic PDA language.'}};
+section('gram','TOC · Grammar & Chomsky hierarchy',`
+<p class="lead">A <b>grammar</b> enumerates the strings of a language — a finite set of rules defining it. It is a <b>4-tuple (V, T, P, S)</b>: V = non-terminals, T (Σ) = input terminals, P = finite set of production rules, S = start symbol. Getting a string from a grammar is called <b>derivation</b>.</p>
+<div class="tool"><div class="th">Derive a string — pick the production to apply to the leftmost non-terminal</div><div class="tb"><div id="drT"></div><div id="drG"></div><p class="big" id="drF" style="font-size:20px"></p><div class="row" id="drB"></div><div class="row"><button class="btn" id="drR">Restart</button><button class="btn" id="drX">Derive a random string</button></div><div id="drH"></div></div></div>
+<h3>Chomsky hierarchy</h3>
+<ul><li>Four classes, each contained in the one before it: Type 0 ⊃ Type 1 ⊃ Type 2 ⊃ Type 3.</li></ul>
+<div class="tool"><div class="th">Click a ring</div><div class="tb"><div class="cols2"><svg id="chS" viewBox="0 0 300 250" width="300" role="img" aria-label="Chomsky hierarchy"></svg><div id="chB"></div></div></div></div>
+<div class="tool"><div class="th">Which type?</div><div class="tb"><div id="chQ"></div></div></div>
+`,root=>{
+  let g=GR['aⁿbⁿ'],form='S',hist=['S'];
+  const first=f=>[...f].findIndex(c=>c===c.toUpperCase()&&c!==c.toLowerCase());
+  const dr=()=>{const i=first(form);$('#drG').innerHTML=htmlTable(['V','T (Σ)','P (production rules)','S'],[[g.V.join(', '),g.T.join(', '),Object.entries(g.P).map(([k,v])=>v.map(r=>`${k} → ${r||'ε'}`).join(' | ')).join('; '),'S']])+`<p style="font-size:13.5px;color:var(--ink2)">${g.note}</p>`;
+    $('#drF').innerHTML=`Sentential form: <span class="m">${form||'ε'}</span>`;
+    $('#drB').innerHTML=i>=0?g.P[form[i]].map((r,k)=>`<button class="btn pri" data-r="${k}">${form[i]} → ${r||'ε'}</button>`).join(''):'<span class="okm">Only terminals are left — the derivation is complete: <b>'+(form||'ε')+'</b> is in the language.</span>';
+    $('#drH').innerHTML=`<p class="m" style="font-size:13px">Derivation: ${hist.map(h=>h||'ε').join(' ⇒ ')}</p>`;$$('#drB [data-r]').forEach(b=>b.onclick=()=>{const k=+b.dataset.r,i=first(form);form=form.slice(0,i)+g.P[form[i]][k]+form.slice(i+1);hist.push(form);dr();});};
+  Tabs($('#drT'),Object.keys(GR),k=>{g=GR[Object.keys(GR)[k]];form='S';hist=['S'];dr();});
+  $('#drR').onclick=()=>{form='S';hist=['S'];dr();};
+  $('#drX').onclick=()=>{form='S';hist=['S'];let n=0;while(first(form)>=0&&n<12){const i=first(form),R=g.P[form[i]];const r=n>=5?R[R.length-1]:R[Math.floor(Math.random()*R.length)];form=form.slice(0,i)+r+form.slice(i+1);hist.push(form);n++;}dr();};
+  let cs=3;const ch=()=>{$('#chS').innerHTML=[[130,100,0],[104,80,1],[76,58,2],[44,34,3]].map(([rx,ry,i])=>`<g data-i="${i}" style="cursor:pointer"><ellipse cx="150" cy="125" rx="${rx}" ry="${ry}" class="g" style="fill:${['#e3f2fd','#e8f5e9','#fff8e1','#fdecea'][i]};${i===cs?'stroke:#d98e04;stroke-width:3.5':''}"/></g>`).join('')+[['Type 0',37],['Type 1',63],['Type 2',90],['Type 3',128]].map(([t,y])=>`<text class="pin" x="150" y="${y}" text-anchor="middle" font-size="11" style="pointer-events:none">${t}</text>`).join('');
+    const c=CH[cs];$('#chB').innerHTML=`<h4 style="margin-top:0">${c[0]}</h4>`+htmlTable(['Grammar','Language','Accepted by'],[[c[1],c[2],c[3]]])+`<p>${c[4]}</p>`;$$('#chS g[data-i]').forEach(e=>e.onclick=()=>{cs=+e.dataset.i;ch();});};ch();
+  quiz('chQ',[['Accepted by a Turing machine','Type 0'],['Accepted by a linear bounded automaton','Type 1'],['Accepted by a pushdown automaton','Type 2'],['Accepted by a finite state automaton','Type 3'],['Regular grammar','Type 3'],['Recursively enumerable language','Type 0'],['Context-free grammar','Type 2'],['Context-sensitive language','Type 1']],['Type 0','Type 1','Type 2','Type 3']);
+});
+/* ============ A3 AUTOMATA ============ */
+const AUT={
+ 'Starts with a (from the notes)':{kind:'DFA',Q:['A','B','C'],S:['a','b'],q0:'A',F:['B'],d:{A:{a:['B'],b:['C']},B:{a:['B'],b:['B']},C:{a:['C'],b:['C']}},pos:{A:[110,90],B:[340,90],C:[110,190]},dead:'C',test:'abba',note:'The DFA from the notes: A is the start state, B (double circle) the final state, C the death state. Accepts strings starting with a.'},
+ 'Ends with “ab” — DFA':{kind:'DFA',Q:['q0','q1','q2'],S:['a','b'],q0:'q0',F:['q2'],d:{q0:{a:['q1'],b:['q0']},q1:{a:['q1'],b:['q2']},q2:{a:['q1'],b:['q0']}},pos:{q0:[80,100],q1:[250,100],q2:[420,100]},test:'aab',note:'Deterministic: exactly one move for every state and symbol.'},
+ 'Ends with “ab” — NFA':{kind:'NFA',Q:['q0','q1','q2'],S:['a','b'],q0:'q0',F:['q2'],d:{q0:{a:['q0','q1'],b:['q0']},q1:{b:['q2']}},pos:{q0:[80,100],q1:[250,100],q2:[420,100]},test:'aab',note:'Non-deterministic: on a, q0 can stay or move to q1. Fewer states than the DFA.'},
+ 'a*b* — ε-NFA':{kind:'ε-NFA',Q:['q0','q1'],S:['a','b'],q0:'q0',F:['q1'],d:{q0:{a:['q0'],e:['q1']},q1:{b:['q1']}},pos:{q0:[130,100],q1:[360,100]},test:'aabb',note:'ε-NFA: q0 moves to q1 on ε (null) without reading any symbol.'}};
+function autClosure(a,set){const out=new Set(set),st=[...set];while(st.length){const s=st.pop();((a.d[s]||{}).e||[]).forEach(t=>{if(!out.has(t)){out.add(t);st.push(t);}});}return out;}
+function autRun(a,str){let cur=autClosure(a,new Set([a.q0]));const tr=[{sym:'—',set:[...cur]}];let bad=false;for(const ch of str){if(!a.S.includes(ch)){bad=true;tr.push({sym:ch,set:[],err:true});break;}const nx=new Set();cur.forEach(s=>((a.d[s]||{})[ch]||[]).forEach(t=>nx.add(t)));cur=autClosure(a,nx);tr.push({sym:ch,set:[...cur]});}
+  return {tr,acc:!bad&&[...cur].some(s=>a.F.includes(s))};}
+function autSvg(a,hl){let o='<defs><marker id="aa" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0,0 9,3.5 0,7" fill="#15233b"/></marker></defs>';const E={};
+  Object.entries(a.d).forEach(([s,m])=>Object.entries(m).forEach(([c,ts])=>ts.forEach(t=>{const k=s+'>'+t;(E[k]=E[k]||[]).push(c==='e'?'ε':c);})));
+  Object.entries(E).forEach(([k,L])=>{const [s,t]=k.split('>'),A=a.pos[s],B=a.pos[t],lab=L.join(',');if(s===t){o+=`<circle cx="${A[0]}" cy="${A[1]-34}" r="13" fill="none" stroke="#15233b" stroke-width="1.5"/><text class="pin" x="${A[0]}" y="${A[1]-52}" text-anchor="middle" font-size="11">${lab}</text>`;return;}
+    const dx=B[0]-A[0],dy=B[1]-A[1],Ln=Math.hypot(dx,dy),back=E[t+'>'+s]?10:0,ox=-dy/Ln*back,oy=dx/Ln*back;o+=`<line x1="${A[0]+dx/Ln*24+ox}" y1="${A[1]+dy/Ln*24+oy}" x2="${B[0]-dx/Ln*28+ox}" y2="${B[1]-dy/Ln*28+oy}" stroke="#15233b" stroke-width="1.6" marker-end="url(#aa)"/><text class="pin" x="${(A[0]+B[0])/2+ox*1.8}" y="${(A[1]+B[1])/2+oy*1.8-6}" text-anchor="middle" font-size="12">${lab}</text>`;});
+  a.Q.forEach(s=>{const p=a.pos[s],on=hl.includes(s),dead=s===a.dead;if(a.F.includes(s))o+=`<circle cx="${p[0]}" cy="${p[1]}" r="25" fill="none" stroke="#15233b" stroke-width="1.5"/>`;o+=`<circle cx="${p[0]}" cy="${p[1]}" r="20" class="g" style="fill:${on?'#d8f1ea':dead?'#fbe3df':'#fff'};${on?'stroke:#0a8f7b;stroke-width:3':''}"/><text class="pin" x="${p[0]}" y="${p[1]+4}" text-anchor="middle" font-size="12">${s}</text>`;});
+  const q=a.pos[a.q0];o+=`<line x1="${q[0]-58}" y1="${q[1]}" x2="${q[0]-26}" y2="${q[1]}" stroke="#15233b" stroke-width="1.8" marker-end="url(#aa)"/>`;return `<svg viewBox="0 0 560 250" width="560" role="img" aria-label="Automaton diagram">${o}</svg>`;}
+section('fa','TOC · Finite automata',`
+<ul><li>A <b>finite automaton</b> has a fixed amount of unstructured memory and accepts <b>regular languages</b> (modelling state, communication protocols, adventure games, some control systems). Without output: <b>DFA, NFA, ε-NFA</b>. With output: <b>Moore</b> and <b>Mealy</b> machines.</li><li>A DFA is a <b>5-tuple (Q, Σ, q0, F, δ)</b>: Q = all states, Σ = inputs, q0 = initial state, F = final state(s), δ = transition function.</li></ul>
+<div class="tool"><div class="th">Automaton simulator — type an input and step through it</div><div class="tb"><div id="auT"></div><div class="scroll" id="auS"></div><p style="font-size:13.5px" id="auN"></p>
+<div class="row"><label for="auI">Input string</label><input type="text" id="auI" size="14"><button class="btn pri" id="auSt">Step</button><button class="btn" id="auRun">Run all</button><button class="btn" id="auRs">Reset</button></div><div id="auO"></div><div id="auD"></div></div></div>
+<h3>DFA vs NFA</h3>
+<div class="scroll"><table class="t"><tr><th>#</th><th class="l">DFA</th><th class="l">NFA</th></tr><tr><td>1</td><td class="l">Each DFA can be an NFA</td><td class="l">Each NFA can't be a DFA (as written)</td></tr><tr><td>2</td><td class="l">Same power; a DFA can be translated to an NFA</td><td class="l">—</td></tr><tr><td>3</td><td class="l">Both can have multiple final states</td><td class="l">—</td></tr><tr><td>4</td><td class="l">A compiler uses a DFA in lexical analysis</td><td class="l">A compiler doesn't use an NFA</td></tr><tr><td>5</td><td class="l">Backtracking is possible (as written)</td><td class="l">Not always possible (as written)</td></tr><tr><td>6</td><td class="l">Requires more space</td><td class="l">Requires less space</td></tr></table></div>
+<div class="note"><b>Clarification.</b> Standard statements: every DFA is also an NFA, and every NFA can be converted to an equivalent DFA (same power, usually with more states — matching “DFA requires more space”). Backtracking / guessing belongs to the NFA. Compare the two “ends with ab” machines above.</div>
+<h3>ε-NFA</h3>
+<ul><li>In an NFA, moving on <b>null (ε)</b> is allowed — it can move without reading any symbol. Used to identify regular languages. Try the a*b* machine above.</li></ul>
+<h3>Moore vs Mealy</h3>
+<div class="tool"><div class="th">Same input, two kinds of machine</div><div class="tb"><div id="mmT"></div><div class="row"><label for="mmI">Input (0/1)</label><input type="text" id="mmI" value="1101" size="12"></div><div id="mmO"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">Point</th><th class="l">Moore</th><th class="l">Mealy</th></tr><tr><td class="l">Output depends on</td><td class="l">only the current state (λ : Q → Δ)</td><td class="l">current state and input (λ : Q × Σ → Δ)</td></tr><tr><td class="l">Output table</td><td class="l">associated with states</td><td class="l">associated with input</td></tr><tr><td class="l">Speed</td><td class="l">output after a state change — slower</td><td class="l">output immediately with the input — faster</td></tr><tr><td class="l">Number of states</td><td class="l">more (output linked to states)</td><td class="l">fewer (output linked to transitions)</td></tr><tr><td class="l">Conversion</td><td class="l">Moore → Mealy gives fewer states</td><td class="l">Mealy → Moore gives more states</td></tr></table></div>
+`,root=>{
+  const names=Object.keys(AUT);let cur=AUT[names[0]],step=0,res=null;
+  const au=()=>{const sets=res?res.tr:[{sym:'—',set:[...autClosure(cur,new Set([cur.q0]))]}];const k=Math.min(step,sets.length-1);$('#auS').innerHTML=autSvg(cur,sets[k].set);
+    $('#auN').textContent=`${cur.kind}. ${cur.note}`;
+    const syms=[...cur.S,...(cur.Q.some(s=>(cur.d[s]||{}).e)?['ε']:[])];$('#auD').innerHTML='<p style="margin:8px 0 2px"><b>Transition function δ</b> — (Q, Σ, q0, F) = ('+cur.Q.join(', ')+'; '+cur.S.join(', ')+'; '+cur.q0+'; '+cur.F.join(', ')+')</p>'+htmlTable(['State',...syms],cur.Q.map(s=>[(s===cur.q0?'→ ':'')+(cur.F.includes(s)?'* ':'')+s,...syms.map(c=>{const t=((cur.d[s]||{})[c==='ε'?'e':c]||[]);return t.length?'{'+t.join(',')+'}':'∅';})]));
+    if(res){$('#auO').innerHTML=htmlTable(['Step','Symbol read','Current state(s)'],sets.slice(0,k+1).map((x,i)=>[i,x.sym,x.err?'invalid symbol':'{'+x.set.join(', ')+'}']),{row:(r,i)=>i===k?'hi':''})+(k===sets.length-1?`<div class="${res.acc?'okm':'err'}"><b>${res.acc?'Accepted':'Rejected'}</b> — ${res.acc?'a final state is reached':sets[k].set.length?'the machine stops in a non-final state':'no state is left (death / dead end)'}.</div>`:'');}else $('#auO').innerHTML='<p class="m">Press “Step” or “Run all”.</p>';};
+  const start=()=>{res=autRun(cur,$('#auI').value.trim());step=0;};
+  Tabs($('#auT'),names,k=>{cur=AUT[names[k]];$('#auI').value=cur.test;res=null;step=0;au();});
+  $('#auSt').onclick=()=>{if(!res)start();else step=Math.min(step+1,res.tr.length-1);au();};$('#auRun').onclick=()=>{start();step=res.tr.length-1;au();};$('#auRs').onclick=()=>{res=null;step=0;au();};
+  /* moore/mealy */
+  const MM={'Parity of 1s':{moore:{start:'q0',s:{q0:{o:'0',t:{0:'q0',1:'q1'}},q1:{o:'1',t:{0:'q1',1:'q0'}}}},mealy:{start:'q0',s:{q0:{t:{0:['q0','0'],1:['q1','1']}},q1:{t:{0:['q1','1'],1:['q0','0']}}}},desc:'Output = 1 while the number of 1s read so far is odd.'},
+   'Bit complement':{moore:{start:'s',s:{s:{o:'0',t:{0:'z',1:'o'}},z:{o:'1',t:{0:'z',1:'o'}},o:{o:'0',t:{0:'z',1:'o'}}}},mealy:{start:'q0',s:{q0:{t:{0:['q0','1'],1:['q0','0']}}}},desc:'Output = the complement of each input bit. Moore needs 3 states (output tied to the last symbol), Mealy only 1.'}};
+  let mk=names&&Object.keys(MM)[0];
+  const mm=()=>{const inp=$('#mmI').value.replace(/[^01]/g,''),M=MM[mk];let q=M.moore.start,mo=[M.moore.s[q].o],mr=[[q,'—',M.moore.s[q].o]];for(const c of inp){q=M.moore.s[q].t[c];mo.push(M.moore.s[q].o);mr.push([q,c,M.moore.s[q].o]);}
+    let p=M.mealy.start,me=[],lr=[];for(const c of inp){const [n,o]=M.mealy.s[p].t[c];me.push(o);lr.push([p+' → '+n,c+' / '+o]);p=n;}
+    $('#mmO').innerHTML=`<p>${M.desc}</p><div class="cols2"><div><b>Moore</b> (${Object.keys(M.moore.s).length} states)${htmlTable(['State reached','Input','Output of that state'],mr)}<p>Outputs: <b class="m">${mo.join(' ')}</b> — ${mo.length} outputs (one extra for the start state).</p></div><div><b>Mealy</b> (${Object.keys(M.mealy.s).length} state${Object.keys(M.mealy.s).length>1?'s':''})${htmlTable(['Transition','Input / output'],lr)}<p>Outputs: <b class="m">${me.join(' ')}</b> — ${me.length} outputs, produced immediately with each input.</p></div></div>`;};
+  Tabs($('#mmT'),Object.keys(MM),k=>{mk=Object.keys(MM)[k];mm();});$('#mmI').oninput=mm;
+});
+
+/* ============ A4 REGEX ============ */
+section('re','TOC · Regular expressions',`
+<p class="lead">A <b>regular expression (RE)</b> defines a regular language using symbols and operators. <b>a | b</b> = a or b (union); <b>a*</b> = zero or more occurrences of a. Precedence, highest to lowest: <b>① Kleene star (*)  ② concatenation  ③ union ( | )</b>.</p>
+<div class="tool"><div class="th">Regular-expression tester</div><div class="tb"><div class="row"><b style="font-size:13px">Try:</b><button class="btn" data-re="a|b">a|b</button><button class="btn" data-re="a*">a*</button><button class="btn" data-re="ab*|c">ab*|c</button><button class="btn" data-re="(ab)*">(ab)*</button><button class="btn" data-re="a(a|b)*">a(a|b)*</button><button class="btn" data-re="(a|b)*ab">(a|b)*ab</button></div>
+<div class="row"><label for="reI">Expression</label><input type="text" id="reI" value="ab*|c" size="18"></div><div class="row"><label for="reS">Test strings (one per line)</label><textarea class="sql" id="reS" style="min-height:90px">a\nabb\nc\nab\nac\nabc\nε</textarea></div><div id="reO"></div></div></div>
+<div class="note"><b>Precedence in action.</b> ab*|c is read as (a(b*)) | c — the star binds first (to b), then concatenation, then union. So it matches a, ab, abb, … and c, but not (ab)* strings like abab.</div>
+`,root=>{
+  const run=()=>{const re=$('#reI').value.trim();let R;try{R=new RegExp('^(?:'+re+')$');}catch(e){$('#reO').innerHTML='<div class="err">Not a valid expression.</div>';return;}
+    const S=$('#reS').value.split('\n').map(s=>s.trim()).filter(s=>s.length||true).slice(0,14);const gen=k=>k===0?['']:gen(k-1).flatMap(s=>['a','b'].map(c=>s+c));const all=[0,1,2,3].flatMap(gen);const m=all.filter(s=>R.test(s));
+    $('#reO').innerHTML=htmlTable(['String','Matches?'],S.map(s=>{const t=s==='ε'?'':s;return [s||'ε',R.test(t)?'<span class="pill g">✓ in the language</span>':'<span class="pill r">✗ not in it</span>'];}),{raw:true})+`<p style="margin-top:8px">Strings over {a, b} of length ≤ 3 that match: ${m.length?m.map(s=>`<span class="pill g">${s||'ε'}</span>`).join(''):'none'}</p>`;};
+  $('#reI').oninput=run;$('#reS').oninput=run;$$('[data-re]',root).forEach(b=>b.onclick=()=>{$('#reI').value=b.dataset.re;run();});run();
+});
+/* ============ A5 TURING MACHINE ============ */
+const TMP={'Invert bits':{input:'1011',rules:{'q0,0':['1','R','q0'],'q0,1':['0','R','q0'],'q0,B':['B','S','qa']},note:'Flips every bit, then halts in the accept state at the first blank.'},
+ 'Add 1 to a binary number':{input:'1011',rules:{'q0,0':['0','R','q0'],'q0,1':['1','R','q0'],'q0,B':['B','L','q1'],'q1,1':['0','L','q1'],'q1,0':['1','S','qa'],'q1,B':['1','S','qa']},note:'Moves to the right end, then adds 1 with carry moving left.'},
+ 'Accept 0ⁿ1ⁿ':{input:'0011',rules:{'q0,0':['X','R','q1'],'q0,Y':['Y','R','q3'],'q0,B':['B','S','qa'],'q1,0':['0','R','q1'],'q1,Y':['Y','R','q1'],'q1,1':['Y','L','q2'],'q2,0':['0','L','q2'],'q2,Y':['Y','L','q2'],'q2,X':['X','R','q0'],'q3,Y':['Y','R','q3'],'q3,B':['B','S','qa']},note:'Marks a 0 as X, then the matching 1 as Y, and repeats. A missing transition means the string is rejected (try 0101).'}};
+section('tm','TOC · Turing machine & PDA',`
+<p class="lead">A <b>Turing machine</b> is a mathematical model of computation that can simulate any algorithm (Alan Turing, 1936). It accepts <b>recursively enumerable (Type-0)</b> languages.</p>
+<ul><li><b>Tape</b>: an infinite strip holding the input (read / write / erase). <b>Tape head</b>: a pointer on the current cell, reads / writes and moves left or right. <b>Finite control</b>: the set of states q0, q1, q2 … <b>Transition function δ</b>: decides the action for each state and input symbol.</li><li><b>ID — Instantaneous Description</b>: which state the machine is in, what is written on the tape, and where the head is.</li><li>Acceptance: by <b>final state</b> or by <b>halting state</b>.</li></ul>
+<div class="tool"><div class="th">Turing machine simulator</div><div class="tb"><div id="tmT"></div><div class="row"><label for="tmI">Tape input</label><input type="text" id="tmI" size="14"><button class="btn pri" id="tmS">Step</button><button class="btn" id="tmR">Run</button><button class="btn" id="tmX">Reset</button></div><div class="scroll" id="tmTape"></div><div id="tmO"></div><p style="font-size:13.5px" id="tmN"></p><div id="tmRules"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">Variant</th><th class="l">Idea</th></tr><tr><td class="l">Multi-tape</td><td class="l">Multiple tapes — equivalent to a single-tape TM</td></tr><tr><td class="l">Multi-track</td><td class="l">Multiple tracks on one tape (parallel)</td></tr><tr><td class="l">Non-deterministic</td><td class="l">Multiple choices for one input</td></tr><tr><td class="l">Two-way infinite tape</td><td class="l">Infinite tape on both sides</td></tr></table></div>
+<ul><li>All variants have computational power <b>equivalent to the standard Turing machine</b>.</li><li><b>Universal Turing machine</b>: a TM that simulates any other TM, given both input and program (the code of a TM) — the basis of the general-purpose computer.</li><li><b>Church's thesis</b>: “Whatever is computable by an effective method is computable by a Turing machine.”</li></ul>
+<h3>Pushdown automata (PDA)</h3>
+<ul><li>A PDA is a finite automaton with an <b>unbounded structured memory — a push-down stack</b>. It accepts <b>context-free languages</b> (modelling parsing, compilers, programming-language design). When it reads input it also pushes or pops the stack. Accepts <b>by final state</b> or <b>by empty stack</b> — equivalent. <b>DPDA</b>: one possibility per step; <b>NPDA</b>: several possibilities — more powerful.</li></ul>
+<div class="tool"><div class="th">PDA simulator — watch the stack</div><div class="tb"><div id="pdT"></div><div class="row"><label for="pdI">Input</label><input type="text" id="pdI" size="14"><button class="btn pri" id="pdS">Step</button><button class="btn" id="pdR">Run all</button><button class="btn" id="pdX">Reset</button></div><div class="cols2"><div id="pdM"></div><svg id="pdK" viewBox="0 0 160 220" width="160" role="img" aria-label="Stack"></svg></div><div id="pdO"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">Feature</th><th class="l">Finite automata</th><th class="l">PDA</th></tr><tr><td class="l">Memory</td><td class="l">No external memory</td><td class="l">Stack</td></tr><tr><td class="l">Power</td><td class="l">Less powerful (regular)</td><td class="l">More powerful (context-free)</td></tr><tr><td class="l">Example</td><td class="l">String ending with “ab”</td><td class="l">Balanced parentheses &amp; palindromes</td></tr></table></div>
+`,root=>{
+  const names=Object.keys(TMP);let P=TMP[names[0]],tape,head,state,steps,log,halted;
+  const init=()=>{tape=($('#tmI').value||'').split('');if(!tape.length)tape=['B'];head=0;state='q0';steps=0;log=[];halted=null;};
+  const tm=()=>{const L=Math.min(0,head)-0;let cells=tape.slice();const lo=2,hi=2;const view=[...Array(lo).fill('B'),...cells,...Array(hi).fill('B')],hv=head+lo;
+    $('#tmTape').innerHTML=`<svg viewBox="0 0 ${Math.max(560,view.length*38+20)} 80" width="${Math.max(560,view.length*38+20)}" role="img" aria-label="Tape">${view.map((c,i)=>`<rect x="${10+i*38}" y="28" width="38" height="34" class="g" style="fill:${i===hv?'#d8f1ea':'#fff'};${i===hv?'stroke:#0a8f7b;stroke-width:3':''}"/><text class="pin" x="${29+i*38}" y="50" text-anchor="middle" font-size="14">${c==='B'?'␣':c}</text>`).join('')}<polygon points="${29+hv*38},26 ${23+hv*38},14 ${35+hv*38},14" fill="#c43d2f"/><text class="pin" x="${29+hv*38}" y="10" text-anchor="middle" font-size="10" style="fill:#c43d2f">head · ${state}</text></svg>`;
+    const id=tape.slice(0,head).join('')+'['+state+']'+tape.slice(head).join('');$('#tmO').innerHTML=`<p>Step ${steps} — <b>ID</b> (state, tape, head position): <span class="m">${id.replace(/B/g,'␣')}</span></p>`+(halted?`<div class="${halted==='qa'?'okm':'err'}"><b>${halted==='qa'?'Accepted — reached the accept state':'Rejected — no transition defined (halts in reject)'}</b> after ${steps} steps.</div>`:'')+(log.length?`<p class="m" style="font-size:12.5px">${log.slice(-4).join('<br>')}</p>`:'');
+    $('#tmN').textContent=P.note;$('#tmRules').innerHTML=htmlTable(['State, read','Write','Move','Next state'],Object.entries(P.rules).map(([k,v])=>[k.replace(',',' , ').replace('B','␣'),v[0].replace('B','␣'),v[1],v[2]]));};
+  const stepTM=()=>{if(halted)return;const c=tape[head]===undefined?'B':tape[head];const r=P.rules[state+','+c];if(!r){halted='qr';return;}log.push(`δ(${state}, ${c==='B'?'␣':c}) = (${r[2]}, ${r[0]==='B'?'␣':r[0]}, ${r[1]})`);tape[head]=r[0];state=r[2];if(r[1]==='R')head++;if(r[1]==='L')head--;if(head<0){tape.unshift('B');head=0;}while(head>=tape.length)tape.push('B');steps++;if(state==='qa')halted='qa';if(steps>400)halted='qr';};
+  let timer=null;Tabs($('#tmT'),names,k=>{P=TMP[names[k]];$('#tmI').value=P.input;clearInterval(timer);init();tm();});
+  $('#tmS').onclick=()=>{stepTM();tm();};$('#tmR').onclick=()=>{clearInterval(timer);timer=setInterval(()=>{stepTM();tm();if(halted)clearInterval(timer);},350);};$('#tmX').onclick=()=>{clearInterval(timer);init();tm();};$('#tmI').oninput=()=>{clearInterval(timer);init();tm();};
+  /* PDA */
+  const PD={'aⁿbⁿ':{input:'aabb',t:(st,stack,c)=>{if(st==='q0'&&c==='a'){stack.push('A');return 'q0';}if((st==='q0'||st==='q1')&&c==='b'&&stack[stack.length-1]==='A'){stack.pop();return 'q1';}return null;},msg:{a:'push A',b:'pop A'}},'Balanced parentheses':{input:'(()())',t:(st,stack,c)=>{if(c==='('){stack.push('(');return 'q0';}if(c===')'&&stack[stack.length-1]==='('){stack.pop();return 'q0';}return null;},msg:{'(':'push (',')':'pop ('}}};
+  const pn=Object.keys(PD);let pk=pn[0],ps;
+  const pinit=()=>{ps={st:'q0',stack:['Z0'],i:0,dead:false,log:[]};};
+  const pd=()=>{const I=$('#pdI').value;$('#pdM').innerHTML=`<p>Input: ${[...I].map((c,i)=>`<span class="pill ${i<ps.i?'g':i===ps.i?'a':''}">${c}</span>`).join('')||'ε'}</p><p>State: <b>${ps.st}</b> &nbsp; Read ${ps.i} of ${I.length}</p><p class="m" style="font-size:12.5px">${ps.log.slice(-5).join('<br>')}</p>`;
+    $('#pdK').innerHTML=`<text class="pin" x="80" y="14" text-anchor="middle" font-size="11">Stack (top ↑)</text>`+ps.stack.slice().reverse().slice(0,6).map((s,i)=>`<rect x="30" y="${24+i*32}" width="100" height="30" class="g" style="fill:${i===0?'#fff0c9':'#fff'}"/><text class="pin" x="80" y="${44+i*32}" text-anchor="middle" font-size="13">${s}</text>`).join('');
+    const end=ps.i>=I.length;if(ps.dead)$('#pdO').innerHTML='<div class="err"><b>Rejected</b> — no move is possible for this symbol (stack empty or wrong order).</div>';else if(end){const ok=ps.stack.length===1&&ps.stack[0]==='Z0'&&(pk!=='aⁿbⁿ'||true);$('#pdO').innerHTML=`<div class="${ok?'okm':'err'}">${ok?'<b>Accepted</b> — input finished and only the bottom marker Z0 is left; an ε-move pops Z0 → the stack is <b>empty</b> (empty-stack acceptance) and the machine can enter the final state <b>qf</b> (final-state acceptance). Both methods give the same answer.':'<b>Rejected</b> — input finished but the stack still holds symbols.'}</div>`;}else $('#pdO').innerHTML='';};
+  const pstep=()=>{const I=$('#pdI').value;if(ps.dead||ps.i>=I.length)return;const c=I[ps.i],n=PD[pk].t(ps.st,ps.stack,c);if(n===null){ps.dead=true;ps.log.push(`read ${c}: no move`);return;}ps.log.push(`read ${c}: ${PD[pk].msg[c]}`);ps.st=n;ps.i++;};
+  Tabs($('#pdT'),pn,k=>{pk=pn[k];$('#pdI').value=PD[pk].input;pinit();pd();});$('#pdS').onclick=()=>{pstep();pd();};$('#pdR').onclick=()=>{while(!ps.dead&&ps.i<$('#pdI').value.length)pstep();pd();};$('#pdX').onclick=()=>{pinit();pd();};$('#pdI').oninput=()=>{pinit();pd();};
+});
+
+/* ============ B1 ORGANIZATION VS ARCHITECTURE ============ */
+section('org','COA · Organization vs architecture',`
+<p class="lead"><b>Computer organization</b> = the internal working of a computer — which hardware performs which task and how: data flow (CPU / memory / I/O), generation of control signals, the structure of memory (RAM, ROM, cache), how the processor works and how instructions execute. <b>Computer architecture</b> = how the computer is designed: <b>ISA, data type, register design, addressing mode</b>.</p>
+<div class="scroll"><table class="t"><tr><th class="l"></th><th class="l">Organization</th><th class="l">Architecture</th></tr><tr><td class="l">Focus</td><td class="l">Implementation</td><td class="l">Design</td></tr><tr><td class="l">Example</td><td class="l">Control signals, memory layout</td><td class="l">Instruction set, registers</td></tr><tr><td class="l">Who works on it</td><td class="l">Hardware engineers, system designers</td><td class="l">Software developers, computer designers</td></tr></table></div>
+<div class="tool"><div class="th">Organization or architecture?</div><div class="tb"><div id="orQ"></div></div></div>
+`,root=>{quiz('orQ',[['Which instructions the CPU can execute (instruction set)','Architecture'],['How control signals are generated','Organization'],['Register design','Architecture'],['Memory layout of RAM, ROM and cache','Organization'],['Addressing modes','Architecture'],['How data flows between CPU, memory and I/O','Organization'],['Data types supported','Architecture']],['Organization','Architecture']);});
+
+/* ============ B2 ARCHITECTURES ============ */
+const AR=[['Von Neumann',['The <b>oldest and most widely used</b> architecture: data and instructions are accessed from the <b>same memory</b>; proposed by John von Neumann in 1945.','Single memory for program and data; instructions executed sequentially; simple design; the program counter tells the address of instructions.','Working: CPU fetches the instruction → CU decodes → ALU executes → result stored in memory.','Problem: data and instructions share the same bus, so the CPU waits — performance slows down. e.g. Intel 8085, 8086.']],['Harvard',['Invented at Harvard University; <b>separate buses and memory</b> for data and instructions.','The CPU can read data and fetch instructions at the same time — parallel, fast.','Drawbacks: complex and costly design; separate memory spaces reduce flexibility. e.g. ARM Cortex-M, PIC controller, DSP.']],['Modified Harvard',['Modern CPUs combine both: memory is <b>common</b> (like von Neumann) but there are <b>separate caches</b> for data and instructions (like Harvard).','Higher speed and an efficient design. e.g. Intel i7, AMD Ryzen, ARM Cortex-A.']]];
+section('arch','COA · Types of architecture',`
+<div class="tool"><div class="th">Von Neumann, Harvard, Modified Harvard</div><div class="tb"><div id="arT"></div><div id="arB"></div></div></div>
+<div class="tool"><div class="th">Run n instructions that each need one data access <span style="font-weight:400;opacity:.8">(simplified model — added)</span></div><div class="tb"><div class="row"><label for="arN">Instructions n</label><input type="range" id="arN" min="1" max="6" value="4" style="width:160px"><b class="m" id="arV"></b></div><div class="scroll" id="arS"></div><div id="arO"></div></div></div>
+`,root=>{
+  Tabs($('#arT'),AR.map(a=>a[0]),k=>{const svgs=[`<svg viewBox="0 0 560 150" width="560"><rect class="g" x="20" y="30" width="150" height="90" style="fill:#e8eaf6"/><text class="pin" x="95" y="52" text-anchor="middle">CPU</text><text class="pin" x="95" y="80" text-anchor="middle" font-size="10">CU · ALU · registers · PC</text>${svgBox(380,30,160,50,'Memory: program + data',false,11)}${svgBox(380,95,160,34,'I / O',false,11)}<line x1="170" y1="60" x2="380" y2="60" stroke="#c43d2f" stroke-width="3"/><text class="pin" x="275" y="52" text-anchor="middle" style="fill:#c43d2f">single shared bus</text></svg>`,
+      `<svg viewBox="0 0 560 150" width="560"><rect class="g" x="210" y="40" width="140" height="80" style="fill:#e8eaf6"/><text class="pin" x="280" y="85" text-anchor="middle">CPU</text>${svgBox(20,20,150,44,'Instruction memory',false,11)}${svgBox(390,20,150,44,'Data memory',false,11)}<line x1="170" y1="42" x2="210" y2="70" stroke="#c43d2f" stroke-width="3"/><line x1="350" y1="70" x2="390" y2="42" stroke="#c43d2f" stroke-width="3"/><text class="pin" x="80" y="95" text-anchor="middle" style="fill:#c43d2f" font-size="10">instruction bus</text><text class="pin" x="470" y="95" text-anchor="middle" style="fill:#c43d2f" font-size="10">data bus</text></svg>`,
+      `<svg viewBox="0 0 560 160" width="560"><rect class="g" x="210" y="10" width="140" height="50" style="fill:#e8eaf6"/><text class="pin" x="280" y="40" text-anchor="middle">CPU</text>${svgBox(60,70,120,34,'I-cache',false,11)}${svgBox(380,70,120,34,'D-cache',false,11)}${svgBox(190,120,180,34,'Main memory (common)',false,11)}<line x1="240" y1="60" x2="150" y2="70" stroke="#15233b" stroke-width="2"/><line x1="320" y1="60" x2="410" y2="70" stroke="#15233b" stroke-width="2"/><line x1="120" y1="104" x2="220" y2="120" stroke="#15233b" stroke-width="2"/><line x1="440" y1="104" x2="340" y2="120" stroke="#15233b" stroke-width="2"/></svg>`];
+    $('#arB').innerHTML=svgs[k]+`<ul>${AR[k][1].map(x=>`<li>${x}</li>`).join('')}</ul>`;});
+  const ar=()=>{const n=+$('#arN').value;$('#arV').textContent='n = '+n;const cw=Math.min(40,520/(2*n+1));let o='';const row=(y,lab)=>`<text class="pin" x="2" y="${y+18}" font-size="10">${lab}</text>`;
+    o+=row(10,'Von N.');for(let i=0;i<n;i++){o+=`<rect class="g" x="${70+(2*i)*cw}" y="10" width="${cw}" height="26" style="fill:#fff0c9"/><text class="pin" x="${70+(2*i)*cw+cw/2}" y="28" text-anchor="middle" font-size="10">F${i+1}</text><rect class="g" x="${70+(2*i+1)*cw}" y="10" width="${cw}" height="26" style="fill:#d8f1ea"/><text class="pin" x="${70+(2*i+1)*cw+cw/2}" y="28" text-anchor="middle" font-size="10">D${i+1}</text>`;}
+    o+=row(52,'Harv. I');o+=row(84,'Harv. D');for(let i=0;i<n;i++){o+=`<rect class="g" x="${70+i*cw}" y="52" width="${cw}" height="26" style="fill:#fff0c9"/><text class="pin" x="${70+i*cw+cw/2}" y="70" text-anchor="middle" font-size="10">F${i+1}</text><rect class="g" x="${70+(i+1)*cw}" y="84" width="${cw}" height="26" style="fill:#d8f1ea"/><text class="pin" x="${70+(i+1)*cw+cw/2}" y="102" text-anchor="middle" font-size="10">D${i+1}</text>`;}
+    $('#arS').innerHTML=`<svg viewBox="0 0 580 120" width="580" role="img" aria-label="Bus timing">${o}</svg>`;$('#arO').innerHTML=htmlTable(['Architecture','Bus cycles for '+n+' instructions','Why'],[['Von Neumann',2*n,'fetch and data access share one bus — the CPU waits'],['Harvard',n+1,'instruction bus and data bus work in parallel'],['Modified Harvard',n+1,'separate caches serve instruction and data at the same time']])+'<p style="font-size:13.5px;color:var(--ink2)">F = instruction fetch, D = data access. A simplified model to show why shared buses slow down.</p>';};
+  $('#arN').oninput=ar;ar();
+});
+/* ============ B3 ISA ============ */
+section('isa','COA · ISA (CISC vs RISC)',`
+<p class="lead"><b>ISA — Instruction Set Architecture</b> is the interface between hardware (CPU) and software (program): it defines which instructions the processor can understand and execute.</p>
+<div class="scroll"><table class="t"><tr><th class="l"></th><th class="l">CISC</th><th class="l">RISC</th></tr><tr><td class="l">Full form</td><td class="l">Complex Instruction Set Computing</td><td class="l">Reduced Instruction Set Computing</td></tr><tr><td class="l">Instructions</td><td class="l">Many complex ones; one instruction does several low-level operations</td><td class="l">Simple, fixed length; one clock cycle each</td></tr><tr><td class="l">Example</td><td class="l">Intel x86</td><td class="l">ARM</td></tr><tr><td class="l">Code size</td><td class="l"><b>Small</b></td><td class="l"><b>Very large</b> (main disadvantage)</td></tr><tr><td class="l">Speed</td><td class="l"><b>Slow</b> — complex decoding (main disadvantage)</td><td class="l"><b>Faster</b>; easy to design a pipeline</td></tr></table></div>
+<div class="tool"><div class="th">Compile A = B × C <span style="font-weight:400;opacity:.8">(illustration added)</span></div><div class="tb"><div id="crT"></div><div id="crO"></div></div></div>
+<h3>Types of instructions</h3>
+<div class="scroll"><table class="t"><tr><th>Type</th><th class="l">Instructions</th></tr><tr><td>Data transfer</td><td class="l">MOV, LOAD, STORE</td></tr><tr><td>Arithmetic</td><td class="l">ADD, SUB, MUL</td></tr><tr><td>Logical</td><td class="l">AND, OR, NOT</td></tr><tr><td>Control flow</td><td class="l">JMP, CALL, RET</td></tr><tr><td>Input / output</td><td class="l">IN, OUT</td></tr><tr><td>Comparison</td><td class="l">CMP</td></tr></table></div>
+<div class="tool"><div class="th">Classify the instruction</div><div class="tb"><div id="inQ"></div></div></div>
+`,root=>{
+  Tabs($('#crT'),['CISC (x86 style)','RISC (ARM style)'],k=>{const C=k===0,P=C?[['MULT A, B, C','one complex instruction: reads B and C from memory, multiplies, writes A',4]]:[['LOAD R1, B','data transfer',1],['LOAD R2, C','data transfer',1],['MUL R3, R1, R2','arithmetic',1],['STORE A, R3','data transfer',1]];
+    const cyc=P.reduce((a,p)=>a+p[2],0);$('#crO').innerHTML=htmlTable(['Instruction','What it does','Cycles (illustrative)'],P)+`<p class="big" style="font-size:16px">${P.length} instruction${P.length>1?'s':''} · ${cyc} cycles — ${C?'<b>small code</b>, but complex decoding makes each instruction slow':'<b>larger code</b>, but every instruction is simple, one cycle, and easy to pipeline'}.</p>`;});
+  quiz('inQ',[['MOV','Data transfer'],['ADD','Arithmetic'],['AND','Logical'],['JMP','Control flow'],['IN','Input / output'],['CMP','Comparison'],['STORE','Data transfer'],['CALL','Control flow'],['MUL','Arithmetic'],['NOT','Logical'],['OUT','Input / output'],['RET','Control flow']],['Data transfer','Arithmetic','Logical','Control flow','Input / output','Comparison']);
+});
+
+/* ============ B4 MICROARCHITECTURE & PIPELINE ============ */
+const MC=[['Register','The <b>fastest, smallest and costliest</b> memory of the computer — the CPU\'s in-built memory; e.g. program counter, accumulator.'],['ALU','Arithmetic and logic unit — performs calculations and logical operations.'],['Control unit','Controls and manages all devices and resources — the <b>central nervous system</b>; decodes instructions and generates timing and control signals.'],['Cache','<b>Buffer memory between CPU and RAM</b>; manages the speed difference; 4 types L1, L2, L3, L4 (L1 fastest).'],['Pipeline','Processes multiple instructions at the same time: Fetch → Decode → Execute → Write back.']];
+section('micro','COA · Microarchitecture & pipeline',`
+<ul><li><b>Microarchitecture</b> shows how the internal structure of the CPU is built and how its components work. If <b>system architecture</b> is a map (the arrangement of the major components and the data flow between them — a high-level design), microarchitecture is the detailed implementation of that map.</li></ul>
+<div class="tool"><div class="th">Main components</div><div class="tb"><div id="mcT"></div><div id="mcB"></div></div></div>
+<h3>Pipeline</h3>
+<ul><li>A normal CPU completes one instruction and then starts the next. In a pipeline, while one instruction is being decoded the next can be fetched — parallel execution, higher speed and throughput.</li></ul>
+<div class="tool"><div class="th">Pipeline lab (4 stages)</div><div class="tb"><div class="row"><label for="plN">Number of instructions</label><input type="range" id="plN" min="1" max="8" value="4" style="width:180px"><b class="m" id="plV"></b></div><div class="scroll" id="plS"></div><div id="plO"></div></div></div>
+`,root=>{
+  Tabs($('#mcT'),MC.map(m=>m[0]),k=>{$('#mcB').innerHTML=`<p>${MC[k][1]}</p>`+(k===3?htmlTable(['Level','Speed'],[['L1','fastest'],['L2','fast'],['L3','slower'],['L4','slowest of the four']]):'');});
+  const pl=()=>{const n=+$('#plN').value;$('#plV').textContent='n = '+n;const cw=Math.min(34,520/(4*n)),cols=['#fff0c9','#d8f1ea','#e2ebf8','#fbe3df'],S=['F','D','E','W'];let o='<text class="pin" x="2" y="14" font-size="11">No pipeline</text>';
+    for(let i=0;i<n;i++)for(let k=0;k<4;k++)o+=`<rect class="g" x="${70+(i*4+k)*cw}" y="${20+0}" width="${cw}" height="${Math.min(14,150/n)}" style="fill:${cols[k]}" transform="translate(0,${i*Math.min(16,150/n)})"/>`;
+    const y0=40+n*Math.min(16,150/n);o+=`<text class="pin" x="2" y="${y0}" font-size="11">Pipeline</text>`;
+    for(let i=0;i<n;i++)for(let k=0;k<4;k++)o+=`<rect class="g" x="${70+(i+k)*cw}" y="${y0+6}" width="${cw}" height="${Math.min(14,150/n)}" style="fill:${cols[k]}" transform="translate(0,${i*Math.min(16,150/n)})"/>`;
+    $('#plS').innerHTML=`<svg viewBox="0 0 ${Math.max(580,70+4*n*cw+20)} ${y0+n*Math.min(16,150/n)+20}" width="${Math.max(580,70+4*n*cw+20)}" role="img" aria-label="Pipeline timing">${o}</svg>`;
+    $('#plO').innerHTML=htmlTable(['','Cycles','Formula'],[['Without pipeline',4*n,'4 × n'],['With pipeline',n+3,'n + 3 (4 stages fill, then 1 instruction per cycle)'],['Speed-up',(4*n/(n+3)).toFixed(2)+' ×','approaches 4 for large n']])+'<p style="font-size:13.5px;color:var(--ink2)">F = fetch, D = decode, E = execute, W = write back. The cycle formulas are the standard ideal-pipeline model, added for the lab.</p>';};
+  $('#plN').oninput=pl;pl();
+});
+
+/* ============ B5 ERROR CODES ============ */
+function hamEnc(bits){const d=bits.length;let r=0;while(Math.pow(2,r)<r+d+1)r++;const n=d+r,c=Array(n+1).fill(0);let j=0;for(let p=1;p<=n;p++)if(p&(p-1))c[p]=+bits[j++];for(let i=0;i<r;i++){const p=1<<i;let s=0;for(let q=1;q<=n;q++)if(q&p&&q!==p)s+=c[q];c[p]=s%2;}return {r,n,c};}
+function hamSyn(c,n,r){let s=0;for(let i=0;i<r;i++){const p=1<<i;let t=0;for(let q=1;q<=n;q++)if(q&p)t+=c[q];if(t%2)s+=p;}return s;}
+section('err','COA · Error detection & correction',`
+<p class="lead">Errors are <b>single-bit</b> (only one bit changes, e.g. 101011 → 101001) or <b>burst</b> (several bits change). <b>Detection codes</b> (parity, checksum) only notice errors; <b>correction codes</b> (Hamming) also fix them automatically, without retransmission — used in memory and satellite communication.</p>
+<h3>Parity bit — detects single-bit errors only</h3>
+<ul><li>An extra bit makes the total number of 1s <b>even</b> (even parity) or <b>odd</b> (odd parity). Example: 101001 has three 1s → even parity adds 1 → 1010011.</li></ul>
+<div class="tool"><div class="th">Parity — send, flip bits, check</div><div class="tb"><div id="paT"></div><div class="row"><label for="paD">Data bits</label><input type="text" id="paD" value="101001" size="14"></div><div id="paC"></div><div id="paO"></div></div></div>
+<h3>Checksum — mostly used in network transmission</h3>
+<ul><li>Data is divided into equal-sized blocks; the sum of all blocks (carry ignored in the notes) is the checksum, which the receiver recomputes and checks.</li></ul>
+<div class="tool"><div class="th">Checksum</div><div class="tb"><div class="row"><label for="ckS">Sent blocks</label><input type="text" id="ckS" value="1001,1100,0101" size="22"></div><div class="row"><label for="ckR">Received blocks</label><input type="text" id="ckR" value="1001,1100,0101" size="22"></div><div id="ckO"></div></div></div>
+<h3>Hamming code — detects and corrects a single-bit error</h3>
+<ul><li>Proposed by Richard Hamming. Redundant bits r are added among the data bits d so every bit position has a unique binary number. Find r from <b>2<sup>r</sup> ≥ r + d + 1</b>; parity bits sit at positions 1, 2, 4, 8 …</li></ul>
+<div class="tool"><div class="th">How many redundant bits?</div><div class="tb"><div class="row"><label for="hrD">Data bits d</label><input type="range" id="hrD" min="1" max="26" value="4" style="width:200px"><b class="m" id="hrV"></b></div><div id="hrO"></div></div></div>
+<div class="tool"><div class="th">Hamming encoder / decoder — click a bit to corrupt it</div><div class="tb"><div class="row"><label for="hmD">Data bits</label><input type="text" id="hmD" value="1011" size="12"></div><div id="hmC"></div><div id="hmO"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">Point</th><th class="l">Parity</th><th class="l">Checksum</th><th class="l">Hamming</th></tr><tr><td class="l">Goal</td><td class="l">Detection</td><td class="l">Detection</td><td class="l">Detection + correction</td></tr><tr><td class="l">Extra bits</td><td class="l">1 bit</td><td class="l">16 or 32-bit checksum</td><td class="l">3, 4, 5 … (by data size)</td></tr><tr><td class="l">Placement</td><td class="l">end of the frame</td><td class="l">after the data</td><td class="l">positions 1, 2, 4, 8</td></tr><tr><td class="l">Corrects a single-bit error?</td><td class="l">No</td><td class="l">No</td><td class="l">Yes</td></tr><tr><td class="l">Reliability</td><td class="l">Low</td><td class="l">Medium</td><td class="l">Very high</td></tr><tr><td class="l">Use</td><td class="l">Simple serial communication</td><td class="l">TCP, UDP, IP, Ethernet</td><td class="l">ECC RAM, satellite</td></tr><tr><td class="l">Cons</td><td class="l">Only detection</td><td class="l">No correction</td><td class="l">Complex, more overhead</td></tr></table></div>
+`,root=>{
+  let pm=0,pc=[];const pa=()=>{const d=$('#paD').value.replace(/[^01]/g,''),ones=[...d].filter(c=>c==='1').length,pb=pm===0?ones%2:(ones%2?0:1);pc=pc.length===d.length+1?pc:[...d,String(pb)];if(pc.length!==d.length+1)pc=[...d,String(pb)];
+    $('#paC').innerHTML=`<p>Data has <b>${ones}</b> one${ones===1?'':'s'} → ${pm===0?'even':'odd'} parity needs parity bit <b>${pb}</b> → code word:</p><p>${pc.map((b,i)=>`<button class="btn ${i===d.length?'pri':''}" data-b="${i}" style="min-width:34px;font-family:var(--mono)">${b}</button>`).join(' ')}</p><p class="m" style="font-size:13px">Click bits to flip them in transit.</p>`;
+    const flipped=pc.filter((b,i)=>b!==(i<d.length?d[i]:String(pb))).length,tot=pc.filter(b=>b==='1').length,ok=pm===0?tot%2===0:tot%2===1;$('#paO').innerHTML=`<div class="${ok?(flipped?'note':'okm'):'err'}">Receiver counts ${tot} ones → parity ${ok?'OK':'<b>wrong — error detected</b>'}.${flipped>=2&&ok?' <b>Two bits were flipped, but the parity still looks fine</b> — parity detects only single-bit errors.':''}${flipped===1&&!ok?' (One flipped bit found — but parity cannot say <i>which</i> bit, so it cannot correct it.)':''}</div>`;$$('#paC [data-b]').forEach(b=>b.onclick=()=>{const i=+b.dataset.b;pc[i]=pc[i]==='1'?'0':'1';pa2();});};
+  const pa2=()=>{const d=$('#paD').value.replace(/[^01]/g,''),ones=[...d].filter(c=>c==='1').length,pb=pm===0?ones%2:(ones%2?0:1);$('#paC').innerHTML=`<p>Data has <b>${ones}</b> one${ones===1?'':'s'} → ${pm===0?'even':'odd'} parity needs parity bit <b>${pb}</b> → code word:</p><p>${pc.map((b,i)=>`<button class="btn ${i===d.length?'pri':''}" data-b="${i}" style="min-width:34px;font-family:var(--mono)">${b}</button>`).join(' ')}</p><p class="m" style="font-size:13px">Click bits to flip them in transit.</p>`;const flipped=pc.filter((b,i)=>b!==(i<d.length?d[i]:String(pb))).length,tot=pc.filter(b=>b==='1').length,ok=pm===0?tot%2===0:tot%2===1;$('#paO').innerHTML=`<div class="${ok?(flipped?'note':'okm'):'err'}">Receiver counts ${tot} ones → parity ${ok?'OK':'<b>wrong — error detected</b>'}.${flipped>=2&&ok?' <b>Two bits were flipped, but the parity still looks fine</b> — parity detects only single-bit errors.':''}${flipped===1&&!ok?' (One flipped bit found — but parity cannot say <i>which</i> bit, so it cannot correct it.)':''}</div>`;$$('#paC [data-b]').forEach(b=>b.onclick=()=>{const i=+b.dataset.b;pc[i]=pc[i]==='1'?'0':'1';pa2();});};
+  Tabs($('#paT'),['Even parity','Odd parity'],k=>{pm=k;pc=[];pa();});$('#paD').oninput=()=>{pc=[];pa();};
+  const ck=()=>{const bl=s=>s.split(/[ ,]+/).filter(x=>/^[01]+$/.test(x));const S=bl($('#ckS').value),R=bl($('#ckR').value);if(!S.length){$('#ckO').innerHTML='<p class="msg">Enter binary blocks of equal length.</p>';return;}const w=S[0].length;if(S.some(b=>b.length!==w)){$('#ckO').innerHTML='<p class="msg">All blocks must have the same length.</p>';return;}
+    const sum=a=>a.reduce((t,b)=>t+parseInt(b,2),0),f=n=>(n%Math.pow(2,w)).toString(2).padStart(w,'0');const s=sum(S),cs=f(s);const rs=R.length?sum(R):0,rc=f(rs);
+    $('#ckO').innerHTML=htmlTable(['Block','Binary','Decimal'],[...S.map((b,i)=>[i+1,b,parseInt(b,2)]),['Sum',s.toString(2),s]])+`<p>Sum = <b>${s.toString(2)}</b>; the carry out of ${w} bits is ignored → sender's checksum = <b class="m">${cs}</b>.</p><p>Receiver adds its blocks: sum <b>${rs.toString(2)}</b> → ${rc}. </p><div class="${rc===cs?'okm':'err'}">${rc===cs?'Checksum matches — no error detected.':'<b>Checksum mismatch — error detected</b> (a checksum cannot correct it; the data must be re-sent).'}</div><p style="font-size:13.5px;color:var(--ink2)">Real network checksums (TCP/IP) add with end-around carry and send the one's complement.</p>`;};
+  $('#ckS').oninput=ck;$('#ckR').oninput=ck;ck();
+  const hr=()=>{const d=+$('#hrD').value;let r=0;while(Math.pow(2,r)<r+d+1)r++;$('#hrV').textContent='d = '+d;$('#hrO').innerHTML=`<p>2<sup>r</sup> ≥ r + ${d} + 1 → smallest r = <b>${r}</b> (2<sup>${r}</sup> = ${Math.pow(2,r)} ≥ ${r+d+1}). Code word length n = ${d+r}.${d===4?' <i>(The notes: 4 data bits → r = 3.)</i>':''}</p>`;};$('#hrD').oninput=hr;hr();
+  let H=null;const hm=()=>{const d=$('#hmD').value.replace(/[^01]/g,'');if(!d.length){$('#hmC').innerHTML='';$('#hmO').innerHTML='<p class="msg">Enter data bits.</p>';return;}if(!H||H.d!==d){const e=hamEnc(d);H={d,r:e.r,n:e.n,orig:e.c.slice(),c:e.c.slice()};}hm2();};
+  const hm2=()=>{const {n,r,c,orig}=H,syn=hamSyn(c,n,r);$('#hmC').innerHTML=`<p>Data + ${r} parity bits → <b>${n}</b>-bit code word (even parity). Parity bits sit at positions ${[...Array(r).keys()].map(i=>1<<i).join(', ')}.</p><div class="scroll"><table class="t"><tr>${[...Array(n).keys()].map(i=>`<th>${i+1}</th>`).join('')}</tr><tr>${[...Array(n).keys()].map(i=>{const p=i+1,isP=(p&(p-1))===0,bad=c[p]!==orig[p];return `<td style="background:${bad?'#fbe3df':isP?'#fff0c9':'#fff'}"><button class="btn" data-p="${p}" style="min-width:30px;font-family:var(--mono)">${c[p]}</button><div style="font-size:10px">${isP?'p'+p:'d'}</div></td>`;}).join('')}</tr></table></div>`;
+    const cov=[...Array(r).keys()].map(i=>{const p=1<<i,t=[...Array(n).keys()].map(x=>x+1).filter(q=>q&p);const s=t.reduce((a,q)=>a+c[q],0);return [`p${p}`,t.join(', '),s,s%2?'<span class="pill r">fails</span>':'<span class="pill g">ok</span>'];});
+    $('#hmO').innerHTML=htmlTable(['Parity check','Positions covered','Sum of bits','Even?'],cov,{raw:true})+(syn===0?`<div class="okm">Syndrome = 0 — no error found.</div>`:syn>n?`<div class="err">Syndrome ${syn} points outside the word — more than one bit is wrong.</div>`:`<div class="err">Failed checks give the error position: <b>${[...Array(r).keys()].filter(i=>cov[i][3].includes('fails')).map(i=>1<<i).join(' + ')} = ${syn}</b> → bit ${syn} is wrong. <button class="btn pri" id="hmFix">Correct it</button></div>`);
+    $$('#hmC [data-p]').forEach(b=>b.onclick=()=>{const p=+b.dataset.p;H.c[p]^=1;hm2();});const f=$('#hmFix');if(f)f.onclick=()=>{H.c[syn]^=1;hm2();};};
+  $('#hmD').oninput=hm;hm();
+});
+
+/* ============ B6 BUS ============ */
+section('bus','COA · Bus',`
+<p class="lead">A <b>bus</b> is a communication path (a set of wires / lines) through which <b>data, address and control signals</b> are exchanged between the parts of a computer.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Bus</th><th class="l">Direction</th><th class="l">Carries</th></tr><tr><td class="l"><b>Address bus</b></td><td class="l">Unidirectional</td><td class="l">The address of the memory location to read / write</td></tr><tr><td class="l"><b>Data bus</b></td><td class="l">Bidirectional</td><td class="l">The actual data between CPU, memory and I/O</td></tr><tr><td class="l"><b>Control bus</b></td><td class="l">Both (depends on the control signal)</td><td class="l">Control and timing signals — read / write / interrupt</td></tr></table></div>
+<div class="tool"><div class="th">Perform a memory transfer</div><div class="tb"><div id="bsT"></div><div class="row"><label for="bsA">Address (hex)</label><input type="text" id="bsA" value="3F" size="8"></div><svg id="bsS" viewBox="0 0 560 190" width="560" role="img" aria-label="Buses"></svg><div id="bsO"></div></div></div>
+<div class="tool"><div class="th">How much can the CPU reach?</div><div class="tb"><div class="row"><label for="bsN">Address bus width (bits)</label><input type="range" id="bsN" min="4" max="32" value="16" style="width:200px"><b class="m" id="bsNv"></b></div><div class="row"><label for="bsD">Data bus width (bits)</label><select id="bsD"><option>8</option><option selected>16</option><option>32</option><option>64</option></select></div><div id="bsC"></div></div></div>
+`,root=>{
+  let rd=true;const bs=()=>{const a=($('#bsA').value||'0').toUpperCase();const A=rd?'#0a8f7b':'#d98e04';let o=svgBox(10,60,90,60,'CPU',false,13)+svgBox(440,20,110,44,'Memory',false,13)+svgBox(440,110,110,44,'I / O',false,13);
+    o+=`<line x1="100" y1="45" x2="440" y2="45" stroke="#c43d2f" stroke-width="4"/><text class="pin" x="270" y="38" text-anchor="middle" style="fill:#c43d2f">Address bus → ${a}</text><polygon points="440,45 430,40 430,50" fill="#c43d2f"/>`;
+    o+=`<line x1="100" y1="85" x2="440" y2="85" stroke="${A}" stroke-width="4"/><text class="pin" x="270" y="78" text-anchor="middle" style="fill:${A}">Data bus ${rd?'←':'→'} (${rd?'data read: memory → CPU':'data write: CPU → memory'})</text><polygon points="${rd?'100,85 110,80 110,90':'440,85 430,80 430,90'}" fill="${A}"/>`;
+    o+=`<line x1="100" y1="125" x2="440" y2="125" stroke="#15233b" stroke-width="4"/><text class="pin" x="270" y="118" text-anchor="middle">Control bus: ${rd?'READ':'WRITE'} signal ↔</text><polygon points="440,125 430,120 430,130" fill="#15233b"/><polygon points="100,125 110,120 110,130" fill="#15233b"/>`;$('#bsS').innerHTML=o;
+    $('#bsO').innerHTML=`<ol style="font-size:14px"><li>CPU puts address <b>${a}</b> on the <b>address bus</b> (one direction only).</li><li>CPU puts <b>${rd?'READ':'WRITE'}</b> on the <b>control bus</b>.</li><li>Data travels on the <b>data bus</b> ${rd?'<b>from memory to the CPU</b>':'<b>from the CPU to memory</b>'} — the same wires work in both directions.</li></ol>`;};
+  Tabs($('#bsT'),['Read (CPU ← memory)','Write (CPU → memory)'],k=>{rd=k===0;bs();});$('#bsA').oninput=bs;
+  const fm=b=>b>=2**30?b/2**30+' GB':b>=2**20?b/2**20+' MB':b>=2**10?b/2**10+' KB':b+' bytes';
+  const cc=()=>{const n=+$('#bsN').value,d=+$('#bsD').value;$('#bsNv').textContent=n+' bits';$('#bsC').innerHTML=htmlTable(['Bus','Width','Result'],[['Address bus',n+' bits','2<sup>'+n+'</sup> = '+Math.pow(2,n).toLocaleString()+' locations ≈ '+fm(Math.pow(2,n))],['Data bus',d+' bits',d/8+' byte'+(d>8?'s':'')+' per cycle']],{raw:true})+(n===16?'<p style="font-size:13.5px;color:var(--ink2)">The notes: a 16-bit address bus reaches 2<sup>16</sup> = 65,536 locations (64 KB); a 16-bit data bus carries 2 bytes per cycle.</p>':'');};$('#bsN').oninput=cc;$('#bsD').onchange=cc;cc();
+});
+
+/* ============ B7 PROCESSORS ============ */
+section('cpu','COA · Microprocessor & microcontroller',`
+<div class="tool"><div class="th">Microprocessor, microcontroller, and their types</div><div class="tb"><div id="mpT"></div><div id="mpB"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l"></th><th class="l">Microprocessor</th><th class="l">Microcontroller</th></tr><tr><td class="l">Contains</td><td class="l">CPU (memory and I/O are separate)</td><td class="l">CPU + memory (RAM &amp; ROM) + peripherals (I/O, timers)</td></tr><tr><td class="l">Mainly used in</td><td class="l">PCs, laptops, servers, gaming consoles</td><td class="l">Embedded systems</td></tr><tr><td class="l">First one</td><td class="l">Intel 4004 (1971)</td><td class="l">Intel 8051 (1980)</td></tr></table></div>
+<div class="tool"><div class="th">Microprocessor or microcontroller?</div><div class="tb"><div id="mpQ"></div></div></div>
+`,root=>{
+  const MP=[['Microprocessor',['Invented in <b>1971</b>: the <b>Intel 4004</b> by Intel — the first, smallest and complete CPU (4 bits).','Then Intel 8008, Intel 80386 …; today Intel i-series (Itanium) and AMD Ryzen — complex, multitasking CPUs.','Use: personal computers, laptops, servers, gaming consoles (PlayStation, Xbox). <b>Intel x86</b> came in <b>1978</b> (based on the 8086).']],['Types of microprocessor',['<b>RISC</b> — reduced instruction set computing.','<b>CISC</b> — complex instruction set computing.','<b>VLIW</b> — Very Long Instruction Word (parallel processing).','<b>EPIC</b> — Explicitly Parallel Instruction Computing (advanced VLIW).']],['Microcontroller',['Along with the microprocessor, <b>memory (RAM &amp; ROM)</b> and <b>peripherals (I/O &amp; timers)</b> are used — mainly in <b>embedded systems</b>.','First microcontroller: <b>Intel 8051 (1980)</b>; then PIC, ARM, AVR.','Use: microwave oven, washing machine, robotics, automobiles, medical devices.']],['PIC',['<b>Peripheral Interface Controller</b>, developed by Microchip Technology; 8, 16 and 32-bit variants.','Use: consumer electronics, embedded systems, automation.']],['AVR',['<b>Advanced Virtual RISC</b>, developed by Atmel (now Microchip); based on RISC; used in small embedded devices.']],['ARM',['<b>Advanced RISC Machine</b>: a RISC-based powerful microcontroller family, famous for <b>low power consumption yet high performance</b>.','Widely used in smartphones and embedded systems.']]];
+  Tabs($('#mpT'),MP.map(m=>m[0]),k=>{$('#mpB').innerHTML=`<ul>${MP[k][1].map(x=>`<li>${x}</li>`).join('')}</ul>`;});
+  quiz('mpQ',[['The chip inside a washing machine','Microcontroller'],['The CPU in a laptop','Microprocessor'],['CPU + RAM + ROM + timers on one chip','Microcontroller'],['Intel 4004 (1971)','Microprocessor'],['Intel 8051 (1980)','Microcontroller'],['The processor in a gaming console','Microprocessor'],['A medical device controller','Microcontroller']],['Microprocessor','Microcontroller']);
+});
+
+/* ============ CLARIFICATIONS ============ */
+section('fixes','Clarifications',`
+<p>While typing up the handwritten notes these points were clarified or flagged. Everything else follows the notes.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Topic</th><th class="l">Handwritten notes</th><th class="l">Here</th></tr>
+<tr><td class="l">Chomsky picture, innermost class</td><td class="l">“Recursive language” beside Type 3 / FSA</td><td class="l">Shown as regular language</td></tr>
+<tr><td class="l">DFA diagram</td><td class="l">Label of the arrow A → B illegible</td><td class="l">Read as “a” — accepts strings starting with a</td></tr>
+<tr><td class="l">DFA vs NFA table</td><td class="l">“Each NFA can't be a DFA”; backtracking for DFA</td><td class="l">Kept as written; standard statements in a note</td></tr>
+<tr><td class="l">Organization vs architecture table</td><td class="l">One row heading hard to read</td><td class="l">Omitted from the web table</td></tr>
+<tr><td class="l">Logical instructions</td><td class="l">“AND, OR, AND”</td><td class="l">AND, OR, NOT</td></tr>
+<tr><td class="l">Odd-parity example</td><td class="l">Data 10100 labelled “1s already odd”</td><td class="l">Rule shown with a live calculator</td></tr>
+<tr><td class="l">Checksum</td><td class="l">Sum with the carry ignored</td><td class="l">Kept; end-around-carry note added</td></tr>
+<tr><td class="l">Added for interactivity</td><td class="l">—</td><td class="l">Automaton, Moore/Mealy, Turing-machine and PDA simulators, grammar derivation, bus-cycle and pipeline models, Hamming encoder/decoder</td></tr></table></div>
+`,null);
+
+/* ============ BOOT ============ */
+(function(){
+  const nav=$('#nav'),main=$('#main');
+  nav.innerHTML=`<div class="brand"><div>TOC &amp; COA<small>Interactive notes</small></div><a href="../index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
+  $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
+  $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))setOpen(false);});
+  main.innerHTML=`<header class="hero"><div class="wrap"><h1>Theory of Computation &amp; Computer Organization</h1><p>Both note sets, made interactive: step finite automata, Turing machines and PDAs, derive strings from grammars, then flip bits in Hamming codes, run a pipeline and drive the address, data and control buses. Tap a term to start.</p><div class="bitrow" id="heroSteps"></div><div class="heroTxt" id="heroTxt"></div></div></header>`+
+    SECTIONS.map((s,i)=>`<section class="ch" id="${s.id}"><div class="wrap"><h2><i>${i+1}</i>${s.title}</h2>${s.html}</div></section>`).join('');
+  try{heroInit();}catch(e){console.error(e);}
+  SECTIONS.forEach(s=>{if(s.init){try{s.init(document.getElementById(s.id));}catch(e){console.error('Section '+s.id,e);}}});
+  const links=$$('#navlist a'),obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('act',a.dataset.id===e.target.id));const a=$(`#navlist a[data-id="${e.target.id}"]`);$('#menuLbl').textContent=a?a.textContent.replace(/^\d+/,'').trim():'Chapters';if(a&&innerWidth>980){const t=a.offsetTop;if(t<nav.scrollTop||t>nav.scrollTop+nav.clientHeight-60)nav.scrollTop=t-80;}}});},{rootMargin:'-20% 0px -70% 0px'});
+  SECTIONS.forEach(s=>obs.observe(document.getElementById(s.id)));
+})();
+</script></body></html>

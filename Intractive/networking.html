@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Networking — Interactive Notes</title>
+<style>
+:root{--ink:#15233b;--ink2:#51607a;--paper:#f3f6f2;--grid:#e3e9e4;--panel:#fff;--teal:#0a8f7b;--teal2:#d8f1ea;--amber:#d98e04;--amber2:#fff0c9;--red:#c43d2f;--red2:#fbe3df;--blue:#2c5fb3;--blue2:#e2ebf8;--line:#b8c3bc;
+--serif:"Charter","Iowan Old Style","Palatino Linotype",Georgia,serif;--ui:"Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;--mono:ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.65 var(--serif)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+nav#nav{position:fixed;inset:0 auto 0 0;width:262px;background:#fff;border-right:1.5px solid var(--ink);overflow:auto;padding:18px 0 30px;font-family:var(--ui);z-index:5}
+nav#nav .brand{padding:0 20px 14px;font-weight:800;font-size:17px;line-height:1.2;border-bottom:1.5px solid var(--ink);margin-bottom:8px}
+nav#nav .brand small{display:block;font-weight:500;color:var(--ink2);font-size:12.5px;margin-top:4px}
+nav#nav a{display:block;padding:7px 20px 7px 17px;color:var(--ink);text-decoration:none;font-size:14.5px;border-left:3px solid transparent}
+nav#nav a:hover{background:var(--teal2)}
+nav#nav a.act{border-left-color:var(--teal);background:var(--teal2);font-weight:700}
+nav#nav a span{display:inline-block;width:22px;color:var(--ink2);font-family:var(--mono);font-size:12.5px}
+main{margin-left:262px;padding:0 0 80px;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:26px 26px}
+.wrap{max-width:900px;margin:0 auto;padding:0 28px}
+.hero{background:var(--ink);color:#fff;padding:44px 0 36px;border-bottom:6px solid var(--teal)}
+.hero h1{font:800 clamp(30px,5vw,50px)/1.05 var(--ui);margin:0 0 10px;letter-spacing:-.02em}
+.hero p{margin:0 0 22px;color:#c9d5e6;max-width:60ch;font-family:var(--ui);font-size:16px}
+.bitrow{display:flex;gap:6px;flex-wrap:wrap}
+.hero .tg{background:#22355a;color:#fff;border-color:#5b7098}
+.hero .tg.on{background:var(--amber);color:var(--ink);border-color:var(--amber)}
+.readouts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:20px}
+.readouts div{border-top:2px solid #5b7098;padding-top:6px;font-family:var(--ui);font-size:12.5px;color:#a9b9d3}
+.readouts b{display:block;font:600 22px var(--mono);color:#fff;letter-spacing:.02em;word-break:break-all}
+section.ch{padding:56px 0 8px;scroll-margin-top:0}
+section.ch>.wrap>h2{font:800 32px/1.15 var(--ui);margin:0 0 6px;letter-spacing:-.01em}
+section.ch>.wrap>h2 i{font:500 15px var(--mono);color:var(--teal);margin-right:12px;font-style:normal}
+h3{font:700 20px/1.3 var(--ui);margin:34px 0 8px;padding-bottom:4px;border-bottom:2px solid var(--ink)}
+h4{font:700 16px var(--ui);margin:22px 0 4px;color:var(--teal)}
+p{margin:.55em 0}
+ul{padding-left:1.25em;margin:.5em 0}li{margin:.2em 0}
+.lead{font-size:18.5px;color:#26354f}
+code,.m{font-family:var(--mono);font-size:.9em}
+.n{text-decoration:overline;text-decoration-thickness:1.5px}
+.tool{background:var(--panel);border:1.5px solid var(--ink);border-radius:4px;box-shadow:5px 5px 0 var(--teal2);margin:18px 0;font-family:var(--ui);font-size:15px;line-height:1.5}
+.tool>.th{background:var(--ink);color:#fff;font-weight:700;font-size:13.5px;padding:6px 14px;border-radius:2px 2px 0 0}
+.tool>.tb{padding:14px 16px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.tabs button,.btn,select,input[type=text]{font:600 14px var(--ui);border:1.5px solid var(--ink);background:#fff;color:var(--ink);padding:6px 11px;border-radius:3px;cursor:pointer}
+input[type=text]{cursor:text;font-family:var(--mono);font-weight:500;font-size:15px;min-width:0}
+.tabs button[aria-selected=true]{background:var(--ink);color:#fff}
+.btn:hover,.tabs button:hover{background:var(--teal2)}.tabs button[aria-selected=true]:hover{background:var(--ink)}
+.btn.pri{background:var(--teal);color:#fff;border-color:var(--teal)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.row label{font-weight:600;font-size:13.5px;color:var(--ink2)}
+.tg{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-width:46px;height:58px;border:1.5px solid var(--ink);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;font-family:var(--mono);padding:2px 4px}
+.tg small{font:600 10.5px var(--ui);opacity:.75}.tg b{font-size:21px;line-height:1.1}
+.tg.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.led{display:inline-block;width:16px;height:16px;border-radius:50%;background:#d4dcd7;border:1.5px solid #95a39b;vertical-align:-3px}
+.led.on{background:var(--teal);border-color:var(--teal);box-shadow:0 0 0 3px var(--teal2)}
+.out{display:inline-flex;align-items:center;gap:7px;font:600 15px var(--mono);margin-right:14px}
+table.t{border-collapse:collapse;font-family:var(--mono);font-size:14px;margin:8px 0}
+table.t th,table.t td{border:1.2px solid var(--line);padding:4px 10px;text-align:center}
+table.t th{background:#e8efe9;font-family:var(--ui);font-weight:700;font-size:13px}
+table.t td.l,table.t th.l{text-align:left}
+table.t tr.hi td{background:var(--amber2);font-weight:700}
+table.t td.ok{color:var(--teal);font-weight:700}
+.scroll{overflow-x:auto}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:10px}
+.res button{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:3px;padding:6px 10px;cursor:pointer;font-family:var(--ui)}
+.res button.sel{border-color:var(--teal);background:var(--teal2)}
+.res small{display:block;color:var(--ink2);font-size:12px}.res b{font:600 16px var(--mono);word-break:break-all}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{border:1.2px solid var(--ink);border-radius:3px;padding:2px 8px;font:600 14px var(--mono);background:#fff;text-align:center}
+.chip small{display:block;font:500 11px var(--ui);color:var(--ink2)}
+.chip.o{background:var(--amber2);border-color:var(--amber)}
+.note,.fix,.key,.eg{padding:10px 14px;margin:14px 0;border-left:4px solid;font-size:15.5px;font-family:var(--ui);line-height:1.55}
+.note{background:var(--blue2);border-color:var(--blue)}.fix{background:var(--red2);border-color:var(--red)}
+.key{background:var(--teal2);border-color:var(--teal)}.eg{background:var(--amber2);border-color:var(--amber)}
+.note b:first-child,.fix b:first-child,.key b:first-child,.eg b:first-child{margin-right:4px}
+pre.w{font:500 14.5px/1.5 var(--mono);margin:8px 0;white-space:pre;overflow-x:auto}
+svg{max-width:100%;height:auto}
+svg text{font-family:var(--ui)}
+.w{fill:none;stroke:#9aa8a1;stroke-width:2.4;stroke-linejoin:round}.w.on{stroke:var(--teal)}
+.g{fill:#fff;stroke:var(--ink);stroke-width:2}
+.pin{font:700 12px var(--ui);fill:var(--ink)}
+.dot{fill:#9aa8a1}.dot.on{fill:var(--teal)}
+.kmap{border-collapse:separate;border-spacing:0;font-family:var(--mono)}
+.kmap td,.kmap th{width:62px;height:58px;border:1.5px solid var(--ink);text-align:center;padding:0;position:relative}
+.kmap th{background:#e8efe9;width:auto;height:auto;font:700 13px var(--mono);padding:4px 8px;border-width:1.5px}
+.kmap th.corner{background:#fff;border:none;font-size:12px;text-align:right}
+.kmap button{all:unset;display:block;width:100%;height:100%;cursor:pointer;font:700 22px var(--mono);position:relative}
+.kmap button small{position:absolute;right:4px;top:2px;font:500 10px var(--mono);color:#7b8a83}
+.kmap button:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}
+.kmap td.hl{outline:4px solid var(--amber);outline-offset:-4px;z-index:2}
+.kmap .dots{position:absolute;left:3px;bottom:3px;display:flex;gap:2px}
+.kmap .dots i{width:9px;height:9px;border-radius:50%;display:block;border:1px solid rgba(0,0,0,.35)}
+.kmap .v0{color:#9aa8a1;font-weight:500}.kmap .v1{color:var(--ink)}.kmap .vx{color:var(--amber)}
+.leg{list-style:none;padding:0;margin:8px 0;font-family:var(--ui)}
+.leg li{display:flex;gap:10px;align-items:center;padding:4px 6px;border-radius:3px;cursor:default}
+.leg li:hover{background:var(--amber2)}
+.leg i{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.35)}
+.big{font:700 22px var(--mono);padding:8px 12px;background:var(--teal2);border-left:4px solid var(--teal);margin:8px 0;overflow-x:auto}
+.fam ul{list-style:none;padding-left:1.1em;border-left:2px solid var(--ink);margin:2px 0 2px .4em}
+.fam>ul{border:0;padding:0;margin:0}.fam li{margin:4px 0;font-family:var(--ui);font-size:15px}
+.fam li b{background:var(--ink);color:#fff;padding:1px 9px;border-radius:3px;font-size:14px}
+.fam li.leaf b{background:#fff;color:var(--ink);border:1.5px solid var(--ink)}
+.msg{font-weight:700;color:var(--red);min-height:1.4em}
+.mini{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0}
+.mini figure{margin:0;text-align:center;font:13px var(--ui);color:var(--ink2)}
+.ff{display:flex;gap:6px;margin:10px 0}
+.ffb{border:2px solid var(--ink);min-width:62px;text-align:center;padding:6px 4px;background:#fff;font-family:var(--mono);border-radius:3px;transition:background .15s}
+.ffb small{display:block;font:600 11px var(--ui);color:var(--ink2)}.ffb b{font-size:26px}
+.ffb.on{background:var(--teal);color:#fff;border-color:var(--teal)}.ffb.on small{color:#d8f1ea}
+.ffb.flash{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.menu-btn{display:none}
+.kmap.sm td{width:44px;height:42px}.kmap.sm button{font-size:16px}.kmap.sm th{font-size:11px;padding:2px 5px}.kmap.sm button small{font-size:8.5px}
+.menu-btn{display:none}
+@media (max-width:980px){
+ nav#nav{position:fixed;inset:0 0 auto 0;width:auto;height:auto;max-height:100vh;overflow:visible;padding:0;border-right:0;border-bottom:1.5px solid var(--ink);display:block}
+ nav#nav .brand{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 10px 6px 14px;margin:0;border-bottom:0;font-size:15px}
+ nav#nav .brand small{display:none}
+ .menu-btn{display:inline-flex;align-items:center;gap:8px;font:700 14px var(--ui);background:var(--ink);color:#fff;border:0;border-radius:3px;padding:9px 13px;min-height:40px;cursor:pointer}
+ #navlist{display:none;max-height:calc(100vh - 58px);overflow-y:auto;border-top:1.5px solid var(--ink);background:#fff;-webkit-overflow-scrolling:touch}
+ nav#nav.open #navlist{display:block}
+ nav#nav a{padding:13px 18px;border-bottom:1px solid #e3e9e4;font-size:16px}
+ main{margin-left:0;padding-top:52px}.wrap{padding:0 16px}
+ section.ch{scroll-margin-top:56px}
+ .kmap td{width:50px;height:50px}
+ .hero{padding-top:28px}
+}
+@media print{nav#nav{display:none}main{margin:0}.tool{break-inside:avoid}}
+.home-link{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;font:700 13px var(--ui);color:var(--teal);background:var(--teal2);border:1.5px solid var(--teal);border-radius:3px;text-decoration:none;transition:all .2s;margin-left:auto;}
+.home-link:hover{background:var(--teal);color:#fff;}
+.null{color:#9aa8a1;font-style:italic}
+td.bad{background:var(--red2)!important;color:var(--red);font-weight:700}td.good{background:var(--teal2)!important}
+td.lock{background:var(--amber2)!important}
+textarea.sql{width:100%;min-height:150px;font:500 14.5px/1.5 var(--mono);border:1.5px solid var(--ink);border-radius:3px;padding:10px;resize:vertical;background:#fbfcfb;color:var(--ink)}
+.err{background:var(--red2);border-left:4px solid var(--red);padding:8px 12px;margin:8px 0;font:600 14px var(--mono);white-space:pre-wrap}
+.okm{background:var(--teal2);border-left:4px solid var(--teal);padding:8px 12px;margin:8px 0;font:600 14px var(--ui)}
+pre.code{background:#f1f4f2;border:1px solid var(--line);border-left:4px solid var(--ink);padding:10px 12px;margin:8px 0;font:500 13.5px/1.55 var(--mono);overflow-x:auto;white-space:pre}
+details.acc{border:1.5px solid var(--ink);border-radius:3px;margin:8px 0;background:#fff;font-family:var(--ui)}
+details.acc>summary{cursor:pointer;padding:9px 14px;font-weight:700;font-size:15px;list-style:none}
+details.acc>summary::-webkit-details-marker{display:none}
+details.acc>summary::before{content:'+';display:inline-block;width:20px;color:var(--teal);font-family:var(--mono)}
+details.acc[open]>summary::before{content:'−'}
+details.acc[open]>summary{background:var(--teal2);border-bottom:1.5px solid var(--ink)}
+details.acc>div{padding:8px 16px 12px;font-size:15px}
+.cols2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.cols2>div{min-width:0}
+.pill{display:inline-block;padding:1px 9px;border-radius:12px;font:700 12px var(--ui);background:var(--ink);color:#fff;margin:0 4px 2px 0}
+.pill.g{background:var(--teal)}.pill.r{background:var(--red)}.pill.a{background:var(--amber);color:var(--ink)}
+.sel{cursor:pointer}.sel:hover td{background:var(--amber2)}
+tr.pick td{background:var(--teal2)!important;font-weight:700}
+.stepbar{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.stepbar span{padding:4px 11px;border:1.5px solid var(--line);border-radius:14px;font:600 13px var(--ui);color:var(--ink2)}
+.stepbar span.on{background:var(--teal);border-color:var(--teal);color:#fff}
+.hero .tg{min-width:auto;height:46px;padding:0 14px;flex-direction:row;font:700 15px var(--ui)}
+.hero .arrowx{color:#5b7098;align-self:center;font-weight:700}
+.heroTxt{margin-top:16px;min-height:3.2em;font-family:var(--ui);color:#e3ebf7;font-size:16px;max-width:62ch}
+.flow{stroke-dasharray:6 6;animation:fl 1s linear infinite}@keyframes fl{to{stroke-dashoffset:-12}}
+.bit{display:inline-block;width:19px;text-align:center;font:600 13px var(--mono);border:1px solid var(--line);margin:1px;border-radius:2px;background:#fff}.bit.f{background:var(--amber2);border-color:var(--amber)}.bit.n{background:var(--blue2);border-color:var(--blue)}.bit.h{background:var(--teal2);border-color:var(--teal)}
+.oct{display:inline-block;margin:2px 6px 2px 0;white-space:nowrap}
+</style>
+</head>
+<body>
+<nav id="nav" aria-label="Chapters"></nav>
+<main id="main"></main>
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const SECTIONS=[];
+function section(id,title,html,init){SECTIONS.push({id,title,html,init});}
+function Tabs(el,names,cb,start=0){
+  el.classList.add('tabs');el.setAttribute('role','tablist');
+  const draw=i=>{el.innerHTML=names.map((n,k)=>`<button role="tab" aria-selected="${k===i}" data-k="${k}">${n}</button>`).join('');};
+  el.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=+b.dataset.k;draw(k);cb(k);};
+  draw(start);cb(start);
+}
+function Toggles(el,labels,init,cb){
+  let v=init.slice(),last=-1;
+  const draw=()=>{el.innerHTML=labels.map((l,i)=>`<button class="tg ${v[i]?'on':''}" data-i="${i}" aria-pressed="${!!v[i]}"><small>${l}</small><b>${v[i]}</b></button>`).join('');
+    if(last>=0){const b=el.querySelector(`[data-i="${last}"]`);b&&b.focus();}};
+  el.classList.add('bitrow');
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;const i=+b.dataset.i;v[i]^=1;last=i;draw();cb(v);};
+  draw();cb(v);return {get:()=>v,set:nv=>{v=nv.slice();draw();cb(v);}};
+}
+const cell=v=>v===null||v===undefined?'<span class="null">NULL</span>':esc(v);
+function htmlTable(cols,rows,o={}){
+  return `<div class="scroll"><table class="t"><tr>${cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr>${rows.map((r,i)=>`<tr class="${o.row&&o.row(r,i)||''}">${r.map((v,j)=>`<td class="${o.cell&&o.cell(v,i,j)||''}">${o.raw?v:cell(v)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+}
+const gotoId=id=>{const e=document.getElementById(id);e&&e.scrollIntoView({behavior:'smooth'});};
+const svgBox=(x,y,w,h,label,on,sz=13)=>`<rect class="g" x="${x}" y="${y}" width="${w}" height="${h}" rx="3" style="${on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.6':''}"/><text class="pin" x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" style="font-size:${sz}px">${label}</text>`;
+const wire=(pts,on,dash)=>`<polyline class="w ${on?'on':''}" ${dash?'stroke-dasharray="5 4"':''} points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
+const arrowHead=(x,y,dir,on)=>{const c=on?'#0a8f7b':'#9aa8a1';const p={d:`${x},${y} ${x-6},${y-9} ${x+6},${y-9}`,u:`${x},${y} ${x-6},${y+9} ${x+6},${y+9}`,r:`${x},${y} ${x-9},${y-6} ${x-9},${y+6}`,l:`${x},${y} ${x+9},${y-6} ${x+9},${y+6}`}[dir];return `<polygon points="${p}" fill="${c}"/>`;};
+const SQLT=(t)=>`<span class="m">${esc(t)}</span>`;
+
+/* ================= HERO ================= */
+const NT=[['LAN','Local Area Network','Private and secure; up to 2 km; a school or office; hub / switch in the middle.'],['CAN','Campus Area Network','1 to 5 km; inter-connected LANs: LAN < CAN < MAN.'],['MAN','Metropolitan Area Network','A whole city; IEEE 802.6; optical fibre; data-link-layer protocol.'],['WAN','Wide Area Network','The largest network — the Internet; least secure and slower; fibre and satellite.'],['PAN','Personal Area Network','About 10 m; Bluetooth (IEEE 802.15.1); one master and up to six slaves.']];
+function heroInit(){
+  const el=$('#heroSteps'),tx=$('#heroTxt');let cur=0;
+  const draw=()=>{el.innerHTML=NT.map((h,i)=>`<button class="tg ${i===cur?'on':''}" data-i="${i}">${h[0]}</button>${i<4?'<span class="arrowx">·</span>':''}`).join('');tx.innerHTML=`<b>${NT[cur][0]} — ${NT[cur][1]}.</b> ${NT[cur][2]}`;};
+  el.onclick=e=>{const b=e.target.closest('.tg');if(!b)return;cur=+b.dataset.i;draw();};draw();
+}
+const nodeBox=(x,y,t,o={})=>`<g ${o.k!==undefined?`data-k="${o.k}" style="cursor:pointer"`:''}><rect class="g" x="${x-o.w/2||x-20}" y="${y-(o.h||24)/2}" width="${o.w||40}" height="${o.h||24}" rx="3" style="${o.bad?'fill:#fbe3df;stroke:#c43d2f;stroke-width:2.6':o.on?'fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.4':o.fill?'fill:'+o.fill:''}"/><text class="pin" x="${x}" y="${y+4}" text-anchor="middle" font-size="${o.sz||11}">${t}</text></g>`;
+
+/* ================= 1 NETWORK TYPES ================= */
+section('types','Network types',`
+<p class="lead">A <b>network</b> is a medium through which a connection is established between multiple computers — wired or wireless. Networks are named by how far they reach.</p>
+<div class="tool"><div class="th">Network explorer</div><div class="tb"><div id="ntTabs"></div><div id="ntBody"></div></div></div>
+<h3>Which network is it?</h3>
+<div class="tool"><div class="th">Quiz</div><div class="tb"><div id="nqList"></div><div class="row"><button class="btn pri" id="nqCheck">Check answers</button></div><p class="big" id="nqOut" style="font-size:16px"></p></div></div>
+<h3>PAN — Bluetooth piconets and scatternets</h3>
+<ul><li>Bluetooth: IEEE 802.15.1; range about 10 m; started by <b>Jaap Haartsen</b>; works on <b>2.4 GHz</b>; low cost, short range; standard transmission capacity about 720 Kbps (as read from the notes).</li><li>An <b>ad-hoc</b> network of <b>7 devices</b>: <b>1 master</b> and <b>6 slaves</b>. Only the master can send data.</li>
+<li>The basic Bluetooth architecture is a <b>piconet</b>; a group of piconets is a <b>scatternet</b>. Masters (or a slave acting as a <b>bridge</b>) connect piconets.</li></ul>
+<div class="tool"><div class="th">Build a scatternet</div><div class="tb"><div class="row"><button class="btn pri" id="pnAddP">Add a piconet</button><button class="btn pri" id="pnAddS">Add a slave to the selected piconet</button><button class="btn" id="pnBr">Toggle bridge slave between piconets</button><button class="btn" id="pnR">Reset</button></div><svg id="pnSvg" viewBox="0 0 560 220" width="560" role="img" aria-label="Piconets"></svg><p class="m" id="pnMsg"></p></div></div>
+<h3>SAN and the cloud</h3>
+<ul><li>SAN = Storage Area Network, known as <b>cloud services</b>; started about 1999 (Salesforce — SaaS). Amazon = AWS, Apple = iCloud, Microsoft = Azure, Google = GCP.</li></ul>
+<div class="tool"><div class="th">Cloud service models — click a model</div><div class="tb"><div id="clTabs"></div><div id="clBody"></div></div></div>
+<h3>BAN, HAN, VPN</h3>
+<ul><li><b>BAN</b> (Body Area Network) — a bug / chip put on a person's body to <b>trace</b> it.</li><li><b>HAN</b> (Home Area Network) — a Wi-Fi modem connects home / office devices.</li><li><b>VPN</b> (Virtual Private Network) — extends a <b>private and secure</b> network over a public network; used to work from home; encrypted connection, blocked websites, data secured; changes your IP.</li></ul>
+<div class="tool"><div class="th">VPN switch</div><div class="tb"><div id="vpT"></div><svg id="vpSvg" viewBox="0 0 560 120" width="560" role="img" aria-label="VPN"></svg><div id="vpMsg"></div></div></div>
+<h3>P2P — peer to peer</h3>
+<ul><li>A <b>decentralized</b> network (no server); transfers bigger data easily; each computer works as client and server; started in 1979.</li><li>Advantages: no need of any OS (as written); if a computer fails, no problem in the network.  Disadvantages: no control server; no data back-up; no security; slow network.</li></ul>
+<div class="tool"><div class="th">Click a computer to make it fail</div><div class="tb"><div id="ppTabs"></div><svg id="ppSvg" viewBox="0 0 560 210" width="560" role="img" aria-label="P2P versus client-server"></svg><p class="big" id="ppMsg" style="font-size:15px"></p></div></div>
+`,root=>{
+  const TY=[['LAN',['Private and secure; range up to <b>2 km</b>.','Small geographical area like a school or office.','All resources are connected to a central device (<b>hub or switch</b>).','A <b>router</b> connects the LAN to the Internet; a <b>WAP</b> (Wireless Access Point) creates a wireless LAN.','Evolution: wired LAN (Ethernet — Standard, Fast, Gigabit, Ten-gig) and wireless LAN (WLAN).','<b>ARCNET</b> (Attached Resources Computer Network): oldest and easy installation; started 1977 by Datapoint Corporation, New York; 1980 for microcomputers; 2.5 Mbps; token passing.'],'≤ 2 km'],
+   ['CAN',['Campus Area Network — range <b>1 to 5 km</b>.','LAN < CAN < MAN.','A connection of inter-connected LANs.'],'1–5 km'],
+   ['MAN',['Big geographical area like a city.','Works on <b>IEEE 802.6</b>; wired MAN uses <b>optical fibre</b> (802.8).','Uses a <b>data-link-layer</b> protocol.'],'a city'],
+   ['WAN',['The <b>largest</b> network of the world — known as the Internet.','<b>Least secure</b> and low speed; network to network.','Uses “VLPS” for communication (works on the network layer) — the usual technique is MPLS; fibre-optic cable.','Uses <b>satellite</b>: repeaters = transponders; <b>uplink</b> = Earth → satellite; <b>downlink</b> = satellite → Earth.'],'the world'],
+   ['PAN',['Known as <b>WPAN</b>; works on <b>IEEE 802.15</b>; Bluetooth = 802.15.1; range about 10 m.','Ad-hoc network with 1 master and 6 slaves.'],'≈ 10 m'],
+   ['SAN',['Storage Area Network = cloud services.','Amazon AWS · Apple iCloud · Microsoft Azure · Google GCP.'],'cloud'],
+   ['BAN',['Body Area Network — a chip on the body to trace it.'],'on the body'],['HAN',['Home Area Network — Wi-Fi modem connecting home / office devices.'],'home'],['VPN',['Virtual Private Network — encrypted connection that changes your IP and extends a private network over a public one.'],'public network']];
+  Tabs($('#ntTabs'),TY.map(t=>t[0]),k=>{$('#ntBody').innerHTML=`<p><span class="pill g">scope: ${TY[k][2]}</span></p><ul>${TY[k][1].map(x=>`<li>${x}</li>`).join('')}</ul>`;});
+  const Q=[['A school computer lab connected through one switch','LAN'],['Several buildings of a university linked together (1–5 km)','CAN'],['Cable TV / fibre network covering a whole city','MAN'],['The Internet','WAN'],['Phone connected to wireless earbuds','PAN'],['Amazon AWS or Google GCP services','SAN'],['A chip attached to a person to trace them','BAN'],['Wi-Fi modem connecting phones and laptops at home','HAN'],['Encrypted tunnel used to work from home','VPN']];
+  const OPT=['LAN','CAN','MAN','WAN','PAN','SAN','BAN','HAN','VPN'];
+  $('#nqList').innerHTML=Q.map((q,i)=>`<div class="row"><span style="flex:1 1 320px">${q[0]}</span><select data-i="${i}"><option value="">choose…</option>${OPT.map(o=>`<option>${o}</option>`).join('')}</select><span id="nq${i}"></span></div>`).join('');
+  $('#nqCheck').onclick=()=>{let ok=0;Q.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,$('#nqList')).value;if(v===q[1]){ok++;$('#nq'+i).innerHTML='<span class="pill g">✓</span>';}else $('#nq'+i).innerHTML=v?'<span class="pill r">✗</span>':'';});$('#nqOut').textContent=`Score: ${ok} / ${Q.length}`;};
+  /* piconet */
+  let P,sel,bridge,msg;const pr=()=>{P=[{s:3}];sel=0;bridge=false;msg='';pn();};
+  const pn=()=>{let o='';const n=P.length,pos=P.map((_,i)=>[80+i*(400/Math.max(n-1,1))*(n>1?1:0)+(n===1?200:0),110]);
+    P.forEach((p,i)=>{const [cx,cy]=pos[i],r=64;o+=`<g data-p="${i}" style="cursor:pointer"><circle cx="${cx}" cy="${cy}" r="${r}" class="g" style="${i===sel?'fill:#fff0c9;stroke:#d98e04;stroke-width:3':''}"/>`;
+      for(let k=0;k<p.s;k++){const a=Math.PI/2+2*Math.PI*k/p.s+.4,sx=cx+(r-16)*Math.cos(a),sy=cy-(r-16)*Math.sin(a);o+=`<line x1="${cx}" y1="${cy}" x2="${sx}" y2="${sy}" stroke="#9aa8a1" stroke-width="1.5"/><circle cx="${sx}" cy="${sy}" r="9" class="g"/><text class="pin" x="${sx}" y="${sy+4}" text-anchor="middle" font-size="10">S</text>`;}
+      o+=`<circle cx="${cx}" cy="${cy}" r="12" class="g" style="fill:#d8f1ea;stroke:#0a8f7b;stroke-width:2.2"/><text class="pin" x="${cx}" y="${cy+4}" text-anchor="middle">M</text><text class="pin" x="${cx}" y="${cy-r-8}" text-anchor="middle">P${i+1}</text></g>`;
+      if(i>0)o+=`<line x1="${pos[i-1][0]+12}" y1="${pos[i-1][1]}" x2="${cx-12}" y2="${cy}" stroke="#c43d2f" stroke-width="2.2" ${bridge?'':'stroke-dasharray="5 4"'}/>`;});
+    $('#pnSvg').innerHTML=o;const ms=P.length,ss=P.reduce((a,p)=>a+p.s,0);
+    $('#pnMsg').innerHTML=`<b>${P.length>1?'Scatternet':'Piconet'}</b> — ${ms} master${ms>1?'s':''}, ${ss} slaves (${P.length>1?'masters / bridges link the piconets':'one piconet = 1 master + up to 6 slaves'}). ${msg}`;$$('#pnSvg [data-p]').forEach(g=>g.onclick=()=>{sel=+g.dataset.p;pn();});};
+  $('#pnAddP').onclick=()=>{if(P.length<4){P.push({s:2});sel=P.length-1;msg='';}pn();};
+  $('#pnAddS').onclick=()=>{if(P[sel].s<6)P[sel].s++;else msg='<span class="msg">A piconet holds at most 6 active slaves (7 devices with the master).</span>';pn();};
+  $('#pnBr').onclick=()=>{bridge=!bridge;msg=bridge?'A slave now bridges the piconets (solid red link).':'Link removed (dashed).';pn();};$('#pnR').onclick=pr;pr();
+  /* cloud */
+  const CL=[['IaaS','Infrastructure as a Service',['Maximum flexibility','High availability','Cost and time saving'],'Azure, AWS, GCP',3],['PaaS','Platform as a Service',['Cost-effective development','High availability','Easy migration to the hybrid model'],'Docker, Kubernetes',2],['SaaS','Software as a Service',['Accessibility','Cost efficiency','All-inclusive'],'HubSpot, Office 365, Slack',1]];
+  const STACK=['Application','Data','Runtime / middleware','Operating system','Servers & storage'];
+  Tabs($('#clTabs'),CL.map(c=>c[0]),k=>{const c=CL[k],you=[ [1,1,1,1,0],[1,1,0,0,0],[0,0,0,0,0] ][k];
+    $('#clBody').innerHTML=`<p><b>${c[1]}</b> — ${c[2].join(' · ')}. Examples: <b>${c[3]}</b>.</p><p class="m" style="font-size:13.5px;margin:0 0 4px">Who looks after each layer <span class="pill a">added illustration</span></p>`+htmlTable(['Layer','Managed by'],STACK.map((s,i)=>[s,you[i]?'You':'Provider']),{cell:v=>v==='You'?'lock':'good'});});
+  /* vpn */
+  Toggles($('#vpT'),['VPN'],[0],v=>{const on=v[0];let o=svgBox(20,40,100,44,'Your PC',0)+svgBox(440,40,100,44,'Website',0)+wire([[120,62],[440,62]],on);
+    if(on){o+=`<rect x="190" y="30" width="180" height="64" rx="32" fill="#d8f1ea" stroke="#0a8f7b" stroke-width="2"/><text class="pin" x="280" y="66" text-anchor="middle" style="fill:#0a8f7b">encrypted tunnel</text>`;}
+    o+=`<text class="pin" x="70" y="105" text-anchor="middle" font-size="11">${on?'IP 10.8.0.5 (VPN)':'IP 49.36.12.8 (real)'}</text>`;$('#vpSvg').innerHTML=o;
+    $('#vpMsg').innerHTML=on?'<div class="okm">Encrypted connection · blocked websites reachable · data secured · your IP is changed.</div>':'<p>Normal connection: your real IP is visible and the traffic is not tunnelled.</p>';});
+  /* p2p */
+  let pm=0,fail=-1;const pp=()=>{let o='',xs=[90,230,370,490],ys=[60,150];
+    if(pm===0){const P=[[110,60],[450,60],[110,150],[450,150],[280,105]];for(let i=0;i<5;i++)for(let j=i+1;j<5;j++)o+=wire([P[i],P[j]],fail<0||(i!==fail&&j!==fail));
+      P.forEach((p,i)=>o+=nodeBox(p[0],p[1],'PC '+(i+1),{w:54,k:i,bad:fail===i,on:fail!==i}));
+      $('#ppMsg').innerHTML=fail<0?'Peer-to-peer: every computer is both client and server. Click one to fail it.':`PC ${fail+1} failed — the other four still talk to each other: <b>no problem in the network</b>.`;}
+    else{const C=[[110,170],[230,170],[350,170],[470,170]];o+=nodeBox(280,35,'Server',{w:90,k:9,bad:fail===9,on:fail!==9});C.forEach((p,i)=>{o+=wire([p,[280,50]],fail!==9&&fail!==i);o+=nodeBox(p[0],p[1],'Client '+(i+1),{w:70,k:i,bad:fail===i,on:fail!==9&&fail!==i});});
+      $('#ppMsg').innerHTML=fail===9?'The server failed — <b>every client loses service</b> (a control server is a single point of failure).':fail<0?'Client–server: all clients depend on the server. Click the server to fail it.':`Client ${fail+1} failed — the rest keep working.`;}
+    $('#ppSvg').innerHTML=o;$$('#ppSvg [data-k]').forEach(g=>g.onclick=()=>{const k=+g.dataset.k;fail=fail===k?-1:k;pp();});};
+  Tabs($('#ppTabs'),['Peer-to-peer (no server)','Client–server (for comparison)'],k=>{pm=k;fail=-1;pp();});
+});
+
+/* ================= 2 TOPOLOGY ================= */
+section('topo','Network topology',`
+<p class="lead">Topology is the <b>layout of connections</b>. <b>Physical topology</b> works on the physical layer of the OSI model; <b>logical topology</b> on the network layer (as written in the notes).</p>
+<div class="tool"><div class="th">Topology lab — click a node (or the hub / backbone) to fail it</div><div class="tb"><div id="tpTabs"></div><svg id="tpSvg" viewBox="0 0 560 280" width="560" role="img" aria-label="Topology diagram"></svg><div id="tpStat"></div><div id="tpNotes"></div><div class="row"><button class="btn" id="tpReset">Repair everything</button></div></div></div>
+<div class="tool"><div class="th">How many cables?</div><div class="tb"><div class="row"><label for="tpN">Number of nodes n</label><input type="range" id="tpN" min="2" max="20" value="5"><b class="m" id="tpNv"></b></div><div id="tpCalc"></div></div></div>
+<div class="scroll"><table class="t"><tr><th class="l">Topology</th><th class="l">Cables / links</th><th>Data flow</th><th class="l">Central device</th><th class="l">What breaks it</th></tr><tr><td class="l">Mesh</td><td class="l">n(n−1)/2 cables</td><td>Bi-directional</td><td class="l">None</td><td class="l">Almost nothing (redundant paths)</td></tr><tr><td class="l">Bus</td><td class="l">n + 1</td><td>Bi-directional</td><td class="l">Backbone</td><td class="l">Backbone failure</td></tr><tr><td class="l">Star</td><td class="l">n</td><td>Uni-directional</td><td class="l">Hub / switch</td><td class="l">Central device failure</td></tr><tr><td class="l">Ring</td><td class="l">—</td><td>Uni-directional</td><td class="l">None</td><td class="l">Any single node</td></tr><tr><td class="l">Tree</td><td class="l">—</td><td>—</td><td class="l">Hubs on a backbone</td><td class="l">Backbone: only part fails</td></tr></table></div>
+<h3>FDDI — Fibre Distributed Data Interface</h3>
+<ul><li>Bi-directional; contains <b>two rings — primary (data) and secondary (backup data)</b>; max length <b>200 km</b>; max <b>1000</b> nodes.</li></ul>
+`,root=>{
+  const NOTES={Mesh:['Every node is connected to every other node; data flow bi-directional; used in WAN; fully connected, <b>most reliable and secure</b>; decentralized; redundancy and fault tolerance; multiple paths between two nodes.','<b>Types:</b> fully mesh — (n−1) connections at every node; partial mesh — not fully connected, optional paths.','<b>Advantages:</b> one device fails, no full-network failure; no traffic problem; high privacy and security; transmission stays consistent; adding a device does not disturb it.  <b>Disadvantages:</b> bulk cabling; tough installation and configuration; most expensive; extra utility cost per node; more maintenance; higher power requirement.'],
+    Bus:['Single cable — bus / backbone / segment; linear; data flow bi-directional; <b>max 30</b> nodes; a <b>terminator</b> at both ends blocks data loss; Ethernet (wired LAN) uses it.','<b>Advantages:</b> simple and inexpensive; scalable; total cable = <b>n + 1</b>.  <b>Disadvantages:</b> backbone fails → all network fails; limited length; data collision.'],
+    Star:['Data broadcast; a hub / switch is the central device sharing point-to-point connections; hub = physical layer; cables = n.','<b>Types:</b> broadcast star (hub); switched star (switch — a modern switch supports unicast and multicast).','<b>Advantages:</b> easy to add a node; one node failing does not affect the network; easy to find a failed node.  <b>Disadvantage:</b> the central device fails → whole network fails.'],
+    Ring:['Each node is connected to the next and previous node; data passes through <b>every node</b>; uni-directional; <b>token passing</b>; bit-wise transmission; each node has a repeater; RJ-45 or co-axial cable; no central device.','<b>Advantages:</b> faster speed, reliable, easy to expand; no collision.  <b>Disadvantages:</b> slower than star; more nodes → less speed; one node fails → whole network fails.'],
+    Tree:['Combination of <b>bus and star</b>; hierarchy topology; used for WAN; extended star; if the backbone fails, not all of the network fails; secure.','<b>Advantages:</b> error detection and correction easy; secure and reliable.  <b>Disadvantages:</b> setup cost high; configuration tough; more cable use.']};
+  let kind='Mesh',failed=new Set();
+  const lay=()=>{const nodes={},edges=[];
+    if(kind==='Mesh'){for(let i=0;i<5;i++){const a=-Math.PI/2+i*2*Math.PI/5;nodes['n'+i]={x:280+105*Math.cos(a),y:140+105*Math.sin(a),t:'PC '+(i+1)};}for(let i=0;i<5;i++)for(let j=i+1;j<5;j++)edges.push(['n'+i,'n'+j]);}
+    if(kind==='Bus'){nodes.bb={x:280,y:140,t:'',bb:1};for(let i=0;i<5;i++)nodes['n'+i]={x:90+i*95,y:i%2?210:70,t:'PC '+(i+1)};for(let i=0;i<5;i++)edges.push(['bb','n'+i]);}
+    if(kind==='Star'){nodes.hub={x:280,y:140,t:'Hub / Switch',w:90,hub:1};for(let i=0;i<6;i++){const a=-Math.PI/2+i*2*Math.PI/6;nodes['n'+i]={x:280+170*Math.cos(a)*0.95,y:140+105*Math.sin(a),t:'PC '+(i+1)};edges.push(['hub','n'+i]);}}
+    if(kind==='Ring'){for(let i=0;i<6;i++){const a=-Math.PI/2+i*2*Math.PI/6;nodes['n'+i]={x:280+170*Math.cos(a)*0.8,y:140+105*Math.sin(a),t:'PC '+(i+1)};}for(let i=0;i<6;i++)edges.push(['n'+i,'n'+(i+1)%6,1]);}
+    if(kind==='Tree'){nodes.bb={x:280,y:30,t:'',bb:1};nodes.h1={x:150,y:100,t:'Hub 1',w:60,hub:1};nodes.h2={x:410,y:100,t:'Hub 2',w:60,hub:1};edges.push(['bb','h1'],['bb','h2']);[0,1,2].forEach(i=>{nodes['a'+i]={x:60+i*90,y:220,t:'PC '+(i+1)};edges.push(['h1','a'+i]);nodes['b'+i]={x:330+i*90,y:220,t:'PC '+(i+4)};edges.push(['h2','b'+i]);});}
+    return {nodes,edges};};
+  const draw=()=>{const {nodes,edges}=lay();let o='';
+    if(kind==='Bus')o+=`<line x1="40" y1="140" x2="520" y2="140" stroke="${failed.has('bb')?'#c43d2f':'#0a8f7b'}" stroke-width="5"/><rect x="34" y="128" width="8" height="24" fill="#15233b"/><rect x="518" y="128" width="8" height="24" fill="#15233b"/><text class="pin" x="280" y="132" text-anchor="middle" style="fill:#c43d2f">${failed.has('bb')?'backbone FAILED':'backbone'}</text>`;
+    if(kind==='Tree')o+=`<line x1="150" y1="30" x2="410" y2="30" stroke="${failed.has('bb')?'#c43d2f':'#0a8f7b'}" stroke-width="5"/><text class="pin" x="280" y="20" text-anchor="middle">Backbone</text>`;
+    edges.forEach(([a,b])=>{const A=nodes[a],B=nodes[b];const bad=failed.has(a)||failed.has(b);if(kind==='Bus'&&a==='bb'){o+=`<line x1="${B.x}" y1="${B.y}" x2="${B.x}" y2="140" stroke="${bad?'#c43d2f':'#0a8f7b'}" stroke-width="2.4"/>`;return;}if(kind==='Tree'&&a==='bb'){o+=`<line x1="${B.x}" y1="${B.y}" x2="${B.x}" y2="30" stroke="${bad?'#c43d2f':'#0a8f7b'}" stroke-width="2.4"/>`;return;}o+=wire([[A.x,A.y],[B.x,B.y]],!bad);});
+    Object.entries(nodes).forEach(([k,n])=>{if(n.bb)return;o+=nodeBox(n.x,n.y,n.t,{w:n.w||44,k,bad:failed.has(k),on:!failed.has(k),fill:n.hub?'#fff0c9':undefined});});
+    if(kind==='Bus'||kind==='Tree')o+=`<g data-k="bb" style="cursor:pointer"><rect x="${kind==='Bus'?40:150}" y="${kind==='Bus'?134:24}" width="${kind==='Bus'?480:260}" height="12" fill="transparent"/></g>`;
+    $('#tpSvg').innerHTML=o;
+    const alive=Object.keys(nodes).filter(k=>!nodes[k].bb&&!failed.has(k)),all=Object.keys(nodes).filter(k=>!nodes[k].bb);
+    let st='';
+    if(!failed.size)st='<div class="okm">All nodes working — the network is up.</div>';
+    else if(kind==='Mesh'){const seen=new Set([alive[0]]),q=[alive[0]];while(q.length){const c=q.pop();edges.forEach(([a,b])=>{const o=a===c?b:b===c?a:null;if(o&&!failed.has(o)&&!seen.has(o)){seen.add(o);q.push(o);}});}st=seen.size===alive.length?`<div class="okm">${failed.size} node(s) down — the remaining ${alive.length} are still fully connected through other paths. <b>No full-network failure.</b></div>`:'<div class="err">The remaining nodes are split.</div>';}
+    else if(kind==='Bus')st=failed.has('bb')?'<div class="err">The backbone failed — <b>the whole network fails</b>.</div>':`<div class="okm">${failed.size} node(s) down — the others are not affected (and the failed node is easy to identify).</div>`;
+    else if(kind==='Star')st=failed.has('hub')?'<div class="err">The central hub / switch failed — <b>the whole network fails</b>.</div>':`<div class="okm">${failed.size} node(s) down — no effect on the rest of the network.</div>`;
+    else if(kind==='Ring')st='<div class="err">A node on the ring failed — data cannot pass through it, so <b>the whole network fails</b> (the notes’ rule for ring topology).</div>';
+    else{const h1=!failed.has('h1')&&!failed.has('bb')?['a0','a1','a2'].filter(k=>!failed.has(k)).length:0;st=failed.has('bb')?'<div class="okm">The backbone failed — each hub still serves its own PCs, but the two halves cannot talk: <b>not all of the network fails</b>.</div>':`<div class="okm">${failed.size} item(s) down — the rest of the tree keeps working.</div>`;}
+    $('#tpStat').innerHTML=st;$$('#tpSvg [data-k]').forEach(g=>g.onclick=()=>{const k=g.dataset.k;failed.has(k)?failed.delete(k):failed.add(k);draw();});};
+  Tabs($('#tpTabs'),['Mesh','Bus','Star','Ring','Tree'],k=>{kind=['Mesh','Bus','Star','Ring','Tree'][k];failed=new Set();$('#tpNotes').innerHTML='<ul>'+NOTES[kind].map(x=>`<li>${x}</li>`).join('')+'</ul>';draw();});
+  $('#tpReset').onclick=()=>{failed=new Set();draw();};
+  const calc=()=>{const n=+$('#tpN').value;$('#tpNv').textContent=n;$('#tpCalc').innerHTML=htmlTable(['Topology','Rule','Result for n = '+n],[['Mesh — cables','n(n−1)/2',n*(n-1)/2],['Mesh — connections per node','n − 1',n-1],['Mesh — total I/O ports','2 × cables',n*(n-1)],['Bus — cable required','n + 1',n+1],['Star — cables','n',n]]);};
+  $('#tpN').oninput=calc;calc();
+});
+/* ================= 3 DEVICES ================= */
+const DEV=[['Modem','Physical',['<b>Modulator–Demodulator</b>: analog → digital = demodulator; digital → analog = modulator.','Used in star topology; telephone lines and computers use it.','Two modems connecting is called <b>handshaking</b>; speed in <b>BPS</b>.','A <b>hybrid device</b> — works as input and output device.']],
+ ['Repeater','Physical',['<b>Amplifies and regenerates</b> weak signals.','Extends the length of a LAN or connects two separate LANs.','Non-intelligent / dumb hardware: only forwarding, no data filter. A hub is a multiport repeater.']],
+ ['Hub','Physical',['Multiport repeater; non-intelligent; <b>broadcasts</b> from one node to all connected nodes.','<b>Passive</b>: acts like a connector only, works below the physical layer, does not regenerate signals.  <b>Active</b>: works as a repeater — the most used basic hub.  <b>Intelligent</b>: an active hub that regenerates and monitors signals; uses SNMP; also known as a switch.']],
+ ['Switch','Data link',['<b>Intelligent</b> (knows MAC addresses); sends data to the <b>specific receiver</b>; 5–52 ports; keeps a table in <b>CAM</b> (Content Addressable Memory).','<b>2-layer switch</b> = multiport bridge, data link layer, MAC address.  <b>3-layer switch</b> = router, network layer, IP address.']],
+ ['NIC','Data link',['Network Interface Card — a hybrid device.','Known as physical / MAC / hybrid / burned-in / chassis / data-link address.','<b>6 bytes = 48 bits = 12 hex digits</b>, with 5 separators (:).']],
+ ['Router','Network',['Connects <b>LAN to WAN</b>; works on physical, data link and network layers.','Builds a <b>routing table</b>; acts as a traffic director for packets; uses the <b>IP address</b>; connects two different topologies.','Uses RIP, OSPF (Open Shortest Path First), BGP (Border Gateway Protocol) and a firewall against unauthorised access.']],
+ ['Bridge','Data link',['Extends a LAN; can do <b>data filtration</b>; uses <b>MAC addresses</b> to connect LANs.']],
+ ['Gateway','All layers',['Works through the whole OSI and TCP/IP models; also known as a firewall (as written).','Connects LANs of different configuration; <b>entry and exit point</b>; <b>protocol converter</b>. A router works within a network; a gateway lets different models work together.']],
+ ['Brouter','Network',['<b>Bridge + Router</b>.']]];
+const LAYERS=[['Application','Gateway, Firewall'],['Presentation','Gateway'],['Session','Gateway'],['Transport','Gateway, Packet-filter firewall'],['Network','Gateway, Router, Brouter (Bridge + Router), 3-layer switch'],['Data link','Gateway, Bridges, NIC, 2-layer switch'],['Physical','Gateway, Modem, Hub, Repeater, Cables']];
+section('dev','Networking devices',`
+<p class="lead">Networking devices are used to <b>connect clients and servers</b>. Which one you need depends on the OSI layer you work at.</p>
+<div class="tool"><div class="th">Devices by OSI layer — click a layer</div><div class="tb"><div id="dlTab"></div></div></div>
+<div class="tool"><div class="th">Device cards</div><div class="tb"><div id="dvTabs"></div><div id="dvBody"></div></div></div>
+<h3>Hub vs switch — send a frame</h3>
+<p>A <b>hub</b> broadcasts every frame to all ports. A <b>switch</b> learns MAC addresses in its CAM table and forwards to the specific receiver.</p>
+<div class="tool"><div class="th">Four computers on one device</div><div class="tb"><div id="swMode"></div><div class="row"><label for="swS">From</label><select id="swS"><option>A</option><option>B</option><option>C</option><option>D</option></select><label for="swD">To</label><select id="swD"><option>A</option><option selected>C</option><option>B</option><option>D</option></select><button class="btn pri" id="swGo">Send frame</button><button class="btn" id="swR">Reset</button></div>
+<svg id="swSvg" viewBox="0 0 560 250" width="560" role="img" aria-label="Hub or switch with four computers"></svg><p class="big" id="swMsg" style="font-size:15px"></p><div id="swCam"></div></div></div>
+`,root=>{
+  let sl=-1;const dl=()=>{$('#dlTab').innerHTML=`<div class="scroll"><table class="t sel"><tr><th>OSI layer</th><th class="l">Devices working there</th></tr>${LAYERS.map((l,i)=>`<tr data-i="${i}" class="${i===sl?'pick':''}"><td>${l[0]}</td><td class="l">${l[1]}</td></tr>`).join('')}</table></div>`;};
+  $('#dlTab').onclick=e=>{const tr=e.target.closest('tr[data-i]');if(!tr)return;sl=sl===+tr.dataset.i?-1:+tr.dataset.i;dl();};dl();
+  Tabs($('#dvTabs'),DEV.map(d=>d[0]),k=>{$('#dvBody').innerHTML=`<p><span class="pill g">layer: ${DEV[k][1]}</span></p><ul>${DEV[k][2].map(x=>`<li>${x}</li>`).join('')}</ul>`+(k===2?'<div class="note"><b>Correction.</b> The notes say a passive hub cannot work without electricity; a passive hub actually needs no power — active and intelligent hubs do.</div>':'');});
+  const MAC={A:'AA:00:00:00:00:0A',B:'AA:00:00:00:00:0B',C:'AA:00:00:00:00:0C',D:'AA:00:00:00:00:0D'},PX={A:70,B:210,C:350,D:490};
+  let mode=0,cam={},tr={},msg='';
+  const sw=()=>{let o='';const dev=mode?'Switch':'Hub';
+    Object.keys(PX).forEach(k=>{const hit=tr[k];o+=wire([[PX[k],200],[280,110]],hit==='got'||hit==='src'||hit==='ign')+nodeBox(PX[k],215,'PC '+k,{w:56,h:34,on:hit==='got'||hit==='src',bad:hit==='ign',fill:hit==='ign'?'#fbe3df':undefined});});
+    o+=svgBox(200,60,160,50,dev+(mode?' (CAM table)':' (broadcast)'),Object.keys(tr).length>0,13);$('#swSvg').innerHTML=o;$('#swMsg').innerHTML=msg||'Pick a source and destination, then send.';
+    $('#swCam').innerHTML=mode?`<p style="margin:6px 0 2px"><b>CAM table</b> (learned so far)</p>`+(Object.keys(cam).length?htmlTable(['MAC address','Port'],Object.entries(cam).map(([k,v])=>[v,'port '+k])):'<p class="m">empty — the switch has learned nothing yet</p>'):'';};
+  Tabs($('#swMode'),['Hub (physical layer)','Switch (data link layer)'],k=>{mode=k;cam={};tr={};msg='';sw();});
+  $('#swGo').onclick=()=>{const s=$('#swS').value,d=$('#swD').value;if(s===d){msg='<span class="msg">Choose two different computers.</span>';sw();return;}tr={};tr[s]='src';
+    if(!mode){Object.keys(PX).forEach(k=>{if(k!==s)tr[k]=k===d?'got':'ign';});msg=`<b>Hub:</b> the frame from ${s} is <b>broadcast to every port</b>. Only PC ${d} keeps it; the others receive it and ignore it (red).`;}
+    else{cam[s]=MAC[s];if(cam[d]){tr[d]='got';msg=`<b>Switch:</b> it learned ${s}’s MAC and already knows ${d} (port ${d}) — the frame goes <b>only to PC ${d}</b>.`;}
+      else{Object.keys(PX).forEach(k=>{if(k!==s)tr[k]=k===d?'got':'ign';});msg=`<b>Switch:</b> it learned ${s}’s MAC, but ${d} is not in the CAM table yet, so this first frame is sent out of every other port. Reply from ${d} and it will be learned.`;}}sw();};
+  $('#swR').onclick=()=>{cam={};tr={};msg='';sw();};sw();
+});
+
+/* ================= 4 OSI ================= */
+const OSI=[
+ [7,'Application','DATA / MESSAGE','Nearest to the user; the desktop layer.',['Email-related services','Remote login service','File transfer and manage (FTAM)'],[],'AMQP · BOOTP · DNS · DHCP · FTP · HTTP · HTTPS · IMAP · MIME · NTP · POP-3 · Telnet'],
+ [6,'Presentation','DATA','Changes data to a standard format; concerned with data syntax and semantics.',['Data encryption and decryption','Data compression and decompression','Data translation at the destination'],[],'SSL · JPEG · MPEG · TLS · LPP (Lightweight Presentation)'],
+ [5,'Session','DATA','Responsible for the connection / session.',['Creation of connection, management and termination','Token management; data transmission mode','Synchronization — checkpoints inserted for recovery at the time of disruption','Ensures orderly communication; dialogue control'],[],'NCP · RPC · SIP · PPTP · ZIP · NFS · PAP · RTCP'],
+ [4,'Transport','Segment / Datagram','The heart of the OSI model; links NSL and USL; end to end / process to process / machine to machine.',['Connection control between source and destination','Segmentation and reassembling','Error control and flow control','Multiplexing and demultiplexing','Receiver port number in the data header (service-point addressing)','Congestion control; data integrity'],[],'TCP · UDP · FCP · DCCP · SCTP · ATP · BGP · SPX'],
+ [3,'Network','Packets','Source to destination / host to host; chooses the best path.',['Packet forwarding and routing','Determines quality and priority of packets','Unique IP address for identification','Sends packets using routers','Divides large packets into fragments and reassembles them','Divides a large network into sub-networks (subnetting)'],['No flow control','Routers may lose packets'],'ICMP · EGP · IGMP · IGRP · RIP · VRRP · IPv4 &amp; IPv6 · RARP · OSPF · BGP · IPSec · MPLS'],
+ [2,'Data link','Frames','Hop to hop / node to node / point to point / link to link.',['Creates the Ethernet frame: max 1518 bytes, min 64 bytes, 7 fields','Error control and flow control','Defines access control','Uses MAC addresses (unicast, multicast, broadcast)','Error control: extra bits added in frames'],['Limited scale','Increased overhead','Error-handling dependency (for complex errors)','No routing capabilities'],'ARP · DTP · LACP · PPP · HDLC · SDLC · SLIP · LCP · NCP · Ethernet · FDDI · Token Ring · 2-layer switch · Bridge · NIC · WAP'],
+ [1,'Physical','BITS','The 1st layer — data bits travel.',['Defines the physical topology','Defines transmission modes (simplex, half-duplex, full-duplex)','Defines the transmission media','Synchronizes bits to balance source and destination'],['No error handling; no data interpretation','Susceptible to physical damage'],'ISDN · SONET · Bluetooth · Hub · Gateway · Repeaters · Modem · Wi-Fi · Infrared · Ethernet · USB']];
+section('osi','OSI model',`
+<p class="lead"><b>Open System Interconnection</b> — also called the referential, theoretical, logical or conceptual model; proposed in <b>1970</b> by Charles Bachman and published by <b>ISO (1984)</b>.</p>
+<p>Memory trick (bottom → top): <b>“Please Do Not Take Sabzi, Pooja A…”</b> → <span class="pill">P</span>hysical <span class="pill">D</span>ata link <span class="pill">N</span>etwork <span class="pill">T</span>ransport <span class="pill">S</span>ession <span class="pill">P</span>resentation <span class="pill">A</span>pplication.</p>
+<div class="tool"><div class="th">The seven layers — click one</div><div class="tb"><div class="cols2"><div id="osStack"></div><div id="osBody"></div></div></div></div>
+<div class="tool"><div class="th">Send a message down the sender's stack and up the receiver's</div><div class="tb"><div class="row"><label for="enIn">Message</label><input type="text" id="enIn" value="Hi" size="14" maxlength="10"><button class="btn pri" id="enGo">Send</button><button class="btn" id="enR">Reset</button></div><div id="enOut"></div></div></div>
+<h3>Data link layer — MAC addresses</h3>
+<p>If the <b>second digit of the first byte</b> is <b>even</b> (0 included) the address is <b>UNICAST</b>; if <b>odd</b>, <b>MULTICAST</b>; if every digit is F it is <b>BROADCAST</b> (FF:FF:FF:FF:FF:FF).</p>
+<div class="tool"><div class="th">MAC address classifier</div><div class="tb"><div class="row"><label for="mcIn">MAC</label><input type="text" id="mcIn" value="B6:A6:C2:B5:A2:B5" size="22"></div><div class="row"><b style="font-size:13px">Notes' question:</b><button class="btn" data-m="B6:A6:C2:B5:A2:B5">(A)</button><button class="btn" data-m="A5:B6:A2:B5:C2:B5">(B)</button><button class="btn" data-m="E3:B5:A2:B6:A5:B5">(C)</button><button class="btn" data-m="C5:A2:B6:B5:A2:B5">(D)</button><button class="btn" data-m="FF:FF:FF:FF:FF:FF">Broadcast</button></div><div id="mcOut"></div></div></div>
+<p style="font-size:14px;color:var(--ink2)">The notes' answer: of (A) B6:A6:C2:B5:A2:B5, (B) A5:B6:…, (C) E3:B5:…, (D) C5:A2:…, only <b>(A)</b> is unicast — the other three are multicast.</p>
+<h3>TCP vs UDP</h3>
+<div class="tool"><div class="th">Compare, then choose</div><div class="tb"><div class="scroll"><table class="t"><tr><th></th><th>TCP</th><th>UDP</th></tr><tr><td class="l">Full form</td><td>Transmission Control Protocol</td><td>User Datagram Protocol</td></tr><tr><td class="l">Connection</td><td>Connection-oriented</td><td>Connectionless</td></tr><tr><td class="l">Reliability</td><td>Reliable &amp; secure</td><td>Unreliable &amp; unsecure</td></tr><tr><td class="l">Speed</td><td>Slow</td><td>Fast</td></tr><tr><td class="l">Broadcasting</td><td>Not supported</td><td>Supported</td></tr><tr><td class="l">Orientation</td><td>Byte-oriented</td><td>Message-oriented</td></tr><tr><td class="l">Weight</td><td>Heavy-weight</td><td>Light-weight</td></tr></table></div>
+<div id="tuList"></div><div class="row"><button class="btn pri" id="tuCheck">Check</button></div><p class="big" id="tuOut" style="font-size:16px"></p></div></div>
+<h3>Match the protocol to its layer</h3>
+<div class="tool"><div class="th">Layer quiz</div><div class="tb"><div id="plList"></div><div class="row"><button class="btn pri" id="plCheck">Check answers</button></div><p class="big" id="plOut" style="font-size:16px"></p></div></div>
+`,root=>{
+  let cur=0;const st=()=>{$('#osStack').innerHTML=OSI.map((l,i)=>`<button class="btn" style="display:block;width:100%;margin:3px 0;text-align:left;${i===cur?'background:var(--teal);color:#fff;border-color:var(--teal)':''}" data-i="${i}"><b>${l[0]}</b> &nbsp; ${l[1]} <span style="float:right;opacity:.75">${l[2]}</span></button>`).join('');
+    const l=OSI[cur];$('#osBody').innerHTML=`<h4 style="margin-top:0">Layer ${l[0]} — ${l[1]}</h4><p><span class="pill g">data unit: ${l[2]}</span> ${l[3]}</p><p style="margin:4px 0"><b>Responsibilities</b></p><ul>${l[4].map(x=>`<li>${x}</li>`).join('')}</ul>${l[5].length?`<p style="margin:4px 0"><b>Limitations</b></p><ul>${l[5].map(x=>`<li>${x}</li>`).join('')}</ul>`:''}<p style="margin:4px 0"><b>Protocols / devices</b></p><p class="m" style="font-size:13.5px">${l[6]}</p>${cur===6?'<p style="font-size:13px;color:var(--ink2)">The notes write SONET as “Synchronous Digital Network”; the standard name is Synchronous Optical Network.</p>':''}`;};
+  $('#osStack').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;cur=+b.dataset.i;st();};st();
+  /* encapsulation */
+  let es=-1,timer=null;
+  const bits=s=>[...s].map(c=>c.charCodeAt(0).toString(2).padStart(8,'0')).join(' ');
+  const en=()=>{const m=$('#enIn').value||'Hi';const steps=[['Sender · 7 Application','DATA',`<span class="pill a">${esc(m)}</span>`],['Sender · 6 Presentation','DATA','encrypted / compressed / standard format: <span class="pill a">'+esc(m)+'</span>'],['Sender · 5 Session','DATA','<span class="pill a">'+esc(m)+'</span> + session checkpoint'],['Sender · 4 Transport','Segment','<span class="pill">TCP hdr (ports)</span><span class="pill a">'+esc(m)+'</span>'],['Sender · 3 Network','Packet','<span class="pill">IP hdr</span><span class="pill">TCP hdr</span><span class="pill a">'+esc(m)+'</span>'],['Sender · 2 Data link','Frame','<span class="pill g">MAC hdr</span><span class="pill">IP hdr</span><span class="pill">TCP hdr</span><span class="pill a">'+esc(m)+'</span><span class="pill g">trailer</span>'],['Sender · 1 Physical','Bits','<span class="m" style="font-size:12px">'+bits(m)+' …</span>'],['Receiver · 1 Physical','Bits → Frame','bits arrive and are assembled into a frame'],['Receiver · 2 Data link','Frame → Packet','MAC header and trailer checked and removed'],['Receiver · 3 Network','Packet → Segment','IP header removed'],['Receiver · 4 Transport','Segment → Data','TCP header removed; data reassembled'],['Receiver · 5–6 Session / Presentation','DATA','decrypted, decompressed, translated'],['Receiver · 7 Application','DATA','<span class="pill a">'+esc(m)+'</span> delivered to the user']];
+    $('#enOut').innerHTML=htmlTable(['Where','Data unit','What the data looks like'],steps.slice(0,es+1).map(s=>[s[0],s[1],s[2]]),{row:(r,i)=>i===es?'hi':'',raw:true});};
+  $('#enGo').onclick=()=>{clearInterval(timer);es=0;en();timer=setInterval(()=>{if(es<12){es++;en();}else clearInterval(timer);},650);};$('#enR').onclick=()=>{clearInterval(timer);es=-1;$('#enOut').innerHTML='';};
+  /* MAC */
+  const mc=()=>{const v=$('#mcIn').value.trim().toUpperCase(),ok=/^([0-9A-F]{2}[:-]){5}[0-9A-F]{2}$/.test(v);if(!ok){$('#mcOut').innerHTML='<p class="msg">Enter 6 bytes of hex separated by colons, e.g. B6:A6:C2:B5:A2:B5.</p>';return;}
+    const hex=v.replace(/[:-]/g,''),sd=v[1],isB=/^F+$/.test(hex),even=parseInt(sd,16)%2===0;
+    $('#mcOut').innerHTML=`<p>First byte <b>${v.slice(0,2)}</b> → second digit <b>${sd}</b> is <b>${even?'even':'odd'}</b>.</p><p>${isB?'<span class="pill r">BROADCAST</span> every digit is F':even?'<span class="pill g">UNICAST</span>':'<span class="pill a">MULTICAST</span>'}</p><p class="m" style="font-size:13px">6 bytes = 48 bits = 12 hex digits; 5 separators.</p>`;};
+  $('#mcIn').oninput=mc;$$('[data-m]',root).forEach(b=>b.onclick=()=>{$('#mcIn').value=b.dataset.m;mc();});mc();
+  /* tcp/udp */
+  const TU=[['Streaming a live video call (speed matters, a lost frame is fine)','UDP'],['Downloading a file (every byte must arrive correctly)','TCP'],['Sending a broadcast announcement to every device','UDP'],['Online banking transaction (reliable &amp; secure)','TCP']];
+  $('#tuList').innerHTML=TU.map((q,i)=>`<div class="row"><span style="flex:1 1 320px">${q[0]}</span><select data-i="${i}"><option value="">choose…</option><option>TCP</option><option>UDP</option></select><span id="tu${i}"></span></div>`).join('');
+  $('#tuCheck').onclick=()=>{let ok=0;TU.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,$('#tuList')).value;if(v===q[1]){ok++;$('#tu'+i).innerHTML='<span class="pill g">✓</span>';}else $('#tu'+i).innerHTML=v?'<span class="pill r">✗</span>':'';});$('#tuOut').textContent=`Score: ${ok} / ${TU.length}`;};
+  const PL=[['DNS','Application'],['HTTPS','Application'],['SSL','Presentation'],['JPEG','Presentation'],['RPC','Session'],['SIP','Session'],['TCP','Transport'],['UDP','Transport'],['ICMP','Network'],['OSPF','Network'],['ARP','Data link'],['PPP','Data link'],['ISDN','Physical']];
+  const LN=OSI.map(l=>l[1]);$('#plList').innerHTML=PL.map((q,i)=>`<div class="row"><b style="min-width:70px" class="m">${q[0]}</b><select data-i="${i}"><option value="">choose…</option>${LN.map(o=>`<option>${o}</option>`).join('')}</select><span id="pl${i}"></span></div>`).join('');
+  $('#plCheck').onclick=()=>{let ok=0;PL.forEach((q,i)=>{const v=$(`[data-i="${i}"]`,$('#plList')).value;if(v===q[1]){ok++;$('#pl'+i).innerHTML='<span class="pill g">✓</span>';}else $('#pl'+i).innerHTML=v?'<span class="pill r">✗</span>':'';});$('#plOut').textContent=`Score: ${ok} / ${PL.length}`;};
+});
+/* ================= 5 IP ADDRESSING ================= */
+function ipInfo(s){
+  const p=s.trim().split('.');if(p.length!==4||p.some(x=>!/^\d{1,3}$/.test(x)||+x>255))return null;const o=p.map(Number),a=o[0];
+  const cls=a<=127?'A':a<=191?'B':a<=223?'C':a<=239?'D':'E',fixed={A:1,B:2,C:3,D:4,E:4}[cls],nb={A:8,B:16,C:24}[cls]||null;
+  const priv=o[0]===10||(o[0]===172&&o[1]>=16&&o[1]<=31)||(o[0]===192&&o[1]===168);
+  return {o,cls,fixed,nb,priv,loop:a===127,apipa:o[0]===169&&o[1]===254};
+}
+const CLS={A:{pre:'0',range:'0 – 127 (usable 0–126 per notes)',nb:7,hb:24,nets:'2⁷ − 2 = 126',hosts:'2²⁴ − 2 = 16,777,214',mask:'255.0.0.0',pub:'1.0.0.0 – 127.0.0.0 (as written)',priv:'10.0.0.0 – 10.255.255.255'},
+ B:{pre:'10',range:'128 – 191',nb:14,hb:16,nets:'2¹⁴ − 2 = 16384 as written (arithmetic: 16,382)',hosts:'2¹⁶ − 2 = 65,534',mask:'255.255.0.0',pub:'128.0.0.0 – 191.255.0.0',priv:'172.16.0.0 – 172.31.255.255'},
+ C:{pre:'110',range:'192 – 223',nb:21,hb:8,nets:'2²¹ = 2,097,152',hosts:'2⁸ − 2 = 254',mask:'255.255.255.0',pub:'192.0.0.0 – 223.255.255.0',priv:'192.168.0.0 – 192.168.255.255'},
+ D:{pre:'1110',range:'224 – 239',nb:28,hb:0,nets:'—',hosts:'no host bits',mask:'—',pub:'224.0.0.0 – 239.255.255.255',priv:'—'},
+ E:{pre:'1111(0)',range:'240 – 255',nb:0,hb:0,nets:'—',hosts:'—',mask:'—',pub:'not in use',priv:'reserved for research'}};
+function bitView(o,cls,fixed){const nbT={A:8,B:16,C:24}[cls]||0;return o.map((x,i)=>`<span class="oct">${x.toString(2).padStart(8,'0').split('').map((b,j)=>{const pos=i*8+j;const c=pos<fixed?'f':pos<nbT?'n':(nbT?'h':'n');return `<span class="bit ${c}">${b}</span>`;}).join('')}</span>`).join('<b>.</b>');}
+section('ip','IP addressing',`
+<ul><li><b>IP</b> = Internet Protocol; a <b>logical address</b>; works on the network layer; <b>Network ID + Host ID</b>.</li></ul>
+<h3>IPv4</h3>
+<ul><li>Internet Protocol version 4, created in <b>1981</b>; four octets joined by separators; size <b>8 × 4 = 32 bits</b>; maximum addresses <b>2³²</b>; unicast, multicast and broadcast.</li></ul>
+<div class="tool"><div class="th">IPv4 analyzer</div><div class="tb"><div class="row"><label for="ipIn">IP address</label><input type="text" id="ipIn" value="172.16.5.9" size="18"><span id="ipP"></span></div><div id="ipOut"></div></div></div>
+<h3>Address classes</h3>
+<div class="scroll"><table class="t"><tr><th>Class</th><th>Fixed bits</th><th>First octet</th><th>Network bits</th><th>Host bits</th><th class="l">Networks</th><th class="l">Hosts</th><th>Default mask</th></tr>
+${Object.entries(CLS).map(([k,c])=>`<tr><td><b>${k}</b></td><td>${c.pre}</td><td>${c.range}</td><td>${c.nb||'—'}</td><td>${c.hb||'—'}</td><td class="l">${c.nets}</td><td class="l">${c.hosts}</td><td>${c.mask}</td></tr>`).join('')}</table></div>
+<div class="scroll"><table class="t"><tr><th>Class</th><th class="l">Public IP range</th><th class="l">Private IP range</th></tr>${Object.entries(CLS).map(([k,c])=>`<tr><td><b>${k}</b></td><td class="l">${c.pub}</td><td class="l">${c.priv}</td></tr>`).join('')}</table></div>
+<ul><li><b>Class A</b>: designed for the maximum number of hosts; first bit 0 and 7 network bits → 126 networks; <b>127 is reserved</b> for loopback. <b>Class B</b>: medium to large networks, first 2 bits 1 0. <b>Class C</b>: LAN / small geographical use, first 3 bits 1 1 0. <b>Class D</b>: only network bits, no host bits, 4 fixed bits 1 1 1 0. <b>Class E</b>: not in use, reserved for research.</li>
+<li>To get a <b>subnet mask</b>: set all network bits to 1 and host bits to 0.  Total networks = 2<sup>n</sup> − 2; total hosts = 2<sup>h</sup> − 2 (n = network bits, h = host bits).</li></ul>
+<div class="note"><b>Clarifications.</b> Class B: 2¹⁴ − 2 is 16,382 (the notes write 16384). Class E: the standard fixed prefix is 1111 (4 bits) — a 5-bit 11110 would only give 240–247. Class A's usable range is normally written 1–126.</div>
+<div class="tool"><div class="th">Subnet mask builder</div><div class="tb"><div class="row"><label for="smC">Class</label><select id="smC"><option>A</option><option>B</option><option>C</option></select></div><div id="smOut"></div></div></div>
+<h3>Types of IP address</h3>
+<div class="scroll"><table class="t"><tr><th>Type</th><th class="l">Details</th></tr><tr><td><b>Public IP</b></td><td class="l">Provided by the ISP to the router; for direct Internet access</td></tr><tr><td><b>Private IP</b></td><td class="l">Provided by networking devices like a router</td></tr><tr><td><b>Static IP</b></td><td class="l">Fixed — does not change; assigned by the DHCP server</td></tr><tr><td><b>Dynamic IP</b></td><td class="l">Assigned by the ISP; dynamic IP via DHCP and PPPoE (Point-to-Point over Ethernet)</td></tr></table></div>
+<h3>IP address configuration — automatic or manual</h3>
+<ul><li><b>DHCP</b> (Dynamic Host Configuration Protocol) uses the <b>UDP</b> services of the transport layer; <b>server port 67</b>, <b>client port 68</b>.</li><li><b>WINS</b> (Windows Internet Name Service): when the DHCP server is unavailable, the OS uses <b>APIPA</b> (Automatic Private IP Addressing); range <b>169.254.0.1 – 169.254.255.254</b>.</li></ul>
+<div class="tool"><div class="th">Plug in a computer</div><div class="tb"><div id="dhT"></div><div class="row"><button class="btn pri" id="dhGo">Connect a new computer</button></div><div id="dhOut"></div></div></div>
+<h3>Management of IP addresses</h3>
+<ul><li>Managed by <b>IANA</b> (Internet Assigned Numbers Authority), which provides IP addresses and port numbers; administration is done by five <b>RIRs</b> (Regional Internet Registries).</li></ul>
+<div class="tool"><div class="th">Which registry covers my region?</div><div class="tb"><div class="row"><label for="rgSel">Region</label><select id="rgSel"></select></div><div id="rgOut"></div></div></div>
+<div class="scroll"><table class="t"><tr><th>RIR</th><th class="l">Full name</th><th>Started</th><th class="l">Covers</th></tr><tr><td><b>APNIC</b></td><td class="l">Asia Pacific Network Information Centre</td><td>1993</td><td class="l">South, East &amp; South-East Asia (India also)</td></tr><tr><td><b>AFRINIC</b></td><td class="l">African Network Information Centre</td><td>2004</td><td class="l">All of Africa</td></tr><tr><td><b>ARIN</b></td><td class="l">American Registry for Internet Numbers</td><td>1997</td><td class="l">USA, Canada, Antarctica &amp; Caribbean</td></tr><tr><td><b>LACNIC</b></td><td class="l">Latin America and Caribbean Network Information Centre</td><td>1993</td><td class="l">Latin America &amp; Caribbean</td></tr><tr><td><b>RIPE NCC</b></td><td class="l">Réseaux IP Européens Network Coordination Centre</td><td>1992</td><td class="l">Europe, Central Asia, Western Asia</td></tr></table></div>
+<h3>IPv6</h3>
+<ul><li>Created in <b>1995</b> by the <b>IETF</b>; 8 groups of 16 bits → <b>8 × 16 = 128 bits</b>, written in <b>hexadecimal</b>, with <b>7 separators</b>.</li></ul>
+<div class="tool"><div class="th">IPv6 and the size of the address space</div><div class="tb"><div class="row"><button class="btn pri" id="v6Go">Generate an IPv6 address</button></div><div id="v6Out"></div></div></div>
+`,root=>{
+  const PRE=[['10.0.0.5','Class A private'],['172.16.5.9','Class B private'],['192.168.1.20','Class C private'],['8.8.8.8','public'],['127.0.0.1','loopback'],['169.254.7.9','APIPA'],['230.1.1.1','Class D']];
+  $('#ipP').innerHTML=PRE.map(p=>`<button class="btn" data-ip="${p[0]}" title="${p[1]}">${p[0]}</button>`).join(' ');
+  const ip=()=>{const r=ipInfo($('#ipIn').value);if(!r){$('#ipOut').innerHTML='<p class="msg">Enter four numbers from 0 to 255 separated by dots.</p>';return;}
+    const c=CLS[r.cls],nbT={A:8,B:16,C:24}[r.cls];let h=`<p>${bitView(r.o,r.cls,r.fixed)}</p><p style="font-size:13px;color:var(--ink2);margin:0"><span class="bit f">0</span> fixed class bits &nbsp; <span class="bit n">0</span> network bits &nbsp; <span class="bit h">0</span> host bits</p>`;
+    h+=`<p><span class="pill">Class ${r.cls}</span> <span class="pill ${r.priv?'a':'g'}">${r.priv?'private':'public range'}</span>${r.loop?'<span class="pill r">127 — reserved for loopback</span>':''}${r.apipa?'<span class="pill r">APIPA (no DHCP server)</span>':''}</p>`;
+    h+=htmlTable(['Property','Value'],[['First octet range',c.range],['Fixed bits',c.pre],['Network bits / host bits',`${c.nb||'—'} / ${c.hb||'—'}`],['Default subnet mask',c.mask],['Number of networks',c.nets],['Hosts per network',c.hosts]].concat(nbT?[['Network ID',r.o.map((x,i)=>i<nbT/8?x:0).join('.')],['Host part',r.o.map((x,i)=>i>=nbT/8?x:0).join('.')]]:[]));
+    $('#ipOut').innerHTML=h;};
+  $('#ipIn').oninput=ip;$$('[data-ip]',root).forEach(b=>b.onclick=()=>{$('#ipIn').value=b.dataset.ip;ip();});ip();
+  const sm=()=>{const k=$('#smC').value,n={A:8,B:16,C:24}[k];let b='';for(let i=0;i<32;i++){b+=`<span class="bit ${i<n?'n':'h'}">${i<n?1:0}</span>`+(i%8===7&&i<31?'<b>.</b>':'');}
+    $('#smOut').innerHTML=`<p>${b}</p><p>Network bits → 1, host bits → 0 ⇒ <b>${CLS[k].mask}</b> (Class ${k})</p>`;};
+  $('#smC').onchange=sm;sm();
+  let dh;Toggles($('#dhT'),['DHCP server'],[1],v=>{dh=v[0];});let cnt=0;
+  $('#dhGo').onclick=()=>{cnt++;$('#dhOut').innerHTML=dh?`<div class="okm">DHCP server available (UDP — server port 67, client port 68): computer ${cnt} receives <b>192.168.1.${10+cnt}</b>, a private address from the server.</div>`:`<div class="err">No DHCP server answered — the OS falls back to <b>APIPA</b>: computer ${cnt} gets <b>169.254.${7+cnt}.${20+cnt}</b> (range 169.254.0.1 – 169.254.255.254). It can talk to other APIPA computers on the same link only.</div>`;};
+  const RG=[['South Asia (India)','APNIC'],['East Asia','APNIC'],['South-East Asia','APNIC'],['Africa','AFRINIC'],['USA','ARIN'],['Canada','ARIN'],['Antarctica','ARIN'],['Caribbean','ARIN and LACNIC (both are listed in the notes)'],['Latin America','LACNIC'],['Europe','RIPE NCC'],['Central Asia','RIPE NCC'],['Western Asia','RIPE NCC']];
+  $('#rgSel').innerHTML=RG.map(r=>`<option>${r[0]}</option>`).join('');$('#rgSel').onchange=()=>{const r=RG[$('#rgSel').selectedIndex];$('#rgOut').innerHTML=`<p class="big" style="font-size:17px">${r[1]}</p>`;};$('#rgSel').onchange();
+  const v6=()=>{const g=[...Array(8)].map(()=>Math.floor(Math.random()*65536).toString(16).padStart(4,'0'));$('#v6Out').innerHTML=`<p class="big" style="font-size:18px">${g.join(':')}</p><p>8 groups × 16 bits = <b>128 bits</b>; ${g.length-1} separators.</p>`+htmlTable(['','Bits','Number of addresses'],[['IPv4','32',(2n**32n).toLocaleString()],['IPv6','128',(2n**128n).toLocaleString()]]);};
+  $('#v6Go').onclick=v6;v6();
+});
+
+/* ================= 6 TCP/IP ================= */
+section('tcpip','TCP/IP model',`
+<ul><li><b>Transmission Control Protocol / Internet Protocol</b> model; works on the <b>transport layer</b>; known as the <b>DoD model</b> (Department of Defense); developed by <b>ARPA</b>; TCP/IP came first, then the OSI model.</li></ul>
+<div class="tool"><div class="th">TCP/IP layers and the OSI layers they cover — click a TCP/IP layer</div><div class="tb"><div id="tiTabs"></div><div class="cols2"><div id="tiL"></div><div id="tiR"></div></div><p class="big" id="tiMsg" style="font-size:15px"></p></div></div>
+`,root=>{
+  const M=[[['Application layer',[0,1,2]],['Transport layer',[3]],['Internet / Network layer',[4]],['Network Interface',[5,6]]],[['Application layer',[0,1,2]],['Transport layer',[3]],['Internet layer',[4]],['Data link layer',[5]],['Physical layer',[6]]]];
+  const NM=['Application','Presentation','Session','Transport','Network','Data link','Physical'];let m=0,sel=0;
+  const draw=()=>{const L=M[m];$('#tiL').innerHTML='<b>TCP/IP</b>'+L.map((l,i)=>`<button class="btn" data-i="${i}" style="display:block;width:100%;margin:3px 0;text-align:left;${i===sel?'background:var(--teal);color:#fff;border-color:var(--teal)':''}">${l[0]}</button>`).join('');
+    $('#tiR').innerHTML='<b>OSI</b>'+NM.map((n,i)=>`<div style="padding:7px 12px;margin:3px 0;border:1.5px solid var(--ink);border-radius:3px;${L[sel][1].includes(i)?'background:var(--teal2);border-color:var(--teal);font-weight:700':'opacity:.6'}">${7-i}  ${n}</div>`).join('');
+    $('#tiMsg').textContent=`${L[sel][0]} covers OSI layer${L[sel][1].length>1?'s':''}: ${L[sel][1].map(i=>NM[i]).join(', ')}.${m===0&&sel===3?' (In the modified model this splits into Data link + Physical.)':''}`;};
+  Tabs($('#tiTabs'),['Original TCP/IP (4 layers)','Modified TCP/IP (5 layers)'],k=>{m=k;sel=0;draw();});
+  $('#tiL').onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;sel=+b.dataset.i;draw();};
+});
+
+/* ================= 7 DATA COMMUNICATION ================= */
+section('dcom','Data communication & media',`
+<ul><li><b>Data communication</b> = exchange of data between two devices using a communication medium. It depends on 4 characteristics: <b>Accuracy</b>, <b>Timeliness</b>, <b>Delivery</b>, <b>Jitter</b> (delivering packets to the receiver end).</li>
+<li><b>Components:</b> (1) sender (2) receiver (3) data and message (4) communication medium (5) protocols — 3 key elements: <b>syntax</b>, <b>semantics</b>, <b>timing</b> (speed of data to send).</li></ul>
+<h3>Transmission modes (responsibility of the physical layer)</h3>
+<div class="tool"><div class="th">Two devices, one link</div><div class="tb"><div id="dxTabs"></div><div class="row"><button class="btn pri" data-s="A">A sends</button><button class="btn pri" data-s="B">B sends</button><button class="btn pri" data-s="AB">Both send at once</button></div><svg id="dxSvg" viewBox="0 0 560 130" width="560" role="img" aria-label="Duplex modes"></svg><p class="big" id="dxMsg" style="font-size:15px"></p></div></div>
+<h3>Data communication media</h3>
+<div class="tool"><div class="th">Wired and wireless media</div><div class="tb"><div id="mdTabs"></div><div id="mdBody"></div></div></div>
+`,root=>{
+  const DX=[['Simplex','Unidirectional: the sender can only send and the receiver can only receive. e.g. monitor, keyboard, mouse.'],['Half duplex','Two-way communication is possible, but only one direction at a time. e.g. walkie-talkie.'],['Full duplex','Bidirectional communication at the same time. e.g. mobile, telephone, switch, TCP.']];
+  let md=0,res='';const dx=(s)=>{let aB=false,bA=false,msg=DX[md][1];
+    if(s){if(md===0){aB=s.includes('A');bA=false;msg=s==='A'?'A → B works: A is the sender.':'Simplex: B cannot send — B is only a receiver. (Only A → B is possible.)';if(s==='AB')msg='Simplex: only A → B goes through; B cannot send.';}
+      else if(md===1){if(s==='AB'){aB=true;msg='Half duplex: both cannot talk at once — A went first, B must wait for its turn.';}else{aB=s==='A';bA=s==='B';msg=`Half duplex: ${s} → ${s==='A'?'B':'A'} — one direction at a time.`;}}
+      else{aB=s.includes('A');bA=s.includes('B');msg=s==='AB'?'Full duplex: A → B and B → A happen <b>at the same time</b>.':`Full duplex: ${s} sends (the other direction is also free).`;}}
+    let o=svgBox(20,45,100,44,'Device A',aB)+svgBox(440,45,100,44,'Device B',bA);o+=wire([[120,58],[440,58]],aB)+(aB?arrowHead(440,58,'r',1):'')+(md===0?'':wire([[440,76],[120,76]],bA)+(bA?arrowHead(120,76,'l',1):''));if(md===0)o+='<text class="pin" x="280" y="100" text-anchor="middle" style="fill:#c43d2f">B cannot send</text>';
+    $('#dxSvg').innerHTML=o;$('#dxMsg').innerHTML=`<b>${DX[md][0]}.</b> ${msg}`;};
+  Tabs($('#dxTabs'),DX.map(d=>d[0]),k=>{md=k;dx(null);});$$('[data-s]',root).forEach(b=>b.onclick=()=>dx(b.dataset.s));
+  const MD=[['Twisted pair',()=>`<ul><li>Two separate <b>insulated</b> wires twisted around each other; they form a circuit through which data is transmitted.</li><li>When data flows in a wire a <b>magnetic field</b> is created; the fields of the two wires <b>cancel each other</b>, protecting from <b>crosstalk</b> — noise generated in a nearby wire.</li></ul>
+    <div class="row"><label for="twS">Twists per cm (added illustration)</label><input type="range" id="twS" min="0" max="10" value="4"><b class="m" id="twV"></b></div><div id="twO"></div>
+    <div class="cols2"><div><h4>UTP — Unshielded Twisted Pair</h4><ul><li>Speed <b>10 – 1000 Mbps</b>; uses AWG (American Wire Gauge); insulated with CPE (cellular polyethylene — as read) or FEP (Fluorinated Ethylene Propylene).</li><li>Wires are <b>colour coded</b> — each colour shows which use the wire is for.</li><li><b>+</b> cheap, easy installation, fastest copper medium. <b>−</b> not for long networks; crosstalk high.</li></ul><p>${[['Blue-white','#2c5fb3'],['Orange-white','#ef6c00'],['Brown-white','#7b4a2d'],['Green-white','#2e7d32']].map(c=>`<span class="pill" style="background:${c[1]}">${c[0]}</span>`).join('')}</p></div>
+    <div><h4>STP — Shielded Twisted Pair</h4><ul><li>Extra <b>metallic foil shield</b>; protected from interference coming from inside or outside.</li><li>Both ends must be <b>grounded</b>, otherwise the signal leaks; 8-pin <b>RJ-45</b> connector.</li></ul></div></div>`],
+   ['Co-axial',()=>`<ul><li>The first type of cable used in networks (also Dish TV). One <b>copper wire</b> (main conductor) covered by a solid electrical <b>insulator</b>; the insulator is covered by <b>foil and a metallic mesh</b> (outer conductor); <b>BNC</b> (Bayonet Neill–Concelman) connector.</li></ul>
+    <svg viewBox="0 0 400 160" width="400"><circle cx="90" cy="80" r="70" class="g" style="fill:#e8eaf6"/><circle cx="90" cy="80" r="52" class="g" style="fill:#fff"/><circle cx="90" cy="80" r="40" class="g" style="fill:#fff8e1"/><circle cx="90" cy="80" r="10" class="g" style="fill:#d98e04"/>
+    <g font-size="11" class="pin"><line x1="160" y1="40" x2="215" y2="30" stroke="#15233b"/><text x="220" y="34">metallic mesh (outer conductor) + foil</text><line x1="130" y1="62" x2="215" y2="62" stroke="#15233b"/><text x="220" y="66">insulator</text><line x1="100" y1="80" x2="215" y2="96" stroke="#15233b"/><text x="220" y="100">copper wire (main conductor)</text></g></svg>
+    <div class="scroll"><table class="t"><tr><th></th><th>Thin net</th><th>Thick net</th></tr><tr><td class="l">Standard</td><td>IEEE 10Base2</td><td>IEEE standard (written 10base2 — 500 m is 10Base5)</td></tr><tr><td class="l">Max length</td><td>185 m</td><td>500 m</td></tr><tr><td class="l">Speed</td><td>10 Mbps</td><td>—</td></tr><tr><td class="l">Notes</td><td>Single frequency → <b>baseband</b>; BNC-T connector attaches to the NIC</td><td>—</td></tr></table></div>`],
+   ['Optical fibre',()=>`<ul><li>Very thin <b>glass / fibre filaments</b>; data travels as a <b>light beam</b> generated by an <b>LED or ILD</b> (injection laser diode).</li><li><b>Core</b>: glass fibre, main conductor; <b>cladding</b>: protects the core (flexible plastic); <b>coating</b>: outer plastic layer. Light pulses are converted back to binary data at the receiver by a photoreceptor; data travels by <b>total internal reflection</b>.</li></ul>
+    <div id="ofT"></div><svg id="ofSvg" viewBox="0 0 560 150" width="560" role="img" aria-label="Light travelling in a fibre"></svg><div id="ofTxt"></div>`],
+   ['Wireless',()=>`<div class="scroll"><table class="t"><tr><th class="l">Medium</th><th class="l">Details</th></tr><tr><td class="l"><b>Radio waves</b></td><td class="l">Frequency 10 kHz – 1 GHz; bypass obstacles. Types: short range (AM); VHF = FM radio; UHF = TV; SHF = 3 – 30 GHz</td></tr><tr><td class="l"><b>Microwave</b></td><td class="l">Special antenna sends the signal to another; works on <b>line of sight</b></td></tr><tr><td class="l"><b>Infrared</b></td><td class="l">Secured wireless communication; remotes, wireless keyboards; small area (infrared normally cannot pass obstacles — the notes' line is hard to read)</td></tr><tr><td class="l"><b>Satellite</b></td><td class="l">Special case of microwave relay; transponder; uplink and downlink</td></tr></table></div>`],
+   ['Satellite',()=>`<ul><li>A special case of <b>microwave relay</b> using a <b>transponder</b>: <b>uplink</b> = Earth → satellite, <b>downlink</b> = satellite → Earth.</li></ul><div class="row"><button class="btn pri" id="saGo">Send a signal</button></div><svg id="saSvg" viewBox="0 0 560 220" width="560" role="img" aria-label="Satellite uplink and downlink"></svg><p class="big" id="saMsg" style="font-size:15px"></p>`]];
+  Tabs($('#mdTabs'),MD.map(m=>m[0]),k=>{$('#mdBody').innerHTML=MD[k][1]();
+    if(k===0){const tw=()=>{const v=+$('#twS').value;$('#twV').textContent=v;$('#twO').innerHTML=`<p>Crosstalk picked up from a nearby wire: <b>${v===0?'100':Math.max(5,Math.round(100/(1+v*0.8)))}%</b> ${v===0?'(parallel wires — the fields do not cancel)':v<4?'(few twists — partly cancelled)':'(many twists — the fields cancel well)'}</p>`;};$('#twS').oninput=tw;tw();}
+    if(k===2){let multi=0;Tabs($('#ofT'),['Single mode','Multi mode'],m=>{multi=m;const ch=m?60:16,y0=75;let o=`<rect x="20" y="${y0-ch-14}" width="520" height="${2*ch+28}" class="g" style="fill:#e8eaf6"/><rect x="20" y="${y0-ch}" width="520" height="${2*ch}" class="g" style="fill:#fff8e1"/>`;
+      const rays=m?[[0,.9],[.5,.35],[-.5,.65]]:[[0,0.12]];rays.forEach(r=>{let pts=[],x=20,up=1;const amp=ch*0.85*(m?r[1]:.9);while(x<540){pts.push([x,y0+(up?-amp:amp)*(m?1:0.35)+r[0]*10]);x+=m?70+r[1]*30:120;up=-up;}o+=`<polyline class="w on flow" points="${pts.map(p=>p.join(',')).join(' ')}" style="stroke:#c43d2f"/>`;});
+      o+=`<text class="pin" x="26" y="${y0-ch-20}" font-size="11">cladding</text><text class="pin" x="26" y="${y0+4}" font-size="11">core</text>`;$('#ofSvg').innerHTML=o;
+      $('#ofTxt').innerHTML=m?'<div class="note"><b>Multi mode:</b> cheap, low bandwidth, <b>bigger core</b> — many ray paths.</div>':'<div class="note"><b>Single mode:</b> costly, high bandwidth, <b>small core</b> — one path.</div>';});}
+    if(k===4){let s=0,tm=null;const sa=()=>{const on=i=>s===i;let o=`<ellipse cx="280" cy="270" rx="300" ry="90" fill="#bbdefb" stroke="#15233b"/>`+svgBox(60,150,100,36,'Earth station',on(1)||on(3))+svgBox(400,150,100,36,'Earth station',on(3))+svgBox(220,24,120,40,'Satellite (transponder)',on(2),12);
+      o+=`<line x1="110" y1="150" x2="250" y2="66" class="w ${on(1)?'on flow':''}" /><text class="pin" x="130" y="100">uplink</text><line x1="310" y1="66" x2="450" y2="150" class="w ${on(3)?'on flow':''}"/><text class="pin" x="400" y="100">downlink</text>`;$('#saSvg').innerHTML=o;$('#saMsg').textContent=['Press “Send a signal”.','Uplink: the signal goes Earth → satellite.','The transponder receives, amplifies and re-transmits it.','Downlink: satellite → Earth.'][s];};
+      $('#saGo').onclick=()=>{clearInterval(tm);s=1;sa();tm=setInterval(()=>{s++;sa();if(s>=3)clearInterval(tm);},1100);};sa();}});
+});
+/* ================= 8 RAID & BACKUP ================= */
+const RD={
+ '0':{t:'RAID 0',pts:['<b>Block-level striping</b>: data blocks are stored across multiple disks.','If any disk\'s data is lost it <b>cannot be recovered</b>.','Highest performance (100%) — the fastest RAID level; no parity bit; <b>no fault tolerance</b>.'],
+  d:[{n:'Drive 1',b:['B1','B3','B5','B7']},{n:'Drive 2',b:['B2','B4','B6','B8']}],rule:f=>f.size?[0,'A striped disk failed — its blocks are gone and there is no copy or parity: <b>data cannot be recovered</b>.']:[1,'All drives healthy.']},
+ '1':{t:'RAID 1',pts:['Also called <b>shadowing / cloning / mirroring</b>; the storage is a <b>mirror set</b>.','Minimum <b>2 disks</b>; performance <b>50%</b>; no parity used.'],
+  d:[{n:'Drive 1',b:['B1','B2','B3','B4']},{n:'Drive 2',b:['B1','B2','B3','B4']}],rule:f=>f.size===2?[0,'Both mirrors failed — nothing is left.']:f.size?[1,'One mirror failed — the other drive holds an identical copy: <b>data safe</b>.']:[1,'All drives healthy.']},
+ '10':{t:'RAID 10 (1 + 0)',pts:['RAID 1 + RAID 0 — <b>nesting</b>: block-level striping <b>and</b> mirroring; performance and reliability; no parity.'],
+  d:[{n:'Drive 1 (set 1)',b:['B1','B3','B5','B7']},{n:'Drive 2 (set 1)',b:['B1','B3','B5','B7']},{n:'Drive 3 (set 2)',b:['B2','B4','B6','B8']},{n:'Drive 4 (set 2)',b:['B2','B4','B6','B8']}],
+  rule:f=>((f.has(0)&&f.has(1))||(f.has(2)&&f.has(3)))?[0,'Both drives of one mirror set failed — that set\'s blocks are lost.']:f.size?[1,`${f.size} drive(s) failed, but every mirror set still has a working copy: <b>data safe</b>.`]:[1,'All drives healthy.']},
+ '2':{t:'RAID 2',pts:['<b>Bit-level striping + ECC</b> (Error Correcting Code); parity bits are used to <b>detect and correct</b> errors.'],
+  d:[{n:'Data 1',b:['A1','B1','C1','D1']},{n:'Data 2',b:['A2','B2','C2','D2']},{n:'Data 3',b:['A3','B3','C3','D3']},{n:'Data 4',b:['A4','B4','C4','D4']},{n:'ECC 1',b:['AP1','BP1','CP1','DP1'],p:1},{n:'ECC 2',b:['AP2','BP2','CP2','DP2'],p:1},{n:'ECC 3',b:['AP3','BP3','CP3','DP3'],p:1}],
+  rule:f=>f.size>1?[0,'Two disks failed — the ECC can only correct a single failed disk (simplified).']:f.size?[1,'One disk failed — the missing bits are rebuilt from the ECC / parity bits: <b>data safe</b>.']:[1,'All disks healthy.']},
+ '3':{t:'RAID 3',pts:['<b>Byte-level striping + single parity</b>; all parity information is stored in <b>one dedicated disk</b>.','Data can be recovered from the parity bits; <b>if the parity disk crashes, data cannot be recovered</b> (as written in the notes).'],
+  d:[{n:'Data 1',b:['B1','B4','B7']},{n:'Data 2',b:['B2','B5','B8']},{n:'Data 3',b:['B3','B6','B9']},{n:'Parity',b:['P1','P2','P3'],p:1}],
+  rule:f=>f.size>1?[0,'Two disks failed — single parity cannot rebuild both.']:f.has(3)?[0,'The dedicated parity disk crashed — <b>per the notes the data cannot be recovered</b>. (Strictly, the data disks are untouched; what is lost is the protection.)']:f.size?[1,'A data disk failed — rebuilt from the other data disks and the parity: <b>data safe</b>.']:[1,'All disks healthy.']},
+ '4':{t:'RAID 4',pts:['<b>Block-level striping + parity bits</b>; all parity bits are stored in a <b>single dedicated disk</b>.'],
+  d:[{n:'Data 1',b:['B1','B4','B7']},{n:'Data 2',b:['B2','B5','B8']},{n:'Data 3',b:['B3','B6','B9']},{n:'Parity',b:['P1','P2','P3'],p:1}],
+  rule:f=>f.size>1?[0,'Two disks failed — single parity cannot rebuild both.']:f.has(3)?[1,'The parity disk failed — the data disks are intact, but there is no parity protection until it is rebuilt.']:f.size?[1,'A data disk failed — rebuilt from parity: <b>data safe</b>.']:[1,'All disks healthy.']},
+ '5':{t:'RAID 5',pts:['<b>Block-level striping + single / distributed parity</b>.','Data can be recovered if <b>any one</b> of the disks crashes, because the parity bit is <b>distributed</b>.'],
+  d:[{n:'Disk 1',b:['B1','B4','B7','P4'],pi:[3]},{n:'Disk 2',b:['B2','B5','P3','B10'],pi:[2]},{n:'Disk 3',b:['B3','P2','B8','B11'],pi:[1]},{n:'Disk 4',b:['P1','B6','B9','B12'],pi:[0]}],
+  rule:f=>f.size>1?[0,'Two disks failed — single distributed parity can only rebuild one.']:f.size?[1,'One disk failed — its blocks are rebuilt from the other disks and parity: <b>data safe</b> (any one disk may fail).']:[1,'All disks healthy.']},
+ '6':{t:'RAID 6',pts:['<b>Block-level striping + double distributed parity</b>; uses <b>Reed–Solomon</b> code; more memory and costly.'],
+  d:[{n:'Disk 1',b:['B1','B4','B7'],pi:[]},{n:'Disk 2',b:['B2','B5','P'],pi:[2]},{n:'Disk 3',b:['B3','P','Q'],pi:[1,2]},{n:'Disk 4',b:['P','Q','B8'],pi:[0,1]},{n:'Disk 5',b:['Q','B6','B9'],pi:[0]}],
+  rule:f=>f.size>2?[0,'Three disks failed — double parity covers only two.']:f.size?[1,`${f.size} disk(s) failed — rebuilt using the two parity blocks: <b>data safe</b> (up to two disks may fail).`]:[1,'All disks healthy.']}};
+const FILES0=['F1','F2','F3','F4','F5','F6'],CHG=[[],['F1'],['F2','F7'],['F1','F3'],['F4']],DAYS=['Mon','Tue','Wed','Thu','Fri'];
+section('raid','RAID & backup',`
+<h3>RAID — Redundant Array of Independent Disks</h3>
+<ul><li>In a network, data is stored across <b>multiple disks</b> for <b>fault tolerance</b>, performance and reliability.</li><li><b>Data striping</b>: storing parts of data on different hard disks — used for RAID level 0 onwards; can be bit-level, byte-level or block-level.</li></ul>
+<div class="tool"><div class="th">RAID lab — pick a level, then click disks to crash them</div><div class="tb"><div id="rdTabs"></div><div id="rdPts"></div><div id="rdDisks" class="row" style="align-items:flex-start"></div><div id="rdMsg"></div><div class="row"><button class="btn" id="rdR">Repair all disks</button></div></div></div>
+<div class="scroll"><table class="t"><tr><th>Level</th><th class="l">Striping</th><th class="l">Parity / copy</th><th class="l">Survives</th></tr><tr><td>0</td><td class="l">Block</td><td class="l">None</td><td class="l">Nothing</td></tr><tr><td>1</td><td class="l">Block (as written)</td><td class="l">Mirror</td><td class="l">One of two drives</td></tr><tr><td>10</td><td class="l">Block + mirroring</td><td class="l">Mirror</td><td class="l">One drive per mirror set</td></tr><tr><td>2</td><td class="l">Bit</td><td class="l">ECC parity bits</td><td class="l">One disk</td></tr><tr><td>3</td><td class="l">Byte</td><td class="l">Single, dedicated disk</td><td class="l">One data disk</td></tr><tr><td>4</td><td class="l">Block</td><td class="l">Single, dedicated disk</td><td class="l">One data disk</td></tr><tr><td>5</td><td class="l">Block</td><td class="l">Single, distributed</td><td class="l">Any one disk</td></tr><tr><td>6</td><td class="l">Block</td><td class="l">Double, distributed (Reed–Solomon)</td><td class="l">Any two disks</td></tr></table></div>
+<h3>Backup and restore</h3>
+<ul><li><b>Backup</b> = saving a copy of some data on <b>another storage</b>; bringing data back from it to the local disk is called <b>restore</b>.</li>
+<li><b>Full</b>: copies everything; takes the maximum time to create and needs more memory and bandwidth; needs the minimum time to restore (the notes say “to store” — most likely restore).</li><li><b>Differential</b>: after the last full backup, only the data that has <b>changed</b> is backed up.</li><li><b>Incremental</b>: only the <b>updated / newly added</b> data is backed up (the notes say “after the last full backup”; usually it means since the last backup of any kind).</li></ul>
+<div class="tool"><div class="th">A week of backups — Monday is the full backup day</div><div class="tb"><div id="bkTabs"></div><div class="row"><label for="bkDay">Disaster strikes at the end of</label><select id="bkDay"><option>Tue</option><option>Wed</option><option>Thu</option><option selected>Fri</option></select></div>
+<p class="m" style="font-size:13.5px;margin:0">Files changed during the week: Tue F1 · Wed F2 + new F7 · Thu F1, F3 · Fri F4 (6 files on Monday).</p><div id="bkOut"></div></div></div>
+`,root=>{
+  let lv='0',failed=new Set();const KEYS=Object.keys(RD);
+  const rd=()=>{const R=RD[lv];$('#rdPts').innerHTML=`<ul>${R.pts.map(x=>`<li>${x}</li>`).join('')}</ul>`;
+    $('#rdDisks').innerHTML=R.d.map((d,i)=>`<div data-i="${i}" style="cursor:pointer;border:2px solid ${failed.has(i)?'var(--red)':'var(--ink)'};border-radius:10px;padding:6px 8px;background:${failed.has(i)?'var(--red2)':'#fff'};min-width:78px;text-align:center;font-family:var(--ui)"><b style="font-size:12px">${d.n}</b>${d.b.map((b,k)=>`<div style="margin:4px 0;padding:3px;border:1px solid var(--line);border-radius:3px;font:600 12.5px var(--mono);background:${(d.p||(d.pi&&d.pi.includes(k)))?'#fbe3df':'#e2ebf8'}">${failed.has(i)?'✗':b}</div>`).join('')}<div style="font-size:11px;color:${failed.has(i)?'var(--red)':'var(--ink2)'}">${failed.has(i)?'FAILED':'click to crash'}</div></div>`).join('');
+    const r=R.rule(failed);$('#rdMsg').innerHTML=`<div class="${r[0]?'okm':'err'}">${r[1]}</div>`;};
+  Tabs($('#rdTabs'),KEYS.map(k=>RD[k].t),k=>{lv=KEYS[k];failed=new Set();rd();});
+  $('#rdDisks').onclick=e=>{const d=e.target.closest('[data-i]');if(!d)return;const i=+d.dataset.i;failed.has(i)?failed.delete(i):failed.add(i);rd();};$('#rdR').onclick=()=>{failed=new Set();rd();};
+  let st=0;const bk=()=>{const day=$('#bkDay').selectedIndex+1,files=d=>[...FILES0,...CHG.slice(0,d+1).flat().filter(f=>!FILES0.includes(f))].filter((f,i,a)=>a.indexOf(f)===i);
+    const sets=DAYS.map((d,i)=>{if(st===0)return files(i);if(i===0)return FILES0.slice();if(st===1){return [...new Set(CHG.slice(1,i+1).flat())];}return [...new Set(CHG[i])];});
+    const last=day;let need;if(st===0)need=[last];else if(st===1)need=[0,last];else need=[...Array(last+1).keys()];
+    const tot=sets.reduce((a,s)=>a+s.length,0),needN=need.reduce((a,i)=>a+sets[i].length,0);
+    $('#bkOut').innerHTML=htmlTable(['Day','Backup type','Files copied','Count'],sets.map((s,i)=>[DAYS[i],st===0||i===0?'Full':st===1?'Differential':'Incremental',s.join(', '),s.length]),{row:(r,i)=>need.includes(i)?'hi':''})+
+      `<p>Total storage used for the week: <b>${tot} file copies</b> (more memory for full backups). Time to create today's backup ≈ <b>${sets[last].length}</b> file(s).</p><p><b>Restore after ${DAYS[last]}</b> needs: ${need.map(i=>`<span class="pill ${i===0||st===0?'g':'a'}">${DAYS[i]}</span>`).join('')} → <b>${need.length} backup set${need.length>1?'s':''}</b> (${needN} file copies) — highlighted rows above.</p><p class="m" style="font-size:13.5px">${['Full: one set restores everything, fastest — but each backup is big and slow to create.','Differential: Monday’s full plus the latest differential — two sets.','Incremental: Monday’s full plus every incremental so far — the smallest backups, the longest restore.'][st]}</p>`;};
+  Tabs($('#bkTabs'),['Full every day','Full + differential','Full + incremental'],k=>{st=k;bk();});$('#bkDay').onchange=bk;
+});
+
+/* ================= CLARIFICATIONS ================= */
+section('fixes','Clarifications',`
+<p>While typing up the handwritten notes these points were clarified or flagged. Everything else follows the notes.</p>
+<div class="scroll"><table class="t"><tr><th class="l">Topic</th><th class="l">Handwritten notes</th><th class="l">Here</th></tr>
+<tr><td class="l">WAN switching</td><td class="l">“VLPS (variable length package switching)”</td><td class="l">Kept; the usual technique is MPLS</td></tr>
+<tr><td class="l">Bluetooth speed</td><td class="l">“720 Kbps” (hard to read)</td><td class="l">Kept as read</td></tr>
+<tr><td class="l">Passive hub</td><td class="l">“Can’t work without electricity”</td><td class="l">Flagged — passive hubs need no power</td></tr>
+<tr><td class="l">Layer-2 frame</td><td class="l">Trailer at left end, Header at right end</td><td class="l">Usual order is Header → Data → Trailer</td></tr>
+<tr><td class="l">SONET</td><td class="l">“Synchronous Digital Network”</td><td class="l">Standard name: Synchronous Optical Network</td></tr>
+<tr><td class="l">Class A range</td><td class="l">0–126; public 1.0.0.0 – 127.0.0.0</td><td class="l">Kept; usable range is usually 1–126</td></tr>
+<tr><td class="l">Class B networks</td><td class="l">2¹⁴ − 2 = 16384</td><td class="l">Arithmetic gives 16,382</td></tr>
+<tr><td class="l">Class E prefix</td><td class="l">5 bits 1,1,1,1,0 with range 240–255</td><td class="l">Standard prefix is 1111</td></tr>
+<tr><td class="l">Thick net</td><td class="l">“10base2”, 500 m</td><td class="l">500 m belongs to 10Base5</td></tr>
+<tr><td class="l">RPC</td><td class="l">“RP (Remote Control)”</td><td class="l">Remote Procedure Call</td></tr>
+<tr><td class="l">Full backup</td><td class="l">“Needs minimum time to store”</td><td class="l">Probably “restore”</td></tr>
+<tr><td class="l">Incremental backup</td><td class="l">“After the last full backup”</td><td class="l">Usually since the last backup of any kind</td></tr>
+<tr><td class="l">RAID 3 parity disk</td><td class="l">Data cannot be recovered if the parity disk crashes</td><td class="l">Shown as written; the data disks are actually intact</td></tr></table></div>
+`,null);
+
+/* ================= BOOT ================= */
+(function(){
+  const nav=$('#nav'),main=$('#main');
+  nav.innerHTML=`<div class="brand"><div>Networking<small>Interactive notes</small></div><a href="../index.html" class="home-link" title="Home">⌂ Home</a><button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navlist"><span id="menuLbl">Chapters</span> ☰</button></div><div id="navlist">`+SECTIONS.map((s,i)=>`<a href="#${s.id}" data-id="${s.id}"><span>${i+1}</span>${s.title}</a>`).join('')+`</div>`;
+  const setOpen=o=>{nav.classList.toggle('open',o);$('#menuBtn').setAttribute('aria-expanded',o);};
+  $('#menuBtn').onclick=()=>setOpen(!nav.classList.contains('open'));
+  $('#navlist').addEventListener('click',e=>{if(e.target.closest('a'))setOpen(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')setOpen(false);});
+  document.addEventListener('click',e=>{if(!nav.contains(e.target))setOpen(false);});
+  main.innerHTML=`<header class="hero"><div class="wrap"><h1>Networking</h1><p>Your computer-networking notes, made interactive: break topologies, send frames through a switch, package a message down the OSI stack, analyse IP addresses and crash RAID arrays. Pick a network type to start.</p><div class="bitrow" id="heroSteps"></div><div class="heroTxt" id="heroTxt"></div></div></header>`+
+    SECTIONS.map((s,i)=>`<section class="ch" id="${s.id}"><div class="wrap"><h2><i>${i+1}</i>${s.title}</h2>${s.html}</div></section>`).join('');
+  try{heroInit();}catch(e){console.error(e);}
+  SECTIONS.forEach(s=>{if(s.init){try{s.init(document.getElementById(s.id));}catch(e){console.error('Section '+s.id,e);}}});
+  const links=$$('#navlist a'),obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){links.forEach(a=>a.classList.toggle('act',a.dataset.id===e.target.id));const a=$(`#navlist a[data-id="${e.target.id}"]`);$('#menuLbl').textContent=a?a.textContent.replace(/^\d+/,'').trim():'Chapters';if(a&&innerWidth>980){const t=a.offsetTop;if(t<nav.scrollTop||t>nav.scrollTop+nav.clientHeight-60)nav.scrollTop=t-80;}}});},{rootMargin:'-20% 0px -70% 0px'});
+  SECTIONS.forEach(s=>obs.observe(document.getElementById(s.id)));
+})();
+</script></body></html>
